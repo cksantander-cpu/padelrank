@@ -1,0 +1,31 @@
+{
+  "config": {
+    "torneoNombre": "PadelRank Chile",
+    "puntosVictoriaBase": 100,
+    "puntosDerrotaBase": 100,
+    "multiplicadorBatacazo": 100,
+    "permitirNegativos": true
+  },
+  "usuarios": [
+    {
+      "id": "u1",
+      "nombre": "Césario (Admin)",
+      "email": "admin@padelrank.cl",
+      "password": "admin123",
+      "rol": "admin",
+      "activo": true,
+      "jugadorId": null
+    }
+  ],
+  "jugadores": [
+    { "id": "j1", "nombre": "Mawricio Hernandez", "puntos": 0, "pj": 0, "pg": 0, "pp": 0, "activo": true },
+    { "id": "j2", "nombre": "Loco Palacios", "puntos": 0, "pj": 0, "pg": 0, "pp": 0, "activo": true },
+    { "id": "j3", "nombre": "Ruben Sepulveda", "puntos": 0, "pj": 0, "pg": 0, "pp": 0, "activo": true },
+    { "id": "j4", "nombre": "Oso", "puntos": 0, "pj": 0, "pg": 0, "pp": 0, "activo": true }
+  ],
+  "equipos": [
+    { "id": "e1", "nombre": "Las Lobas", "jugadorIds": ["j1", "j2"], "activo": true },
+    { "id": "e2", "nombre": "Las Mariposas", "jugadorIds": ["j3", "j4"], "activo": true }
+  ],
+  "partidos": []
+}

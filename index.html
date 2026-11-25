@@ -1,185 +1,334 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>🎾 PadelRank v2.0 - Chile</title>
-  
-  <!-- Tailwind CSS para diseño moderno -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SheetJS para la exportación directa a Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  
   <style>
     body {
-      background-color: #0f172a;
-      color: #f1f5f9;
+      background-color: #020617;
+      color: #f8fafc;
       font-family: system-ui, -apple-system, sans-serif;
     }
     .hero-banner {
-      background: linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.95) 100%),
+      background: linear-gradient(180deg, rgba(2,6,23,0.35) 0%, rgba(2,6,23,0.97) 100%),
                   url('https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?q=80&w=1200&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
     }
-    .podium-card {
-      transition: transform 0.3s ease;
-    }
-    .podium-card:hover {
-      transform: translateY(-5px);
-    }
-    /* Estilo para los que están bloqueados en el modo espectador */
-    .admin-only {
-      transition: opacity 0.3s ease;
-    }
+    .podium-card { transition: transform 0.25s ease; }
+    .podium-card:hover { transform: translateY(-4px); }
     body.espectador .admin-only {
-      opacity: 0.4;
+      opacity: 0.45;
       pointer-events: none;
       position: relative;
+      user-select: none;
     }
-    body.espectador .admin-only::after {
-      content: "🔒 Solo Administradores";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(15, 23, 42, 0.9);
-      color: #fca5a5;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      border: 1px solid #ef4444;
-      pointer-events: auto;
-      z-index: 10;
+    body.espectador .admin-hide {
+      display: none !important;
     }
   </style>
 </head>
-<body class="espectador">
+<body class="espectador pb-14">
 
-  <!-- HERO BANNER -->
-  <header class="hero-banner h-56 flex flex-col justify-end p-6 border-b border-slate-800">
-    <div class="max-w-5xl w-full mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+  <!-- ENCABEZADO HERO CON IMAGEN -->
+  <header class="hero-banner border-b border-slate-800 px-4 py-6 md:px-8">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="bg-yellow-400 text-slate-900 text-xs font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">v2.0 OFICIAL</span>
-          <span id="conexion-status" class="text-xs text-green-400 font-semibold flex items-center gap-1">
-            <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span> 🟢 Conectado a Firebase
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">v2.0 OFICIAL</span>
+          <span id="dbStatus" class="text-xs bg-slate-900/90 border border-slate-700 text-amber-400 font-bold px-3 py-0.5 rounded-full">
+            ⏳ Conectando a Firebase...
           </span>
         </div>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight flex items-center gap-2">
+        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight flex items-center gap-2">
           🎾 PadelRank <span class="text-yellow-400">Chile</span>
         </h1>
-        <p class="text-slate-300 text-xs md:text-sm mt-1">Plataforma de ranking, equipos y registro de juegos para torneos.</p>
+        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual dinámico, control semanal y exportación a Excel.</p>
       </div>
-      
-      <!-- BOTONES DE ACCESO Y EXCEL -->
+
       <div class="flex flex-wrap gap-2">
-        <button onclick="exportarAExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center gap-2 shadow-lg transition">
-          📥 Descargar Excel v2.0 (.xlsx)
+        <button onclick="exportarAExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm flex items-center gap-1.5 shadow-lg transition">
+          📥 Descargar Excel (.xlsx)
         </button>
-        <button id="btn-login" onclick="abrirModalLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center gap-2 shadow-lg transition">
-          🔑 Iniciar como Admin
+        <button id="btn-login" onclick="abrirModalLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm flex items-center gap-1.5 shadow-lg transition">
+          🔑 Entrar como Admin
         </button>
-        <button id="btn-logout" onclick="cerrarSesion()" class="hidden bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg text-sm flex items-center gap-2 shadow-lg transition">
-          🚪 Cerrar Sesión (<span id="usuario-activo"></span>)
+        <button id="btn-logout" onclick="cerrarSesion()" class="hidden bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm flex items-center gap-1.5 shadow-lg transition">
+          🚪 Salir (<span id="usuario-activo"></span>)
         </button>
       </div>
     </div>
   </header>
 
-  <!-- MÓDULO ALERTA MODO ESPECTADOR -->
-  <div id="alerta-espectador" class="bg-slate-800 border-b border-indigo-900/50 text-slate-300 px-4 py-2.5 text-center text-xs md:text-sm flex justify-center items-center gap-2">
-    <span>ℹ️ Estás en <strong>Modo Espectador</strong> (puedes ver la tabla y partidos, pero no modificarlos).</span>
-    <button onclick="abrirModalLogin()" class="text-yellow-400 font-bold underline hover:text-yellow-300">Ingresar como Admin</button>
+  <!-- BANNER MODO ESPECTADOR -->
+  <div id="alerta-espectador" class="bg-slate-900 border-b border-slate-800 text-slate-300 px-4 py-2 text-center text-xs flex justify-center items-center gap-2 flex-wrap">
+    <span>👀 Estás en <strong>Modo Espectador</strong> (solo lectura).</span>
+    <button onclick="abrirModalLogin()" class="text-yellow-400 font-bold underline hover:text-yellow-300">Iniciar sesión Admin (César / Mauro)</button>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL -->
-  <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-8">
-    
-    <!-- SECCIÓN PODIO TOP 3 -->
-    <section class="grid grid-cols-3 gap-3 md:gap-6 items-end pt-4 pb-2">
-      <!-- 2º LUGAR -->
-      <div class="podium-card bg-slate-800/80 border border-slate-700/50 rounded-xl p-3 md:p-5 text-center flex flex-col items-center order-1 h-36 md:h-48 justify-center">
-        <div class="relative mb-2">
-          <div class="w-12 h-12 md:w-20 md:h-20 rounded-full bg-slate-700 border-4 border-slate-400 flex items-center justify-center text-lg font-bold text-white shadow-lg overflow-hidden">🥈</div>
-        </div>
-        <h4 id="podio-2-nombre" class="font-bold text-xs md:text-base text-slate-200 truncate max-w-full">Cargando...</h4>
-        <span id="podio-2-puntos" class="text-yellow-400 text-xs md:text-lg font-black mt-1">-- pts</span>
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
+
+    <!-- PODIO TOP 3 -->
+    <section class="grid grid-cols-3 gap-2.5 md:gap-5 items-end pt-2">
+      <!-- 2DO LUGAR -->
+      <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-36 md:h-44">
+        <div class="w-11 h-11 md:w-16 md:h-16 rounded-full bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-xl md:text-2xl shadow mb-1.5">🥈</div>
+        <h4 id="podio-2-nombre" class="font-bold text-xs md:text-base text-slate-100 truncate max-w-full">--</h4>
+        <span id="podio-2-puntos" class="text-yellow-400 text-xs md:text-base font-black mt-0.5">-- pts</span>
       </div>
 
-      <!-- 1º LUGAR -->
-      <div class="podium-card bg-gradient-to-b from-yellow-950/20 to-slate-800 border border-yellow-500/30 rounded-2xl p-4 md:p-6 text-center flex flex-col items-center order-2 h-44 md:h-56 justify-center scale-105 shadow-yellow-500/10 shadow-xl">
-        <div class="relative mb-2">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-2xl md:text-3xl">👑</div>
-          <div class="w-16 h-16 md:w-24 md:h-24 rounded-full bg-amber-600 border-4 border-yellow-400 flex items-center justify-center text-2xl font-bold text-white shadow-xl overflow-hidden">🥇</div>
-        </div>
-        <h3 id="podio-1-nombre" class="font-black text-sm md:text-xl text-yellow-100 truncate max-w-full">Cargando...</h3>
-        <span id="podio-1-puntos" class="text-yellow-400 text-sm md:text-2xl font-black mt-1">-- pts</span>
+      <!-- 1ER LUGAR -->
+      <div class="podium-card bg-gradient-to-b from-yellow-950/30 to-slate-900 border border-yellow-500/40 rounded-2xl p-3 md:p-6 text-center flex flex-col items-center justify-center h-44 md:h-52 shadow-xl">
+        <div class="text-xl md:text-2xl -mb-1">👑</div>
+        <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-amber-600/30 border-2 border-yellow-400 flex items-center justify-center text-2xl md:text-3xl shadow-lg mb-1.5">🥇</div>
+        <h3 id="podio-1-nombre" class="font-black text-xs md:text-lg text-yellow-200 truncate max-w-full">--</h3>
+        <span id="podio-1-puntos" class="text-yellow-400 text-sm md:text-xl font-black mt-0.5">-- pts</span>
       </div>
 
-      <!-- 3º LUGAR -->
-      <div class="podium-card bg-slate-800/80 border border-slate-700/50 rounded-xl p-3 md:p-5 text-center flex flex-col items-center order-3 h-32 md:h-44 justify-center">
-        <div class="relative mb-2">
-          <div class="w-10 h-10 md:w-16 md:h-16 rounded-full bg-slate-700 border-4 border-amber-700 flex items-center justify-center text-md font-bold text-white shadow-lg overflow-hidden">🥉</div>
-        </div>
-        <h4 id="podio-3-nombre" class="font-bold text-xs md:text-base text-slate-300 truncate max-w-full">Cargando...</h4>
-        <span id="podio-3-puntos" class="text-yellow-400 text-xs md:text-lg font-black mt-1">-- pts</span>
+      <!-- 3ER LUGAR -->
+      <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-32 md:h-40">
+        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-lg md:text-xl shadow mb-1.5">🥉</div>
+        <h4 id="podio-3-nombre" class="font-bold text-xs md:text-base text-slate-200 truncate max-w-full">--</h4>
+        <span id="podio-3-puntos" class="text-yellow-400 text-xs md:text-base font-black mt-0.5">-- pts</span>
       </div>
     </section>
 
-    <!-- TABS DE NAVEGACIÓN -->
-    <nav class="flex border-b border-slate-800 gap-2 overflow-x-auto pb-1">
-      <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-4 font-bold text-sm border-b-2 border-yellow-400 text-yellow-400 flex items-center gap-1 whitespace-nowrap">🏆 Ranking</button>
-      <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="py-2.5 px-4 font-bold text-sm border-b-2 border-transparent hover:text-slate-200 text-slate-400 flex items-center gap-1 whitespace-nowrap">⚔️ Partidos (2v2)</button>
-      <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="py-2.5 px-4 font-bold text-sm border-b-2 border-transparent hover:text-slate-200 text-slate-400 flex items-center gap-1 whitespace-nowrap">👥 Jugadores y Admins</button>
-      <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="py-2.5 px-4 font-bold text-sm border-b-2 border-transparent hover:text-slate-200 text-slate-400 flex items-center gap-1 whitespace-nowrap">⚙️ Reglas</button>
+    <!-- NAVEGACIÓN -->
+    <nav class="flex border-b border-slate-800 gap-1 overflow-x-auto">
+      <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-yellow-400 text-yellow-400 whitespace-nowrap">🏆 Ranking</button>
+      <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">⚔️ Partidos (2v2)</button>
+      <button onclick="cambiarTab('tab-premios')" id="btn-tab-premios" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">🏅 Premios</button>
+      <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">👥 Jugadores</button>
+      <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">⚙️ Reglas y Respaldo</button>
     </nav>
 
     <!-- TAB 1: RANKING -->
-    <div id="tab-ranking" class="space-y-6">
+    <div id="tab-ranking" class="space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-        <div class="p-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 class="text-xl font-bold flex items-center gap-2">📊 Tabla General</h2>
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-400">Filtrar Categoría:</span>
-            <select id="filtro-categoria" onchange="actualizarTablaRanking()" class="bg-slate-800 border border-slate-700 text-white rounded px-2 py-1 text-xs focus:ring-1 focus:ring-yellow-400">
-              <option value="todos">Todas</option>
-              <option value="3ra">3ª Categoría</option>
-              <option value="4ta">4ª Categoría</option>
-              <option value="5ta">5ª Categoría</option>
-              <option value="6ta">6ª Categoría</option>
-            </select>
+        <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-white">📊 Tabla General Individual</h2>
+            <p class="text-xs text-slate-400">Ordenado por Puntos, % Victorias, PG, Dif. Sets y Dif. Juegos.</p>
           </div>
+          <select id="filtro-categoria" onchange="renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
+            <option value="todos">Todas las categorías</option>
+            <option value="3ra">3ra Categoría</option>
+            <option value="4ta">4ta Categoría</option>
+            <option value="5ta">5ta Categoría</option>
+            <option value="6ta">6ta Categoría</option>
+          </select>
         </div>
-        
+
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-sm">
+          <table class="w-full text-left border-collapse text-xs md:text-sm">
             <thead>
-              <tr class="bg-slate-950 text-slate-400 font-semibold border-b border-slate-800">
-                <th class="py-3 px-4 text-center w-12">Pos</th>
-                <th class="py-3 px-4">Jugador</th>
-                <th class="py-3 px-4 text-center">Cat</th>
-                <th class="py-3 px-4 text-center">PJ</th>
-                <th class="py-3 px-4 text-center text-green-400">PG</th>
-                <th class="py-3 px-4 text-center text-red-400">PP</th>
-                <th class="py-3 px-4 text-center">Dif Sets</th>
-                <th class="py-3 px-4 text-center">Dif Games</th>
-                <th class="py-3 px-4 text-center">% Vic</th>
-                <th class="py-3 px-4 text-right pr-6">Puntos</th>
+              <tr class="bg-slate-950 text-slate-400 uppercase text-[11px] border-b border-slate-800">
+                <th class="py-3 px-3 text-center">#</th>
+                <th class="py-3 px-3">Jugador</th>
+                <th class="py-3 px-2 text-center">PJ</th>
+                <th class="py-3 px-2 text-center text-emerald-400">PG</th>
+                <th class="py-3 px-2 text-center text-rose-400">PP</th>
+                <th class="py-3 px-2 text-center">% Vic</th>
+                <th class="py-3 px-2 text-center">Dif Sets</th>
+                <th class="py-3 px-2 text-center">Dif Juegos</th>
+                <th class="py-3 px-4 text-right">Puntos</th>
               </tr>
             </thead>
-            <tbody id="tabla-ranking-cuerpo">
-              <!-- Carga de datos dinámica -->
-            </tbody>
+            <tbody id="tbodyRanking"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: PARTIDOS (REGISTRAR RESULTADOS 2 VS 2) -->
+    <!-- TAB 2: PARTIDOS -->
     <div id="tab-partidos" class="hidden space-y-6">
       <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <h2 class="text-xl font-bold flex items-center gap-2 text-yellow-400">⚔️ Registrar Nuevo Partido (2 vs 2)</h2>
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-bold text-yellow-400">⚔️ Registrar Partido (2 vs 2)</h2>
+          <span class="text-xs text-slate-400">Límite: 2 partidos válidos por semana (Lun-Dom)</span>
+        </div>
+
+        <form onsubmit="registrarPartido(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- PAREJA A -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h3 class="font-bold text-sky-400 text-sm">🔵 Pareja A</h3>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Jugador 1 A</label>
+              <select id="pA1" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Jugador 2 A</label>
+              <select id="pA2" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Sets A</label>
+                <input type="number" id="setsA" min="0" max="2" value="2" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Juegos A</label>
+                <input type="number" id="juegosA" min="0" max="40" value="12" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+              </div>
+            </div>
+          </div>
+
+          <!-- PAREJA B -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h3 class="font-bold text-rose-400 text-sm">🔴 Pareja B</h3>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Jugador 1 B</label>
+              <select id="pB1" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Jugador 2 B</label>
+              <select id="pB2" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Sets B</label>
+                <input type="number" id="setsB" min="0" max="2" value="0" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1">Juegos B</label>
+                <input type="number" id="juegosB" min="0" max="40" value="6" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+              </div>
+            </div>
+          </div>
+
+          <!-- DETALLES -->
+          <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Fecha</label>
+              <input type="date" id="fechaPartido" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Marcador (Ej: 6-4/6-3)</label>
+              <input type="text" id="obsPartido" placeholder="6-4/6-3" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">¿Walkover (WO)?</label>
+              <select id="esWO" onchange="previsualizarPartido()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm">
+                <option value="no">No (Partido normal)</option>
+                <option value="si">Sí (WO: 100 / 0 pts)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="previewBox" class="md:col-span-2 bg-slate-950/90 border border-yellow-500/30 rounded-lg p-3 text-xs text-yellow-300">
+            Selecciona los 4 jugadores para ver el cálculo previo de promedio y sorpresa.
+          </div>
+
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2.5 px-6 rounded-lg text-sm transition">
+              💾 Guardar Partido en Firebase
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- HISTORIAL -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-lg font-bold">📋 Historial de Partidos (<span id="total-partidos-badge">0</span>)</h2>
+        </div>
+        <div id="listaPartidos" class="space-y-2.5"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PREMIOS AUTOMÁTICOS -->
+    <div id="tab-premios" class="hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+        <h2 class="text-lg font-bold text-yellow-400">🏅 Premios Automáticos de la Liga</h2>
+        <div id="gridPremios" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: JUGADORES -->
+    <div id="tab-jugadores" class="hidden space-y-6">
+      <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+        <h2 class="text-lg font-bold text-yellow-400">➕ Agregar Nuevo Jugador</h2>
+        <form onsubmit="agregarJugador(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Nombre</label>
+            <input type="text" id="newJugNombre" placeholder="Ej: Césario" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Categoría</label>
+            <select id="newJugCat" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm">
+              <option value="3ra">3ra</option>
+              <option value="4ta">4ta</option>
+              <option value="5ta" selected>5ta</option>
+              <option value="6ta">6ta</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Rating Inicial</label>
+            <input type="number" id="newJugPts" value="100" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+          </div>
+          <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2 px-4 rounded-lg text-sm transition">
+            Agregar Jugador
+          </button>
+        </form>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+        <h2 class="text-lg font-bold">👥 Plantel de Jugadores (<span id="total-jugadores-badge">0</span>)</h2>
+        <div id="listaJugadoresAdmin" class="space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: REGLAS Y RESPALDO -->
+    <div id="tab-reglas" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs md:text-sm text-slate-300">
+        <h2 class="text-lg font-bold text-yellow-400">📜 Reglas Oficiales (Lógica Excel v2.0)</h2>
+        <ul class="list-disc list-inside space-y-1.5">
+          <li><strong>Rating inicial:</strong> Todos los jugadores parten con <strong>100 puntos</strong>.</li>
+          <li><strong>Victoria 2-0:</strong> +100 pts para cada ganador / +20 pts para cada perdedor.</li>
+          <li><strong>Victoria 2-1:</strong> +80 pts para cada ganador / +40 pts para cada perdedor.</li>
+          <li><strong>Victoria por WO:</strong> +100 pts para cada ganador / 0 pts para cada perdedor.</li>
+          <li><strong>Victoria Sorpresa:</strong> Si gana la pareja con menor promedio de rating previo, cada ganador suma <strong>+30 pts</strong> extra y cada perdedor resta <strong>-30 pts</strong>.</li>
+          <li><strong>Límite semanal (Lunes a Domingo):</strong> Cada jugador puntúa solo en sus <strong>2 primeros partidos válidos</strong> de la semana. Desde el 3° juega como <em>Acompañante</em> (0 pts).</li>
+        </ul>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+        <h2 class="text-lg font-bold text-white">💾 Respaldo y Restauración (.JSON)</h2>
+        <p class="text-xs text-slate-400">Descarga una copia de seguridad o restaura un archivo JSON (solo Admins pueden restaurar).</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="descargarJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2 px-4 rounded-lg text-xs">
+            ⬇️ Descargar Respaldo (.json)
+          </button>
+          <input type="file" id="importFile" accept=".json" class="hidden" onchange="importarJSON(event)" />
+          <button onclick="document.getElementById('importFile').click()" class="admin-only bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-xs">
+            ⬆️ Restaurar desde JSON
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL LOGIN ADMIN -->
+  <div id="modal-login" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-6 space-y-4 relative shadow-2xl">
+      <button onclick="cerrarModalLogin()" class="absolute top-3 right-4 text-slate-400 hover:text-white text-2xl">&times;</button>
+      <div class="text-center">
+        <div class="text-3xl mb-1">🔐</div>
+        <h3 class="text-lg font-black text-white">Acceso Administrador</h3>
+        <p class="text-xs text-slate-400">Ingresa tus credenciales para registrar partidos o editar puntos.</p>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Usuario</label>
+          <input type="text" id="login-usuario" placeholder="cesar o mauro" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">PIN / Clave</label>
+          <input type="password" id="login-pin" placeholder="••••" class="w-full buevo Partido (2 vs 2)</h2>
         <form id="form-partido" onsubmit="registrarPartido(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- PAREJA A -->
           <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">

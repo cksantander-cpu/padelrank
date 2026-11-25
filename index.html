@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ranking Sepultureros · Padre Hurtado (v4.5)</title>
+  <title>Ranking Sepultureros · Padre Hurtado (v4.7)</title>
   <style>
     :root[data-theme="dark"] {
       --bg: #050914;
@@ -19,6 +19,7 @@
       --ok: #10b981;
       --warn: #f59e0b;
       --bad: #ef4444;
+      --logo-op: 0.14;
     }
     :root[data-theme="light"] {
       --bg: #f1f5f9;
@@ -34,6 +35,7 @@
       --ok: #059669;
       --warn: #d97706;
       --bad: #dc2626;
+      --logo-op: 0.08;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
     body {
@@ -45,8 +47,25 @@
       color: var(--text);
       min-height: 100vh;
       padding: 14px;
+      position: relative;
+      overflow-x: hidden;
     }
-    .wrap { max-width: 1040px; margin: 0 auto; }
+    .bg-logo {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bg-logo img {
+      width: min(520px, 75vw);
+      max-height: 75vh;
+      object-fit: contain;
+      opacity: var(--logo-op);
+    }
+    .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; }
     .topbar {
       background: linear-gradient(125deg, var(--surface), var(--surface-2));
       border: 1px solid var(--blue);
@@ -191,6 +210,15 @@
   </style>
 </head>
 <body>
+<div class="bg-logo">
+  <img
+    id="bgLogoImg"
+    src="./logo.png"
+    alt=""
+    onerror="if (!this.dataset.triedUpper) { this.dataset.triedUpper = '1'; this.src = './Logo.png'; } else { this.style.display = 'none'; }"
+  />
+</div>
+
 <div id="loginModal" class="modal-bg hidden">
   <div class="modal-box">
     <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros</h3>
@@ -219,7 +247,7 @@
 <div class="wrap">
   <div class="topbar">
     <div>
-      <span class="chip">Padre Hurtado · v4.5 Firebase</span>
+      <span class="chip">Padre Hurtado · v4.7 Firebase</span>
       <h1 id="appTitle">Ranking Sepultureros</h1>
       <p class="sub" id="dbStatus">Listo para conectar a Firebase (padelrank-6jrs4 · southamerica-east1)</p>
     </div>
@@ -342,21 +370,31 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-  const FB_KEY = 'sepultureros_v45_fb_cfg';
-  const CACHE_KEY = 'sepultureros_v45_cache';
-  const THEME_KEY = 'sepultureros_v45_theme';
-  const USER_KEY = 'sepultureros_v45_user';
+  const BRAND_NAME = 'Ranking Sepultureros';
+  const FB_KEY = 'sepultureros_v47_fb_cfg';
+  const CACHE_KEY = 'sepultureros_v47_cache';
+  const THEME_KEY = 'sepultureros_v47_theme';
+  const USER_KEY = 'sepultureros_v47_user';
 
   let state = {
     jugadores: [],
     partidos: [],
     controlSemanal: [],
     revelacion: '',
-    reglas: { nombre: 'Ranking Sepultureros', winBase: 100, lossBase: 20, sorpresaPts: 30, limiteSemanal: 2 }
+    reglas: { nombre: BRAND_NAME, winBase: 100, lossBase: 20, sorpresaPts: 30, limiteSemanal: 2 }
   };
   let wkStats = {};
   let isAdmin = false;
   let fsDb = null;
+
+  function enforceBrandName() {
+    if (!state.reglas || typeof state.reglas !== 'object') {
+      state.reglas = { nombre: BRAND_NAME, winBase: 100, lossBase: 20, sorpresaPts: 30, limiteSemanal: 2 };
+    } else {
+      state.reglas.nombre = BRAND_NAME;
+    }
+    document.getElementById('appTitle').textContent = BRAND_NAME;
+  }
 
   function loadTheme() {
     document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
@@ -406,6 +444,7 @@
   }
 
   function recalc() {
+    enforceBrandName();
     const map = {};
     (state.jugadores || []).forEach(j => {
       map[j.nombre] = { id: j.id, nombre: j.nombre, categoria: j.categoria || '5ta', puntos: 100, pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, g20: 0, g21: 0, p12: 0, p02: 0 };
@@ -479,7 +518,7 @@
   }
 
   function render() {
-    document.getElementById('appTitle').textContent = state.reglas?.nombre || 'Ranking Sepultureros';
+    enforceBrandName();
     document.getElementById('kPart').textContent = (state.partidos || []).length;
     const s = state.jugadores || [];
     if (s.length) {
@@ -555,6 +594,7 @@
   window.saveRev = async () => {
     if (!isAdmin) return alert('Solo Admins.');
     state.revelacion = document.getElementById('revInp').value.trim();
+    enforceBrandName();
     localStorage.setItem(CACHE_KEY, JSON.stringify(state));
     drawAwards();
     await pushToCloud(true);
@@ -618,6 +658,7 @@
 
   window.pushToCloud = async (silent = false) => {
     if (!fsDb) return silent ? null : alert('Configura primero Firebase.');
+    enforceBrandName();
     await setDoc(doc(fsDb, 'sepultureros', 'liga_2026'), {
       jugadores: state.jugadores,
       partidos: state.partidos,
@@ -630,9 +671,10 @@
   };
 
   window.exportJson = () => {
+    enforceBrandName();
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const u = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = u; a.download = 'ranking_sepultureros_v45.json'; a.click(); URL.revokeObjectURL(u);
+    const a = document.createElement('a'); a.href = u; a.download = 'ranking_sepultureros_v47.json'; a.click(); URL.revokeObjectURL(u);
   };
 
   window.triggerImport = () => { if (!isAdmin) return alert('Solo Admins.'); fileImport.click(); };
@@ -646,6 +688,7 @@
           throw new Error('El JSON debe incluir arreglos "jugadores" y "partidos".');
         }
         state = { ...state, ...parsed };
+        enforceBrandName();
         recalc();
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
         render();
@@ -658,7 +701,7 @@
 
   async function initFirebase(cfg) {
     if (!cfg || !cfg.projectId) return;
-    const app = initializeApp(cfg, 'sepultureros_v45_final_app');
+    const app = initializeApp(cfg, 'sepultureros_v47_app');
     fsDb = getFirestore(app);
     const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
     if (snap.exists()) {
@@ -672,6 +715,7 @@
     }
   }
 
+  enforceBrandName();
   loadTheme();
   applyRole();
   fDate.valueAsDate = new Date();

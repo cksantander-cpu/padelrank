@@ -13,7 +13,7 @@
       font-family: system-ui, -apple-system, sans-serif;
     }
     .hero-banner {
-      background: linear-gradient(180deg, rgba(2,6,23,0.4) 0%, rgba(2,6,23,0.97) 100%),
+      background: linear-gradient(180deg, rgba(2,6,23,0.35) 0%, rgba(2,6,23,0.97) 100%),
                   url('https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?q=80&w=1200&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
@@ -38,32 +38,32 @@
         <div class="flex flex-wrap items-center gap-2 mb-2">
           <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">🎾 v2.3 OFICIAL</span>
           <span id="dbStatus" class="text-xs bg-slate-900/90 border border-slate-700 text-amber-400 font-bold px-3 py-0.5 rounded-full">
-            Conectando a Firebase...
+            ⏳ Conectando a Firebase...
           </span>
         </div>
         <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight">
           PadelRank <span class="text-yellow-400">Chile</span>
         </h1>
-        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual, control semanal (max. 2 partidos) y exportacion a Excel.</p>
+        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual, control semanal (máx. 2 partidos) y exportación a Excel.</p>
       </div>
 
       <div class="flex flex-wrap gap-2">
         <button onclick="exportarAExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm shadow-lg transition">
-          Descargar Excel (.xlsx)
+          📥 Descargar Excel (.xlsx)
         </button>
         <button id="btn-login" onclick="abrirModalLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm shadow-lg transition">
-          Entrar como Admin
+          🔑 Entrar como Admin
         </button>
         <button id="btn-logout" onclick="cerrarSesion()" class="hidden bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm shadow-lg transition">
-          Salir (<span id="usuario-activo"></span>)
+          🚪 Salir (<span id="usuario-activo"></span>)
         </button>
       </div>
     </div>
   </header>
 
   <div id="alerta-espectador" class="bg-slate-900 border-b border-slate-800 text-slate-300 px-4 py-2 text-center text-xs flex justify-center items-center gap-2 flex-wrap">
-    <span>Estas en <strong>Modo Espectador</strong> (solo lectura).</span>
-    <button onclick="abrirModalLogin()" class="text-yellow-400 font-bold underline hover:text-yellow-300">Iniciar sesion Admin (Cesar / Mauro)</button>
+    <span>👀 Estás en <strong>Modo Espectador</strong> (solo lectura).</span>
+    <button onclick="abrirModalLogin()" class="text-yellow-400 font-bold underline hover:text-yellow-300">Iniciar sesión Admin (César / Mauro)</button>
   </div>
 
   <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
@@ -71,20 +71,20 @@
     <!-- PODIO TOP 3 -->
     <section class="grid grid-cols-3 gap-2.5 md:gap-5 items-end pt-2">
       <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-36 md:h-44">
-        <div class="w-11 h-11 md:w-16 md:h-16 rounded-full bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-base md:text-xl font-black text-slate-200 shadow mb-1.5">#2</div>
+        <div class="w-11 h-11 md:w-16 md:h-16 rounded-full bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-xl md:text-2xl shadow mb-1.5">🥈</div>
         <h4 id="podio-2-nombre" class="font-bold text-xs md:text-base text-slate-100 truncate max-w-full">--</h4>
         <span id="podio-2-puntos" class="text-yellow-400 text-xs md:text-base font-black mt-0.5">-- pts</span>
       </div>
 
       <div class="podium-card bg-gradient-to-b from-yellow-950/30 to-slate-900 border border-yellow-500/40 rounded-2xl p-3 md:p-6 text-center flex flex-col items-center justify-center h-44 md:h-52 shadow-xl">
-        <div class="text-[11px] font-black uppercase tracking-wider text-yellow-300 mb-1">Lider</div>
-        <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-amber-600/30 border-2 border-yellow-400 flex items-center justify-center text-xl md:text-2xl font-black text-yellow-300 shadow-lg mb-1.5">#1</div>
+        <div class="text-xl md:text-2xl -mb-1">👑</div>
+        <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-amber-600/30 border-2 border-yellow-400 flex items-center justify-center text-2xl md:text-3xl shadow-lg mb-1.5">🥇</div>
         <h3 id="podio-1-nombre" class="font-black text-xs md:text-lg text-yellow-200 truncate max-w-full">--</h3>
         <span id="podio-1-puntos" class="text-yellow-400 text-sm md:text-xl font-black mt-0.5">-- pts</span>
       </div>
 
       <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-32 md:h-40">
-        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-sm md:text-lg font-black text-amber-500 shadow mb-1.5">#3</div>
+        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-lg md:text-xl shadow mb-1.5">🥉</div>
         <h4 id="podio-3-nombre" class="font-bold text-xs md:text-base text-slate-200 truncate max-w-full">--</h4>
         <span id="podio-3-puntos" class="text-yellow-400 text-xs md:text-base font-black mt-0.5">-- pts</span>
       </div>
@@ -92,12 +92,12 @@
 
     <!-- NAVEGACIÓN -->
     <nav class="flex border-b border-slate-800 gap-1 overflow-x-auto">
-      <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-yellow-400 text-yellow-400 whitespace-nowrap">Ranking</button>
-      <button onclick="cambiarTab('tab-semanal')" id="btn-tab-semanal" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Control Semanal</button>
-      <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Partidos (2v2)</button>
-      <button onclick="cambiarTab('tab-premios')" id="btn-tab-premios" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Premios</button>
-      <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Jugadores</button>
-      <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Reglas y Respaldo</button>
+      <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-yellow-400 text-yellow-400 whitespace-nowrap">🏆 Ranking</button>
+      <button onclick="cambiarTab('tab-semanal')" id="btn-tab-semanal" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">📅 Control Semanal</button>
+      <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="hidden py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">⚔️ Partidos (2v2)</button>
+      <button onclick="cambiarTab('tab-premios')" id="btn-tab-premios" class="hidden py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">🏅 Premios</button>
+      <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="hidden py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">👥 Jugadores</button>
+      <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="hidden py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">⚙️ Reglas y Respaldo</button>
     </nav>
 
     <!-- TAB 1: RANKING -->
@@ -105,20 +105,13 @@
       <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-bold text-white">Tabla General Individual</h2>
-            <p class="text-xs text-slate-400">PJ (Jugados), PG (Ganados), PP (Perdidos), Dif. Sets, Dif. Juegos y Puntaje.</p>
+            <h2 class="text-lg font-bold text-white">📊 Tabla General Individual</h2>
+            <p class="text-xs text-slate-400">Puntos acumulados, PJ, PG, PP, % Vic, Dif. Sets y Dif. Juegos.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="recalcularTodoDesdePartidos()" class="admin-hide bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
-              Recalcular Sets y Juegos
+              🔄 Recalcular Sets y Juegos
             </button>
-            <select id="filtro-categoria" onchange="renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
-              <option value="todos">Todas las categorias</option>
-              <option value="3ra">3ra Categoria</option>
-              <option value="4ta">4ta Categoria</option>
-              <option value="5ta">5ta Categoria</option>
-              <option value="6ta">6ta Categoria</option>
-            </select>
           </div>
         </div>
 
@@ -126,15 +119,15 @@
           <table class="w-full text-left border-collapse text-xs md:text-sm">
             <thead>
               <tr class="bg-slate-950 text-slate-400 uppercase text-[11px] border-b border-slate-800">
-                <th class="py-3 px-3 text-center">#</th>
-                <th class="py-3 px-3">Jugador</th>
+                <th class="py-3 px-2.5 text-center">#</th>
+                <th class="py-3 px-2.5">Jugador</th>
+                <th class="py-3 px-2 text-right text-yellow-400">Pts</th>
                 <th class="py-3 px-2 text-center">PJ</th>
                 <th class="py-3 px-2 text-center text-emerald-400">PG</th>
                 <th class="py-3 px-2 text-center text-rose-400">PP</th>
                 <th class="py-3 px-2 text-center">% Vic</th>
                 <th class="py-3 px-2 text-center">Dif Sets</th>
-                <th class="py-3 px-2 text-center">Dif Juegos</th>
-                <th class="py-3 px-4 text-right">Puntos</th>
+                <th class="py-3 px-2.5 text-center">Dif Juegos</th>
               </tr>
             </thead>
             <tbody id="tbodyRanking"></tbody>
@@ -148,12 +141,10 @@
       <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-bold text-yellow-400">Control Semanal de Partidos (Maximo 2 validos por semana)</h2>
-            <p class="text-xs text-slate-400">Desde el 3er partido de la semana el jugador participa como Acompanante (0 pts).</p>
+            <h2 class="text-lg font-bold text-yellow-400">📅 Control Semanal de Partidos (Máx. 2 válidos por semana)</h2>
+            <p class="text-xs text-slate-400">Por defecto se muestra la última semana. Desde el 3er partido juega como Acompañante (0 pts).</p>
           </div>
-          <select id="filtro-semana" onchange="this.setAttribute('data-user-changed', '1'); renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
-            <option value="todas">Todas las semanas</option>
-          </select>
+          <select id="filtro-semana" onchange="this.setAttribute('data-user-changed', '1'); renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs"></select>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs md:text-sm">
@@ -161,8 +152,8 @@
               <tr class="bg-slate-950 text-slate-400 uppercase text-[11px] border-b border-slate-800">
                 <th class="py-3 px-3">Semana</th>
                 <th class="py-3 px-3">Jugador</th>
-                <th class="py-3 px-2 text-center">Partidos Validos</th>
-                <th class="py-3 px-2 text-center">Limite</th>
+                <th class="py-3 px-2 text-center">Válidos</th>
+                <th class="py-3 px-2 text-center">Límite</th>
                 <th class="py-3 px-4 text-right">Estado</th>
               </tr>
             </thead>
@@ -176,13 +167,13 @@
     <div id="tab-partidos" class="hidden space-y-6">
       <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
         <div class="flex flex-wrap justify-between items-center gap-2">
-          <h2 class="text-lg font-bold text-yellow-400">Registrar Partido (2 vs 2)</h2>
-          <span class="text-xs text-slate-400">Limite: 2 partidos validos por semana (Lun-Dom)</span>
+          <h2 class="text-lg font-bold text-yellow-400">⚔️ Registrar Partido (2 vs 2)</h2>
+          <span class="text-xs text-slate-400">Límite: 2 partidos válidos por semana (Lun-Dom)</span>
         </div>
 
         <form onsubmit="registrarPartido(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-            <h3 class="font-bold text-sky-400 text-sm">Pareja A</h3>
+            <h3 class="font-bold text-sky-400 text-sm">🔵 Pareja A</h3>
             <div>
               <label class="block text-xs text-slate-400 mb-1">Jugador 1 A</label>
               <select id="pA1" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
@@ -204,7 +195,7 @@
           </div>
 
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-            <h3 class="font-bold text-rose-400 text-sm">Pareja B</h3>
+            <h3 class="font-bold text-rose-400 text-sm">🔴 Pareja B</h3>
             <div>
               <label class="block text-xs text-slate-400 mb-1">Jugador 1 B</label>
               <select id="pB1" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
@@ -238,18 +229,18 @@
               <label class="block text-xs text-slate-400 mb-1">Walkover (WO)</label>
               <select id="esWO" onchange="previsualizarPartido()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm">
                 <option value="no">No (Partido normal)</option>
-                <option value="si">Si (WO: 100 / 0 pts)</option>
+                <option value="si">Sí (WO: 100 / 0 pts)</option>
               </select>
             </div>
           </div>
 
           <div id="previewBox" class="md:col-span-2 bg-slate-950/90 border border-yellow-500/30 rounded-lg p-3 text-xs text-yellow-300">
-            Selecciona los 4 jugadores para ver el calculo previo de promedio y sorpresa.
+            Selecciona los 4 jugadores para ver el cálculo previo de promedio y sorpresa.
           </div>
 
           <div class="md:col-span-2 flex justify-end">
             <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2.5 px-6 rounded-lg text-sm transition">
-              Guardar Partido en Firebase
+              💾 Guardar Partido en Firebase
             </button>
           </div>
         </form>
@@ -257,29 +248,31 @@
 
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold">Historial de Partidos (<span id="total-partidos-badge">0</span>)</h2>
+          <h2 class="text-lg font-bold">📋 Historial de Partidos (<span id="total-partidos-badge">0</span>)</h2>
         </div>
         <div id="listaPartidos" class="space-y-2.5"></div>
       </div>
     </div>
 
+    <!-- TAB 4: PREMIOS -->
     <div id="tab-premios" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <h2 class="text-lg font-bold text-yellow-400">Premios Automaticos de la Liga</h2>
+        <h2 class="text-lg font-bold text-yellow-400">🏅 Premios Automáticos de la Liga</h2>
         <div id="gridPremios" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
     </div>
 
+    <!-- TAB 5: JUGADORES -->
     <div id="tab-jugadores" class="hidden space-y-6">
       <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <h2 class="text-lg font-bold text-yellow-400">Agregar Nuevo Jugador</h2>
+        <h2 class="text-lg font-bold text-yellow-400">➕ Agregar Nuevo Jugador</h2>
         <form onsubmit="agregarJugador(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
           <div>
             <label class="block text-xs text-slate-400 mb-1">Nombre</label>
-            <input type="text" id="newJugNombre" placeholder="Ej: Cesario" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+            <input type="text" id="newJugNombre" placeholder="Ej: Césario" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Categoria</label>
+            <label class="block text-xs text-slate-400 mb-1">Categoría (uso interno)</label>
             <select id="newJugCat" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm">
               <option value="3ra">3ra</option>
               <option value="4ta">4ta</option>
@@ -292,40 +285,41 @@
             <input type="number" id="newJugPts" value="100" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
           </div>
           <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2 px-4 rounded-lg text-sm transition">
-            Agregar Jugador
+            ➕ Agregar Jugador
           </button>
         </form>
       </div>
 
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
-        <h2 class="text-lg font-bold">Plantel de Jugadores (<span id="total-jugadores-badge">0</span>)</h2>
+        <h2 class="text-lg font-bold">👥 Plantel de Jugadores (<span id="total-jugadores-badge">0</span>)</h2>
         <div id="listaJugadoresAdmin" class="space-y-2"></div>
       </div>
     </div>
 
+    <!-- TAB 6: REGLAS Y RESPALDO -->
     <div id="tab-reglas" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs md:text-sm text-slate-300">
-        <h2 class="text-lg font-bold text-yellow-400">Reglas Oficiales (Lógica Excel v2.3)</h2>
+        <h2 class="text-lg font-bold text-yellow-400">📜 Reglas Oficiales (Lógica Excel v2.3)</h2>
         <ul class="list-disc list-inside space-y-1.5">
           <li><strong>Rating inicial:</strong> Todos los jugadores parten con <strong>100 puntos</strong>.</li>
           <li><strong>Victoria 2-0:</strong> +100 pts para cada ganador / +20 pts para cada perdedor.</li>
           <li><strong>Victoria 2-1:</strong> +80 pts para cada ganador / +40 pts para cada perdedor.</li>
           <li><strong>Victoria por WO:</strong> +100 pts para cada ganador / 0 pts para cada perdedor.</li>
           <li><strong>Victoria Sorpresa:</strong> Si gana la pareja con menor promedio de rating previo, cada ganador suma <strong>+30 pts</strong> extra y cada perdedor resta <strong>-30 pts</strong>.</li>
-          <li><strong>Limite semanal (Lunes a Domingo):</strong> Cada jugador puntua solo en sus <strong>2 primeros partidos validos</strong> de la semana. Desde el 3o juega como <em>Acompanante</em> (0 pts).</li>
+          <li><strong>Límite semanal (Lunes a Domingo):</strong> Cada jugador puntúa solo en sus <strong>2 primeros partidos válidos</strong> de la semana. Desde el 3° juega como <em>Acompañante</em> (0 pts).</li>
         </ul>
       </div>
 
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-        <h2 class="text-lg font-bold text-white">Respaldo y Restauracion (.JSON)</h2>
+        <h2 class="text-lg font-bold text-white">💾 Respaldo y Restauración (.JSON)</h2>
         <p class="text-xs text-slate-400">Descarga una copia de seguridad o restaura un archivo JSON (solo Admins pueden restaurar).</p>
         <div class="flex flex-wrap gap-3">
           <button onclick="descargarJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2 px-4 rounded-lg text-xs">
-            Descargar Respaldo (.json)
+            ⬇️ Descargar Respaldo (.json)
           </button>
           <input type="file" id="importFile" accept=".json" class="hidden" onchange="importarJSON(event)" />
           <button onclick="document.getElementById('importFile').click()" class="admin-only bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-xs">
-            Restaurar desde JSON
+            ⬆️ Restaurar desde JSON
           </button>
         </div>
       </div>
@@ -337,6 +331,7 @@
     <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-6 space-y-4 relative shadow-2xl">
       <button onclick="cerrarModalLogin()" class="absolute top-3 right-4 text-slate-400 hover:text-white text-2xl">&times;</button>
       <div class="text-center">
+        <div class="text-3xl mb-1">🔐</div>
         <h3 class="text-lg font-black text-white">Acceso Administrador</h3>
         <p class="text-xs text-slate-400">Ingresa tus credenciales para registrar partidos o editar puntos.</p>
       </div>
@@ -350,7 +345,7 @@
           <input type="password" id="login-pin" placeholder="••••" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
         </div>
         <button onclick="intentarLogin()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2.5 rounded-lg text-sm transition">
-          Desbloquear Edicion
+          🔓 Desbloquear Edición
         </button>
       </div>
     </div>
@@ -380,26 +375,29 @@
       equipos: [],
       partidos: [],
       controlSemanal: [],
+      ajustesStats: {
+        "Mauricio Hernández": { pp: 3, pg: 9, pj: 12 }
+      },
       usuarios: [
-        { id: "1", nombre: "Cesario", rol: "Admin", activo: true },
-        { id: "2", nombre: "Mauricio Hernandez", rol: "Admin", activo: true }
+        { id: "1", nombre: "César", rol: "Admin", activo: true },
+        { id: "2", nombre: "Mauricio Hernández", rol: "Admin", activo: true }
       ],
       reglas: { nombre: "Liga PadelRank 2026", winBase: 100, lossBase: 20 }
     };
 
     window.guardarFirebase = async function() {
       const statusEl = document.getElementById("dbStatus");
-      statusEl.textContent = "Guardando...";
+      statusEl.textContent = "⏳ Guardando...";
       try {
         await setDoc(docRef, {
           payload: JSON.stringify(window.db),
           updatedAt: new Date().toISOString()
         });
-        statusEl.textContent = "Conectado a Firebase";
+        statusEl.textContent = "🟢 Conectado a Firebase";
         statusEl.className = "text-xs bg-emerald-950/80 border border-emerald-700 text-emerald-400 font-bold px-3 py-0.5 rounded-full";
       } catch (err) {
         console.error(err);
-        statusEl.textContent = "Error al guardar";
+        statusEl.textContent = "🔴 Error al guardar";
         statusEl.className = "text-xs bg-rose-950/80 border border-rose-700 text-rose-400 font-bold px-3 py-0.5 rounded-full";
         showToast("Error al guardar en Firebase", "err");
       }
@@ -407,12 +405,19 @@
 
     onSnapshot(docRef, (snap) => {
       const statusEl = document.getElementById("dbStatus");
-      statusEl.textContent = "Conectado a Firebase";
+      statusEl.textContent = "🟢 Conectado a Firebase";
       statusEl.className = "text-xs bg-emerald-950/80 border border-emerald-700 text-emerald-400 font-bold px-3 py-0.5 rounded-full";
 
       if (snap.exists() && snap.data().payload) {
         const parsed = JSON.parse(snap.data().payload);
-        window.db = { ...window.db, ...parsed };
+        window.db = {
+          ...window.db,
+          ...parsed,
+          ajustesStats: {
+            "Mauricio Hernández": { pp: 3, pg: 9, pj: 12 },
+            ...(parsed.ajustesStats || {})
+          }
+        };
         const hasDiff = (window.db.jugadores || []).some(j => (j.difSets || 0) !== 0 || (j.difJuegos || 0) !== 0);
         if (!hasDiff && (window.db.partidos || []).length > 0 && typeof window.recalcularStatsInterno === "function") {
           window.recalcularStatsInterno(false);
@@ -424,18 +429,20 @@
     }, (err) => {
       console.error(err);
       const statusEl = document.getElementById("dbStatus");
-      statusEl.textContent = "Sin conexion";
+      statusEl.textContent = "🔴 Sin conexión";
       statusEl.className = "text-xs bg-rose-950/80 border border-rose-700 text-rose-400 font-bold px-3 py-0.5 rounded-full";
     });
   </script>
 
   <script>
     let isAdmin = false;
+    let inicializoSemanaPorDefecto = false;
 
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("fechaPartido").value = new Date().toISOString().split("T")[0];
       const savedUser = localStorage.getItem("padelrank_admin_user");
       if (savedUser) activarModoAdmin(savedUser);
+      aplicarVisibilidadTabsPorRol();
       if (typeof window.renderAll === "function") window.renderAll();
     });
 
@@ -445,6 +452,22 @@
       el.className = `fixed bottom-5 right-5 font-bold px-4 py-3 rounded-xl shadow-xl text-xs md:text-sm z-50 ${type === "err" ? "bg-rose-600 text-white" : "bg-emerald-500 text-slate-950"}`;
       el.classList.remove("hidden");
       setTimeout(() => el.classList.add("hidden"), 3200);
+    }
+
+    function aplicarVisibilidadTabsPorRol() {
+      const tabsAdmin = ["tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"];
+      tabsAdmin.forEach(id => {
+        const btn = document.getElementById("btn-" + id);
+        const panel = document.getElementById(id);
+        if (btn) btn.classList.toggle("hidden", !isAdmin);
+        if (!isAdmin && panel && !panel.classList.contains("hidden")) {
+          panel.classList.add("hidden");
+          document.getElementById("tab-ranking").classList.remove("hidden");
+          const btnRank = document.getElementById("btn-tab-ranking");
+          btnRank.classList.add("border-yellow-400", "text-yellow-400");
+          btnRank.classList.remove("border-transparent", "text-slate-400");
+        }
+      });
     }
 
     function cambiarTab(tabId) {
@@ -480,28 +503,12 @@
       const u = document.getElementById("login-usuario").value.trim().toLowerCase();
       const p = document.getElementById("login-pin").value.trim();
       if ((u === "cesar" && p === "1234") || (u === "mauro" && p === "2026")) {
-        activarModoAdmin(u === "cesar" ? "Cesar" : "Mauro");
+        activarModoAdmin(u === "cesar" ? "César" : "Mauro");
         cerrarModalLogin();
         showToast("Modo Admin desbloqueado");
       } else {
         showToast("Usuario o PIN incorrecto", "err");
       }
-    }
-
-    function aplicarVisibilidadTabsPorRol() {
-      const tabsAdmin = ["tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"];
-      tabsAdmin.forEach(id => {
-        const btn = document.getElementById("btn-" + id);
-        const panel = document.getElementById(id);
-        if (btn) btn.classList.toggle("hidden", !isAdmin);
-        if (!isAdmin && panel && !panel.classList.contains("hidden")) {
-          panel.classList.add("hidden");
-          document.getElementById("tab-ranking").classList.remove("hidden");
-          const btnRank = document.getElementById("btn-tab-ranking");
-          btnRank.classList.add("border-yellow-400", "text-yellow-400");
-          btnRank.classList.remove("border-transparent", "text-slate-400");
-        }
-      });
     }
 
     function activarModoAdmin(nombre) {
@@ -525,7 +532,7 @@
       document.getElementById("btn-logout").classList.add("hidden");
       aplicarVisibilidadTabsPorRol();
       if (window.renderAll) window.renderAll();
-      showToast("Volviste a Modo Espectador (solo Ranking y Control Semanal)");
+      showToast("Volviste a Modo Espectador");
     }
 
     function parseFechaToDate(fechaStr) {
@@ -546,7 +553,7 @@
       d.setUTCDate(d.getUTCDate() + 4 - dayNum);
       const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
       const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      return `${d.getUTCFullYear()}-S${weekNo}`;
+      return `${d.getUTCFullYear()}-S${String(weekNo).padStart(2, "0")}`;
     }
 
     function parseMarcadorJuegos(p) {
@@ -592,7 +599,7 @@
         const setsB = setsParts[1] || 0;
         const { jA, jB } = parseMarcadorJuegos(p);
         const ganaA = p.ganador === "A" || setsA > setsB;
-        const esWO = p.wo === "Si";
+        const esWO = p.wo === "Sí" || p.wo === "Si";
 
         const namesA = (p.parejaA || "").split("/").map(s => s.trim()).filter(Boolean);
         const namesB = (p.parejaB || "").split("/").map(s => s.trim()).filter(Boolean);
@@ -609,7 +616,7 @@
         else if ((setsA === 2 && setsB === 1) || (setsB === 2 && setsA === 1)) { baseWin = 80; baseLoss = 40; }
 
         const esSorpresa = (ganaA && promA < promB) || (!ganaA && promB < promA);
-        p.sorpresa = esSorpresa ? "Si" : "No";
+        p.sorpresa = esSorpresa ? "Sí" : "No";
         if (jA > 0 || jB > 0) p.juegos = `${jA} - ${jB}`;
 
         const ptsWin = baseWin + (esSorpresa ? 30 : 0);
@@ -651,7 +658,7 @@
       });
 
       const controlArr = [];
-      Object.keys(weekCounts).sort().forEach(k => {
+      Object.keys(weekCounts).sort().reverse().forEach(k => {
         const [nm, sem] = k.split("|");
         const cnt = weekCounts[k];
         controlArr.push({
@@ -659,12 +666,11 @@
           jugador: nm,
           partidosValidos: cnt,
           limite: 2,
-          estado: cnt >= 2 ? "LIMITE (2/2)" : `OK (${cnt}/2)`
+          estado: cnt >= 2 ? "LÍMITE (2/2)" : `OK (${cnt}/2)`
         });
       });
       window.db.controlSemanal = controlArr;
 
-      // Aplicar ajustes manuales de estadísticas si fueron guardados en db.ajustesStats
       const ajustes = window.db.ajustesStats || {};
       jugadores.forEach(j => {
         const aj = ajustes[j.nombre];
@@ -685,7 +691,7 @@
       if (!isAdmin) return showToast("Solo Admins pueden recalcular", "err");
       window.recalcularStatsInterno(true);
       window.renderAll();
-      showToast("Estadisticas, Dif. Sets y Dif. Juegos recalculados");
+      showToast("Estadísticas, Dif. Sets y Dif. Juegos recalculados");
     }
 
     function contarPartidosSemanaJugador(nombreJugador, semanaClave) {
@@ -738,8 +744,8 @@
 
       box.innerHTML = `
         <div><strong>Promedios previos:</strong> Pareja A (${promA.toFixed(0)} pts) vs Pareja B (${promB.toFixed(0)} pts)</div>
-        <div><strong>Resultado proyectado:</strong> ${esSorpresa ? "VICTORIA SORPRESA (+30 / -30)" : "Normal"} -> Ganadores: <strong>+${ptsGanador} pts</strong> | Perdedores: <strong>${ptsPerdedor >= 0 ? "+" : ""}${ptsPerdedor} pts</strong></div>
-        ${acomp.length ? `<div class="text-amber-400 mt-1">Limite semanal (2 partidos): <strong>${acomp.join(", ")}</strong> jugara(n) como Acompanante (0 pts).</div>` : ""}
+        <div><strong>Resultado proyectado:</strong> ${esSorpresa ? "⭐ ¡VICTORIA SORPRESA! (+30 / -30)" : "Normal"} → Ganadores: <strong>+${ptsGanador} pts</strong> | Perdedores: <strong>${ptsPerdedor >= 0 ? "+" : ""}${ptsPerdedor} pts</strong></div>
+        ${acomp.length ? `<div class="text-amber-400 mt-1">⚠️ Límite semanal (2 partidos): <strong>${acomp.join(", ")}</strong> jugará(n) como Acompañante (0 pts).</div>` : ""}
       `;
     }
 
@@ -776,7 +782,7 @@
         juegos: `${juegosA} - ${juegosB}`,
         ganador: setsA > setsB ? "A" : "B",
         sorpresa: "No",
-        wo: esWO ? "Si" : "No",
+        wo: esWO ? "Sí" : "No",
         acompanantes: ""
       });
 
@@ -788,7 +794,7 @@
 
     function eliminarPartido(id) {
       if (!isAdmin) return;
-      if (!confirm("Eliminar este partido del historial?")) return;
+      if (!confirm("¿Eliminar este partido del historial?")) return;
       window.db.partidos = window.db.partidos.filter(p => p.id !== id);
       window.recalcularStatsInterno(true);
       window.renderAll();
@@ -837,7 +843,7 @@
 
     function eliminarJugador(id) {
       if (!isAdmin) return;
-      if (!confirm("Seguro que deseas eliminar este jugador?")) return;
+      if (!confirm("¿Seguro que deseas eliminar este jugador?")) return;
       window.db.jugadores = (window.db.jugadores || []).filter(x => x.id !== id);
       window.renderAll();
       window.guardarFirebase();
@@ -853,7 +859,7 @@
     }
 
     function importarJSON(ev) {
-      if (!isAdmin) return showToast("Inicia sesion como Admin para restaurar", "err");
+      if (!isAdmin) return showToast("Inicia sesión como Admin para restaurar", "err");
       const file = ev.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -870,7 +876,7 @@
             showToast("Base de datos restaurada en Firebase");
           }
         } catch (err) {
-          showToast("Archivo JSON invalido", "err");
+          showToast("Archivo JSON inválido", "err");
         }
       };
       reader.readAsText(file);
@@ -890,7 +896,6 @@
         const rankRows = ordenados.map((j, idx) => ({
           "Pos": idx + 1,
           "Jugador": j.nombre,
-          "Categoria": j.categoria || "5ta",
           "Puntos": j.puntos,
           "PJ": j.pj,
           "PG": j.pg,
@@ -904,14 +909,14 @@
         const semRows = (window.db.controlSemanal || []).map(c => ({
           "Semana": c.semana,
           "Jugador": c.jugador,
-          "Partidos Validos": c.partidosValidos,
-          "Limite": c.limite,
+          "Partidos Válidos": c.partidosValidos,
+          "Límite": c.limite,
           "Estado": c.estado
         }));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(semRows), "Control Semanal");
 
         const partRows = (window.db.partidos || []).map((p, idx) => ({
-          "N": (window.db.partidos || []).length - idx,
+          "N°": (window.db.partidos || []).length - idx,
           "Fecha y Marcador": p.fecha,
           "Pareja A": p.parejaA,
           "Pareja B": p.parejaB,
@@ -919,7 +924,7 @@
           "Juegos": p.juegos || "-",
           "Ganador": p.ganador === "A" ? "Equipo A" : "Equipo B",
           "Sorpresa": p.sorpresa || "No",
-          "Acompanantes": p.acompanantes || ""
+          "Acompañantes": p.acompanantes || ""
         }));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(partRows), "Partidos");
 
@@ -931,7 +936,7 @@
     }
 
     window.renderAll = function() {
-      if (typeof aplicarVisibilidadTabsPorRol === "function") aplicarVisibilidadTabsPorRol();
+      aplicarVisibilidadTabsPorRol();
       const ordenados = [...(window.db.jugadores || [])].sort((a, b) =>
         (b.puntos - a.puntos) ||
         ((b.pj ? b.pg / b.pj : 0) - (a.pj ? a.pg / a.pj : 0)) ||
@@ -946,48 +951,39 @@
         document.getElementById(`podio-${idx + 1}-puntos`).textContent = j ? `${j.puntos} pts` : "-- pts";
       });
 
-      const cat = document.getElementById("filtro-categoria").value;
-      const filtrados = cat === "todos" ? ordenados : ordenados.filter(j => j.categoria === cat);
-
-      document.getElementById("tbodyRanking").innerHTML = filtrados.length ? filtrados.map((j, i) => {
+      document.getElementById("tbodyRanking").innerHTML = ordenados.length ? ordenados.map((j, i) => {
         const pct = j.pj > 0 ? Math.round((j.pg / j.pj) * 100) + "%" : "0%";
         const ds = j.difSets || 0;
         const dj = j.difJuegos || 0;
         return `
           <tr class="border-b border-slate-800/80 hover:bg-slate-800/40">
-            <td class="py-3 px-3 text-center font-bold text-slate-400">${i + 1}</td>
-            <td class="py-3 px-3 font-bold text-white">${j.nombre} <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded ml-1">${j.categoria || "5ta"}</span></td>
+            <td class="py-3 px-2.5 text-center font-bold text-slate-400">${i + 1}</td>
+            <td class="py-3 px-2.5 font-bold text-white">${j.nombre}</td>
+            <td class="py-3 px-2 text-right font-black text-yellow-400">${j.puntos}</td>
             <td class="py-3 px-2 text-center text-slate-300 font-semibold">${j.pj}</td>
             <td class="py-3 px-2 text-center text-emerald-400 font-bold">${j.pg}</td>
             <td class="py-3 px-2 text-center text-rose-400 font-bold">${j.pp}</td>
             <td class="py-3 px-2 text-center text-indigo-300 font-semibold">${pct}</td>
             <td class="py-3 px-2 text-center font-semibold ${ds > 0 ? "text-emerald-300" : ds < 0 ? "text-rose-300" : "text-slate-300"}">${ds > 0 ? "+" + ds : ds}</td>
-            <td class="py-3 px-2 text-center font-semibold ${dj > 0 ? "text-emerald-300" : dj < 0 ? "text-rose-300" : "text-slate-300"}">${dj > 0 ? "+" + dj : dj}</td>
-            <td class="py-3 px-4 text-right font-black text-yellow-400">${j.puntos}</td>
+            <td class="py-3 px-2.5 text-center font-semibold ${dj > 0 ? "text-emerald-300" : dj < 0 ? "text-rose-300" : "text-slate-300"}">${dj > 0 ? "+" + dj : dj}</td>
           </tr>
         `;
       }).join("") : `<tr><td colspan="9" class="py-6 text-center text-slate-500">Sin jugadores registrados.</td></tr>`;
 
-      // Control Semanal: siempre deja filtrada por defecto la última semana disponible
       const semData = window.db.controlSemanal || [];
       const semSel = document.getElementById("filtro-semana");
       const semanasUnicas = [...new Set(semData.map(x => x.semana))].sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
       const ultimaSemana = semanasUnicas[0] || "todas";
 
+      let valorSeleccionado = semSel.value;
       if (!inicializoSemanaPorDefecto && semanasUnicas.length > 0) {
-        semSel.setAttribute("data-selected", ultimaSemana);
-        inicializoSemanaPorDefecto = true;
-      }
-
-      let valorSeleccionado = semSel.value || semSel.getAttribute("data-selected") || ultimaSemana;
-      if (!semSel.value && semanasUnicas.length > 0) {
         valorSeleccionado = ultimaSemana;
+        inicializoSemanaPorDefecto = true;
       }
 
       semSel.innerHTML = `<option value="todas">Todas las semanas</option>` +
         semanasUnicas.map((s, idx) => `<option value="${s}">${s}${idx === 0 ? " (Última)" : ""}</option>`).join("");
       semSel.value = (valorSeleccionado === "todas" || semanasUnicas.includes(valorSeleccionado)) ? valorSeleccionado : ultimaSemana;
-      semSel.setAttribute("data-selected", semSel.value);
 
       const semFiltrada = semSel.value === "todas" ? semData : semData.filter(x => x.semana === semSel.value);
       document.getElementById("tbodySemanal").innerHTML = semFiltrada.length ? semFiltrada.map(c => {
@@ -1005,7 +1001,6 @@
         `;
       }).join("") : `<tr><td colspan="5" class="py-6 text-center text-slate-500">Sin registros semanales aún.</td></tr>`;
 
-      // Selects del formulario
       const opts = `<option value="">-- Seleccionar --</option>` +
         [...(window.db.jugadores || [])].sort((a, b) => a.nombre.localeCompare(b.nombre))
           .map(j => `<option value="${j.id}">${j.nombre} (${j.puntos} pts)</option>`).join("");
@@ -1016,14 +1011,13 @@
         sel.value = prev;
       });
 
-      // Historial Partidos
       document.getElementById("total-partidos-badge").textContent = (window.db.partidos || []).length;
       document.getElementById("listaPartidos").innerHTML = (window.db.partidos || []).length ? window.db.partidos.map(p => `
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-wrap justify-between items-center gap-2">
           <div>
             <div class="text-[11px] text-slate-400 flex items-center gap-2">
-              <span>Fecha: ${p.fecha}</span>
-              ${p.sorpresa === "Si" ? `<span class="bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-2 py-0.2 rounded-full font-bold">Sorpresa</span>` : ""}
+              <span>📅 ${p.fecha}</span>
+              ${p.sorpresa === "Sí" ? `<span class="bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-2 py-0.2 rounded-full font-bold">⭐ Sorpresa</span>` : ""}
               ${p.juegos ? `<span class="text-slate-300">Juegos: <strong>${p.juegos}</strong></span>` : ""}
             </div>
             <div class="text-xs md:text-sm mt-1">
@@ -1031,14 +1025,14 @@
               <span class="text-slate-500 mx-1.5">vs</span>
               <strong class="${p.ganador === "B" ? "text-emerald-400" : "text-slate-200"}">${p.parejaB}</strong>
             </div>
-            ${p.acompanantes ? `<div class="text-[11px] text-amber-400 mt-0.5">Acompanante: ${p.acompanantes}</div>` : ""}
+            ${p.acompanantes ? `<div class="text-[11px] text-amber-400 mt-0.5">⚠️ Acompañante: ${p.acompanantes}</div>` : ""}
           </div>
           <div class="flex items-center gap-2">
             <span class="bg-yellow-400 text-slate-950 font-black px-2.5 py-1 rounded-lg text-xs">${p.resultado}</span>
             <button onclick="eliminarPartido('${p.id}')" class="admin-hide bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-700 px-2 py-1 rounded-lg text-xs font-bold">X</button>
           </div>
         </div>
-      `).join("") : `<p class="text-xs text-slate-500">Aun no hay partidos registrados.</p>`;
+      `).join("") : `<p class="text-xs text-slate-500">Aún no hay partidos registrados.</p>`;
 
       if (ordenados.length) {
         const campeon = ordenados[0];
@@ -1048,22 +1042,22 @@
 
         document.getElementById("gridPremios").innerHTML = `
           <div class="bg-slate-950 border border-yellow-500/30 rounded-xl p-4">
-            <div class="text-xs text-yellow-400 font-bold uppercase">Lider del Ranking</div>
+            <div class="text-xs text-yellow-400 font-bold uppercase">🏆 Líder del Ranking</div>
             <div class="text-lg font-black text-white mt-1">${campeon.nombre}</div>
             <div class="text-xs text-slate-400">${campeon.puntos} puntos acumulados</div>
           </div>
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
-            <div class="text-xs text-sky-400 font-bold uppercase">Mas Activo en Cancha</div>
+            <div class="text-xs text-sky-400 font-bold uppercase">🔥 Más Activo en Cancha</div>
             <div class="text-lg font-black text-white mt-1">${masPJ.nombre}</div>
-            <div class="text-xs text-slate-400">${masPJ.pj} partidos validos jugados</div>
+            <div class="text-xs text-slate-400">${masPJ.pj} partidos válidos jugados</div>
           </div>
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
-            <div class="text-xs text-emerald-400 font-bold uppercase">Mas Victorias</div>
+            <div class="text-xs text-emerald-400 font-bold uppercase">⚔️ Más Victorias</div>
             <div class="text-lg font-black text-white mt-1">${masPG.nombre}</div>
             <div class="text-xs text-slate-400">${masPG.pg} partidos ganados</div>
           </div>
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
-            <div class="text-xs text-indigo-400 font-bold uppercase">Mejor Efectividad (min. 3 PJ)</div>
+            <div class="text-xs text-indigo-400 font-bold uppercase">🎯 Mejor Efectividad (mín. 3 PJ)</div>
             <div class="text-lg font-black text-white mt-1">${mejorPct.nombre}</div>
             <div class="text-xs text-slate-400">${mejorPct.pj ? Math.round((mejorPct.pg / mejorPct.pj) * 100) : 0}% de victorias</div>
           </div>
@@ -1075,7 +1069,6 @@
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-wrap justify-between items-center gap-2">
           <div>
             <strong class="text-sm text-white">${j.nombre}</strong>
-            <span class="text-xs text-slate-400 ml-1">(${j.categoria || "5ta"})</span>
             <span class="text-xs text-yellow-400 font-bold ml-2">${j.puntos} pts</span>
           </div>
           <div class="admin-hide flex items-center gap-1.5">

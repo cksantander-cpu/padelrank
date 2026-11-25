@@ -642,6 +642,9 @@
     r.onload = async (ev) => {
       try {
         const parsed = JSON.parse(ev.target.result);
+        if (!Array.isArray(parsed.jugadores) || !Array.isArray(parsed.partidos)) {
+          throw new Error('El JSON debe incluir arreglos "jugadores" y "partidos".');
+        }
         state = { ...state, ...parsed };
         recalc();
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
@@ -655,7 +658,7 @@
 
   async function initFirebase(cfg) {
     if (!cfg || !cfg.projectId) return;
-    const app = initializeApp(cfg, 'sepultureros_v45_app');
+    const app = initializeApp(cfg, 'sepultureros_v45_final_app');
     fsDb = getFirestore(app);
     const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
     if (snap.exists()) {

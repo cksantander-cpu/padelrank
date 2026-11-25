@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PadelRank v2.1 - Chile</title>
+  <title>🎾 PadelRank v2.3 - Chile</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
@@ -36,7 +36,7 @@
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-2">
-          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">v2.1 OFICIAL</span>
+          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">🎾 v2.3 OFICIAL</span>
           <span id="dbStatus" class="text-xs bg-slate-900/90 border border-slate-700 text-amber-400 font-bold px-3 py-0.5 rounded-full">
             Conectando a Firebase...
           </span>
@@ -305,7 +305,7 @@
 
     <div id="tab-reglas" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs md:text-sm text-slate-300">
-        <h2 class="text-lg font-bold text-yellow-400">Reglas Oficiales (Logica Excel v2.1)</h2>
+        <h2 class="text-lg font-bold text-yellow-400">Reglas Oficiales (Lógica Excel v2.3)</h2>
         <ul class="list-disc list-inside space-y-1.5">
           <li><strong>Rating inicial:</strong> Todos los jugadores parten con <strong>100 puntos</strong>.</li>
           <li><strong>Victoria 2-0:</strong> +100 pts para cada ganador / +20 pts para cada perdedor.</li>
@@ -448,6 +448,10 @@
     }
 
     function cambiarTab(tabId) {
+      const adminOnlyTabs = ["tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"];
+      if (!isAdmin && adminOnlyTabs.includes(tabId)) {
+        tabId = "tab-ranking";
+      }
       if (tabId === "tab-semanal") {
         const semSel = document.getElementById("filtro-semana");
         const semData = window.db.controlSemanal || [];
@@ -484,6 +488,22 @@
       }
     }
 
+    function aplicarVisibilidadTabsPorRol() {
+      const tabsAdmin = ["tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"];
+      tabsAdmin.forEach(id => {
+        const btn = document.getElementById("btn-" + id);
+        const panel = document.getElementById(id);
+        if (btn) btn.classList.toggle("hidden", !isAdmin);
+        if (!isAdmin && panel && !panel.classList.contains("hidden")) {
+          panel.classList.add("hidden");
+          document.getElementById("tab-ranking").classList.remove("hidden");
+          const btnRank = document.getElementById("btn-tab-ranking");
+          btnRank.classList.add("border-yellow-400", "text-yellow-400");
+          btnRank.classList.remove("border-transparent", "text-slate-400");
+        }
+      });
+    }
+
     function activarModoAdmin(nombre) {
       isAdmin = true;
       localStorage.setItem("padelrank_admin_user", nombre);
@@ -492,6 +512,7 @@
       document.getElementById("btn-login").classList.add("hidden");
       document.getElementById("btn-logout").classList.remove("hidden");
       document.getElementById("usuario-activo").textContent = nombre;
+      aplicarVisibilidadTabsPorRol();
       if (window.renderAll) window.renderAll();
     }
 
@@ -502,8 +523,9 @@
       document.getElementById("alerta-espectador").classList.remove("hidden");
       document.getElementById("btn-login").classList.remove("hidden");
       document.getElementById("btn-logout").classList.add("hidden");
+      aplicarVisibilidadTabsPorRol();
       if (window.renderAll) window.renderAll();
-      showToast("Volviste a Modo Espectador");
+      showToast("Volviste a Modo Espectador (solo Ranking y Control Semanal)");
     }
 
     function parseFechaToDate(fechaStr) {
@@ -641,6 +663,18 @@
         });
       });
       window.db.controlSemanal = controlArr;
+
+      // Aplicar ajustes manuales de estadísticas si fueron guardados en db.ajustesStats
+      const ajustes = window.db.ajustesStats || {};
+      jugadores.forEach(j => {
+        const aj = ajustes[j.nombre];
+        if (aj) {
+          if (typeof aj.pp === "number") j.pp = aj.pp;
+          if (typeof aj.pg === "number") j.pg = aj.pg;
+          if (typeof aj.pj === "number") j.pj = aj.pj;
+          if (typeof aj.puntos === "number") j.puntos = aj.puntos;
+        }
+      });
 
       if (persist && window.guardarFirebase) {
         window.guardarFirebase();
@@ -814,7 +848,7 @@
       const blob = new Blob([JSON.stringify(window.db, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `padelrank_v2_1_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `padelrank_v2_3_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
     }
 
@@ -889,14 +923,15 @@
         }));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(partRows), "Partidos");
 
-        XLSX.writeFile(wb, `PadelRank_v2_1_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
-        showToast("Excel v2.1 descargado correctamente");
+        XLSX.writeFile(wb, `PadelRank_v2_3_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        showToast("Excel v2.3 descargado correctamente");
       } catch (err) {
         showToast("Error al generar Excel", "err");
       }
     }
 
     window.renderAll = function() {
+      if (typeof aplicarVisibilidadTabsPorRol === "function") aplicarVisibilidadTabsPorRol();
       const ordenados = [...(window.db.jugadores || [])].sort((a, b) =>
         (b.puntos - a.puntos) ||
         ((b.pj ? b.pg / b.pj : 0) - (a.pj ? a.pg / a.pj : 0)) ||

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PadelRank v2.0 - Chile</title>
+  <title>PadelRank v2.1 - Chile</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
@@ -36,7 +36,7 @@
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-2">
-          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">v2.0 OFICIAL</span>
+          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">v2.1 OFICIAL</span>
           <span id="dbStatus" class="text-xs bg-slate-900/90 border border-slate-700 text-amber-400 font-bold px-3 py-0.5 rounded-full">
             Conectando a Firebase...
           </span>
@@ -44,7 +44,7 @@
         <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight">
           PadelRank <span class="text-yellow-400">Chile</span>
         </h1>
-        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual dinamico, control semanal y exportacion a Excel.</p>
+        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual, control semanal (max. 2 partidos) y exportacion a Excel.</p>
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -68,6 +68,7 @@
 
   <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
 
+    <!-- PODIO TOP 3 -->
     <section class="grid grid-cols-3 gap-2.5 md:gap-5 items-end pt-2">
       <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-36 md:h-44">
         <div class="w-11 h-11 md:w-16 md:h-16 rounded-full bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-base md:text-xl font-black text-slate-200 shadow mb-1.5">#2</div>
@@ -89,28 +90,36 @@
       </div>
     </section>
 
+    <!-- NAVEGACIÓN -->
     <nav class="flex border-b border-slate-800 gap-1 overflow-x-auto">
       <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-yellow-400 text-yellow-400 whitespace-nowrap">Ranking</button>
+      <button onclick="cambiarTab('tab-semanal')" id="btn-tab-semanal" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Control Semanal</button>
       <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Partidos (2v2)</button>
       <button onclick="cambiarTab('tab-premios')" id="btn-tab-premios" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Premios</button>
       <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Jugadores</button>
       <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Reglas y Respaldo</button>
     </nav>
 
+    <!-- TAB 1: RANKING -->
     <div id="tab-ranking" class="space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-lg font-bold text-white">Tabla General Individual</h2>
-            <p class="text-xs text-slate-400">Ordenado por Puntos, % Victorias, PG, Dif. Sets y Dif. Juegos.</p>
+            <p class="text-xs text-slate-400">PJ (Jugados), PG (Ganados), PP (Perdidos), Dif. Sets, Dif. Juegos y Puntaje.</p>
           </div>
-          <select id="filtro-categoria" onchange="renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
-            <option value="todos">Todas las categorias</option>
-            <option value="3ra">3ra Categoria</option>
-            <option value="4ta">4ta Categoria</option>
-            <option value="5ta">5ta Categoria</option>
-            <option value="6ta">6ta Categoria</option>
-          </select>
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="recalcularTodoDesdePartidos()" class="admin-hide bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold">
+              Recalcular Sets y Juegos
+            </button>
+            <select id="filtro-categoria" onchange="renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
+              <option value="todos">Todas las categorias</option>
+              <option value="3ra">3ra Categoria</option>
+              <option value="4ta">4ta Categoria</option>
+              <option value="5ta">5ta Categoria</option>
+              <option value="6ta">6ta Categoria</option>
+            </select>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -134,6 +143,36 @@
       </div>
     </div>
 
+    <!-- TAB 2: CONTROL SEMANAL -->
+    <div id="tab-semanal" class="hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-yellow-400">Control Semanal de Partidos (Maximo 2 validos por semana)</h2>
+            <p class="text-xs text-slate-400">Desde el 3er partido de la semana el jugador participa como Acompanante (0 pts).</p>
+          </div>
+          <select id="filtro-semana" onchange="renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
+            <option value="todas">Todas las semanas</option>
+          </select>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm">
+            <thead>
+              <tr class="bg-slate-950 text-slate-400 uppercase text-[11px] border-b border-slate-800">
+                <th class="py-3 px-3">Semana</th>
+                <th class="py-3 px-3">Jugador</th>
+                <th class="py-3 px-2 text-center">Partidos Validos</th>
+                <th class="py-3 px-2 text-center">Limite</th>
+                <th class="py-3 px-4 text-right">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tbodySemanal"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PARTIDOS -->
     <div id="tab-partidos" class="hidden space-y-6">
       <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
         <div class="flex flex-wrap justify-between items-center gap-2">
@@ -266,7 +305,7 @@
 
     <div id="tab-reglas" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs md:text-sm text-slate-300">
-        <h2 class="text-lg font-bold text-yellow-400">Reglas Oficiales (Logica Excel v2.0)</h2>
+        <h2 class="text-lg font-bold text-yellow-400">Reglas Oficiales (Logica Excel v2.1)</h2>
         <ul class="list-disc list-inside space-y-1.5">
           <li><strong>Rating inicial:</strong> Todos los jugadores parten con <strong>100 puntos</strong>.</li>
           <li><strong>Victoria 2-0:</strong> +100 pts para cada ganador / +20 pts para cada perdedor.</li>
@@ -340,6 +379,7 @@
       jugadores: [],
       equipos: [],
       partidos: [],
+      controlSemanal: [],
       usuarios: [
         { id: "1", nombre: "Cesario", rol: "Admin", activo: true },
         { id: "2", nombre: "Mauricio Hernandez", rol: "Admin", activo: true }
@@ -373,6 +413,10 @@
       if (snap.exists() && snap.data().payload) {
         const parsed = JSON.parse(snap.data().payload);
         window.db = { ...window.db, ...parsed };
+        const hasDiff = (window.db.jugadores || []).some(j => (j.difSets || 0) !== 0 || (j.difJuegos || 0) !== 0);
+        if (!hasDiff && (window.db.partidos || []).length > 0 && typeof window.recalcularStatsInterno === "function") {
+          window.recalcularStatsInterno(false);
+        }
       }
       if (typeof window.renderAll === "function") {
         window.renderAll();
@@ -404,7 +448,7 @@
     }
 
     function cambiarTab(tabId) {
-      ["tab-ranking", "tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"].forEach(id => {
+      ["tab-ranking", "tab-semanal", "tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"].forEach(id => {
         document.getElementById(id).classList.add("hidden");
         const btn = document.getElementById("btn-" + id);
         btn.classList.remove("border-yellow-400", "text-yellow-400");
@@ -453,30 +497,160 @@
       showToast("Volviste a Modo Espectador");
     }
 
-    function obtenerClaveSemana(fechaStr) {
-      const parts = (fechaStr || "").split("-");
-      let d;
+    function parseFechaToDate(fechaStr) {
+      const fClean = (fechaStr || "").split(" ")[0].trim();
+      const parts = fClean.split("-");
       if (parts.length === 3 && parts[0].length === 4) {
-        d = new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])));
-      } else if (parts.length === 3) {
-        d = new Date(Date.UTC(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])));
-      } else {
-        d = new Date();
+        return new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])));
       }
+      if (parts.length === 3) {
+        return new Date(Date.UTC(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])));
+      }
+      return new Date();
+    }
+
+    function obtenerClaveSemana(fechaStr) {
+      const d = parseFechaToDate(fechaStr);
       const dayNum = d.getUTCDay() || 7;
       d.setUTCDate(d.getUTCDate() + 4 - dayNum);
       const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
       const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-      return `${d.getUTCFullYear()}-W${weekNo}`;
+      return `${d.getUTCFullYear()}-S${weekNo}`;
+    }
+
+    function parseMarcadorJuegos(p) {
+      if (p.juegos && p.juegos.includes("-")) {
+        const jParts = p.juegos.split("-").map(x => parseInt(x.trim()));
+        if (!isNaN(jParts[0]) && !isNaN(jParts[1])) return { jA: jParts[0], jB: jParts[1] };
+      }
+      const match = (p.fecha || "").match(/\(([^)]+)\)/);
+      if (match) {
+        let jA = 0, jB = 0;
+        match[1].split("/").forEach(setStr => {
+          const clean = setStr.replace(".", "-");
+          const g = clean.split("-").map(n => parseInt(n.trim()));
+          if (g.length === 2 && !isNaN(g[0]) && !isNaN(g[1])) {
+            jA += g[0];
+            jB += g[1];
+          }
+        });
+        if (jA > 0 || jB > 0) return { jA, jB };
+      }
+      return { jA: 0, jB: 0 };
+    }
+
+    window.recalcularStatsInterno = function(persist = true) {
+      const jugadores = window.db.jugadores || [];
+      if (!jugadores.length) return;
+
+      jugadores.forEach(j => {
+        j.puntos = 100;
+        j.pj = 0;
+        j.pg = 0;
+        j.pp = 0;
+        j.difSets = 0;
+        j.difJuegos = 0;
+      });
+
+      const crono = [...(window.db.partidos || [])].sort((a, b) => parseFechaToDate(a.fecha) - parseFechaToDate(b.fecha));
+      const weekCounts = {};
+
+      crono.forEach(p => {
+        const setsParts = (p.resultado || "0 - 0").split("-").map(x => parseInt(x.trim()) || 0);
+        const setsA = setsParts[0] || 0;
+        const setsB = setsParts[1] || 0;
+        const { jA, jB } = parseMarcadorJuegos(p);
+        const ganaA = p.ganador === "A" || setsA > setsB;
+        const esWO = p.wo === "Si";
+
+        const namesA = (p.parejaA || "").split("/").map(s => s.trim()).filter(Boolean);
+        const namesB = (p.parejaB || "").split("/").map(s => s.trim()).filter(Boolean);
+
+        const getByName = n => jugadores.find(x => x.nombre.toLowerCase() === n.toLowerCase());
+        const pA_objs = namesA.map(getByName).filter(Boolean);
+        const pB_objs = namesB.map(getByName).filter(Boolean);
+
+        const promA = pA_objs.length ? pA_objs.reduce((acc, x) => acc + x.puntos, 0) / pA_objs.length : 100;
+        const promB = pB_objs.length ? pB_objs.reduce((acc, x) => acc + x.puntos, 0) / pB_objs.length : 100;
+
+        let baseWin = 100, baseLoss = 20;
+        if (esWO) { baseWin = 100; baseLoss = 0; }
+        else if ((setsA === 2 && setsB === 1) || (setsB === 2 && setsA === 1)) { baseWin = 80; baseLoss = 40; }
+
+        const esSorpresa = (ganaA && promA < promB) || (!ganaA && promB < promA);
+        p.sorpresa = esSorpresa ? "Si" : "No";
+        if (jA > 0 || jB > 0) p.juegos = `${jA} - ${jB}`;
+
+        const ptsWin = baseWin + (esSorpresa ? 30 : 0);
+        const ptsLoss = baseLoss - (esSorpresa ? 30 : 0);
+        const semKey = obtenerClaveSemana(p.fecha);
+        const acomp = [];
+
+        const applySide = (list, sideIsA) => {
+          const isWin = sideIsA ? ganaA : !ganaA;
+          const sMas = sideIsA ? setsA : setsB;
+          const sMen = sideIsA ? setsB : setsA;
+          const gMas = sideIsA ? jA : jB;
+          const gMen = sideIsA ? jB : jA;
+
+          list.forEach(jug => {
+            const k = `${jug.nombre}|${semKey}`;
+            const cnt = weekCounts[k] || 0;
+            if (cnt >= 2) {
+              acomp.push(jug.nombre);
+              return;
+            }
+            weekCounts[k] = cnt + 1;
+            jug.pj += 1;
+            if (isWin) {
+              jug.pg += 1;
+              jug.puntos = Math.max(0, jug.puntos + ptsWin);
+            } else {
+              jug.pp += 1;
+              jug.puntos = Math.max(0, jug.puntos + ptsLoss);
+            }
+            jug.difSets += (sMas - sMen);
+            jug.difJuegos += (gMas - gMen);
+          });
+        };
+
+        applySide(pA_objs, true);
+        applySide(pB_objs, false);
+        p.acompanantes = acomp.join(", ");
+      });
+
+      const controlArr = [];
+      Object.keys(weekCounts).sort().forEach(k => {
+        const [nm, sem] = k.split("|");
+        const cnt = weekCounts[k];
+        controlArr.push({
+          semana: sem,
+          jugador: nm,
+          partidosValidos: cnt,
+          limite: 2,
+          estado: cnt >= 2 ? "LIMITE (2/2)" : `OK (${cnt}/2)`
+        });
+      });
+      window.db.controlSemanal = controlArr;
+
+      if (persist && window.guardarFirebase) {
+        window.guardarFirebase();
+      }
+    };
+
+    function recalcularTodoDesdePartidos() {
+      if (!isAdmin) return showToast("Solo Admins pueden recalcular", "err");
+      window.recalcularStatsInterno(true);
+      window.renderAll();
+      showToast("Estadisticas, Dif. Sets y Dif. Juegos recalculados");
     }
 
     function contarPartidosSemanaJugador(nombreJugador, semanaClave) {
       let count = 0;
       (window.db.partidos || []).forEach(p => {
-        const fRaw = (p.fecha || "").split(" ")[0];
-        if (obtenerClaveSemana(fRaw) === semanaClave) {
+        if (obtenerClaveSemana(p.fecha) === semanaClave) {
           const texto = `${p.parejaA} / ${p.parejaB}`;
-          if (texto.includes(nombreJugador)) count++;
+          if (texto.toLowerCase().includes(nombreJugador.toLowerCase())) count++;
         }
       });
       return count;
@@ -498,7 +672,7 @@
         return;
       }
 
-      const getJ = id => window.db.jugadores.find(x => x.id === id);
+      const getJ = id => (window.db.jugadores || []).find(x => x.id === id);
       const jA1 = getJ(a1), jA2 = getJ(a2), jB1 = getJ(b1), jB2 = getJ(b2);
       if (!jA1 || !jA2 || !jB1 || !jB2) return;
 
@@ -545,48 +719,8 @@
       if (new Set([a1, a2, b1, b2]).size !== 4) return showToast("No repitas jugadores", "err");
       if (setsA === setsB) return showToast("No puede haber empate en sets", "err");
 
-      const getJ = id => window.db.jugadores.find(x => x.id === id);
+      const getJ = id => (window.db.jugadores || []).find(x => x.id === id);
       const jA1 = getJ(a1), jA2 = getJ(a2), jB1 = getJ(b1), jB2 = getJ(b2);
-
-      const promA = (jA1.puntos + jA2.puntos) / 2;
-      const promB = (jB1.puntos + jB2.puntos) / 2;
-      const ganaA = setsA > setsB;
-
-      let baseWin = 100, baseLoss = 20;
-      if (esWO) { baseWin = 100; baseLoss = 0; }
-      else if ((setsA === 2 && setsB === 1) || (setsB === 2 && setsA === 1)) { baseWin = 80; baseLoss = 40; }
-
-      const esSorpresa = (ganaA && promA < promB) || (!ganaA && promB < promA);
-      const ptsGanador = baseWin + (esSorpresa ? 30 : 0);
-      const ptsPerdedor = baseLoss - (esSorpresa ? 30 : 0);
-
-      const sem = obtenerClaveSemana(fecha);
-      const acompList = [];
-
-      const aplicarEstadisticas = (jug, esGanador, sMas, sMenos, jMas, jMenos) => {
-        jug.difSets = (jug.difSets || 0);
-        jug.difJuegos = (jug.difJuegos || 0);
-        if (contarPartidosSemanaJugador(jug.nombre, sem) >= 2) {
-          acompList.push(jug.nombre);
-          return;
-        }
-        jug.pj = (jug.pj || 0) + 1;
-        if (esGanador) {
-          jug.pg = (jug.pg || 0) + 1;
-          jug.puntos = Math.max(0, (jug.puntos || 0) + ptsGanador);
-        } else {
-          jug.pp = (jug.pp || 0) + 1;
-          jug.puntos = Math.max(0, (jug.puntos || 0) + ptsPerdedor);
-        }
-        jug.difSets += (sMas - sMenos);
-        jug.difJuegos += (jMas - jMenos);
-      };
-
-      aplicarEstadisticas(jA1, ganaA, setsA, setsB, juegosA, juegosB);
-      aplicarEstadisticas(jA2, ganaA, setsA, setsB, juegosA, juegosB);
-      aplicarEstadisticas(jB1, !ganaA, setsB, setsA, juegosB, juegosA);
-      aplicarEstadisticas(jB2, !ganaA, setsB, setsA, juegosB, juegosA);
-
       const partsFecha = fecha.split("-");
       const fechaFmt = partsFecha.length === 3 ? `${partsFecha[2]}-${partsFecha[1]}-${partsFecha[0]}` : fecha;
 
@@ -597,14 +731,14 @@
         parejaB: `${jB1.nombre} / ${jB2.nombre}`,
         resultado: `${setsA} - ${setsB}`,
         juegos: `${juegosA} - ${juegosB}`,
-        ganador: ganaA ? "A" : "B",
-        sorpresa: esSorpresa ? "Si" : "No",
+        ganador: setsA > setsB ? "A" : "B",
+        sorpresa: "No",
         wo: esWO ? "Si" : "No",
-        acompanantes: acompList.join(", ")
+        acompanantes: ""
       });
 
+      window.recalcularStatsInterno(true);
       window.renderAll();
-      window.guardarFirebase();
       document.getElementById("obsPartido").value = "";
       showToast("Partido guardado y ranking actualizado");
     }
@@ -613,9 +747,9 @@
       if (!isAdmin) return;
       if (!confirm("Eliminar este partido del historial?")) return;
       window.db.partidos = window.db.partidos.filter(p => p.id !== id);
+      window.recalcularStatsInterno(true);
       window.renderAll();
-      window.guardarFirebase();
-      showToast("Partido eliminado");
+      showToast("Partido eliminado y ranking recalculado");
     }
 
     function agregarJugador(e) {
@@ -626,7 +760,7 @@
       const puntos = parseInt(document.getElementById("newJugPts").value) || 100;
       if (!nombre) return;
 
-      if (window.db.jugadores.some(j => j.nombre.toLowerCase() === nombre.toLowerCase())) {
+      if ((window.db.jugadores || []).some(j => j.nombre.toLowerCase() === nombre.toLowerCase())) {
         return showToast("Ese jugador ya existe", "err");
       }
 
@@ -650,7 +784,7 @@
 
     function ajustarPuntos(id, delta) {
       if (!isAdmin) return;
-      const j = window.db.jugadores.find(x => x.id === id);
+      const j = (window.db.jugadores || []).find(x => x.id === id);
       if (!j) return;
       j.puntos = Math.max(0, (j.puntos || 0) + delta);
       window.renderAll();
@@ -661,7 +795,7 @@
     function eliminarJugador(id) {
       if (!isAdmin) return;
       if (!confirm("Seguro que deseas eliminar este jugador?")) return;
-      window.db.jugadores = window.db.jugadores.filter(x => x.id !== id);
+      window.db.jugadores = (window.db.jugadores || []).filter(x => x.id !== id);
       window.renderAll();
       window.guardarFirebase();
       showToast("Jugador eliminado");
@@ -671,7 +805,7 @@
       const blob = new Blob([JSON.stringify(window.db, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `padelrank_v2_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `padelrank_v2_1_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
     }
 
@@ -685,6 +819,9 @@
           const data = JSON.parse(e.target.result);
           if (data.jugadores) {
             window.db = { ...window.db, ...data };
+            if ((window.db.partidos || []).length > 0 && typeof window.recalcularStatsInterno === "function") {
+              window.recalcularStatsInterno(false);
+            }
             window.renderAll();
             window.guardarFirebase();
             showToast("Base de datos restaurada en Firebase");
@@ -711,7 +848,7 @@
           "Pos": idx + 1,
           "Jugador": j.nombre,
           "Categoria": j.categoria || "5ta",
-          "Rating": j.puntos,
+          "Puntos": j.puntos,
           "PJ": j.pj,
           "PG": j.pg,
           "PP": j.pp,
@@ -720,6 +857,15 @@
           "Dif Juegos": j.difJuegos || 0
         }));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rankRows), "Ranking Individual");
+
+        const semRows = (window.db.controlSemanal || []).map(c => ({
+          "Semana": c.semana,
+          "Jugador": c.jugador,
+          "Partidos Validos": c.partidosValidos,
+          "Limite": c.limite,
+          "Estado": c.estado
+        }));
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(semRows), "Control Semanal");
 
         const partRows = (window.db.partidos || []).map((p, idx) => ({
           "N": (window.db.partidos || []).length - idx,
@@ -734,8 +880,8 @@
         }));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(partRows), "Partidos");
 
-        XLSX.writeFile(wb, `PadelRank_v2_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
-        showToast("Excel descargado correctamente");
+        XLSX.writeFile(wb, `PadelRank_v2_1_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        showToast("Excel v2.1 descargado correctamente");
       } catch (err) {
         showToast("Error al generar Excel", "err");
       }
@@ -767,17 +913,43 @@
           <tr class="border-b border-slate-800/80 hover:bg-slate-800/40">
             <td class="py-3 px-3 text-center font-bold text-slate-400">${i + 1}</td>
             <td class="py-3 px-3 font-bold text-white">${j.nombre} <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded ml-1">${j.categoria || "5ta"}</span></td>
-            <td class="py-3 px-2 text-center text-slate-300">${j.pj}</td>
+            <td class="py-3 px-2 text-center text-slate-300 font-semibold">${j.pj}</td>
             <td class="py-3 px-2 text-center text-emerald-400 font-bold">${j.pg}</td>
             <td class="py-3 px-2 text-center text-rose-400 font-bold">${j.pp}</td>
             <td class="py-3 px-2 text-center text-indigo-300 font-semibold">${pct}</td>
-            <td class="py-3 px-2 text-center text-slate-300">${ds > 0 ? "+" + ds : ds}</td>
-            <td class="py-3 px-2 text-center text-slate-300">${dj > 0 ? "+" + dj : dj}</td>
+            <td class="py-3 px-2 text-center font-semibold ${ds > 0 ? "text-emerald-300" : ds < 0 ? "text-rose-300" : "text-slate-300"}">${ds > 0 ? "+" + ds : ds}</td>
+            <td class="py-3 px-2 text-center font-semibold ${dj > 0 ? "text-emerald-300" : dj < 0 ? "text-rose-300" : "text-slate-300"}">${dj > 0 ? "+" + dj : dj}</td>
             <td class="py-3 px-4 text-right font-black text-yellow-400">${j.puntos}</td>
           </tr>
         `;
       }).join("") : `<tr><td colspan="9" class="py-6 text-center text-slate-500">Sin jugadores registrados.</td></tr>`;
 
+      // Control Semanal
+      const semData = window.db.controlSemanal || [];
+      const semSel = document.getElementById("filtro-semana");
+      const prevSem = semSel.value || "todas";
+      const semanasUnicas = [...new Set(semData.map(x => x.semana))];
+      semSel.innerHTML = `<option value="todas">Todas las semanas</option>` +
+        semanasUnicas.map(s => `<option value="${s}">${s}</option>`).join("");
+      semSel.value = semanasUnicas.includes(prevSem) ? prevSem : "todas";
+
+      const semFiltrada = semSel.value === "todas" ? semData : semData.filter(x => x.semana === semSel.value);
+      document.getElementById("tbodySemanal").innerHTML = semFiltrada.length ? semFiltrada.map(c => {
+        const esLim = c.partidosValidos >= 2;
+        return `
+          <tr class="border-b border-slate-800/80 hover:bg-slate-800/40">
+            <td class="py-2.5 px-3 text-slate-300 font-semibold">${c.semana}</td>
+            <td class="py-2.5 px-3 font-bold text-white">${c.jugador}</td>
+            <td class="py-2.5 px-2 text-center font-bold text-yellow-300">${c.partidosValidos}</td>
+            <td class="py-2.5 px-2 text-center text-slate-400">${c.limite}</td>
+            <td class="py-2.5 px-4 text-right">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${esLim ? "bg-amber-500/20 text-amber-300 border border-amber-500/40" : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"}">${c.estado}</span>
+            </td>
+          </tr>
+        `;
+      }).join("") : `<tr><td colspan="5" class="py-6 text-center text-slate-500">Sin registros semanales aun.</td></tr>`;
+
+      // Selects del formulario
       const opts = `<option value="">-- Seleccionar --</option>` +
         [...(window.db.jugadores || [])].sort((a, b) => a.nombre.localeCompare(b.nombre))
           .map(j => `<option value="${j.id}">${j.nombre} (${j.puntos} pts)</option>`).join("");
@@ -788,6 +960,7 @@
         sel.value = prev;
       });
 
+      // Historial Partidos
       document.getElementById("total-partidos-badge").textContent = (window.db.partidos || []).length;
       document.getElementById("listaPartidos").innerHTML = (window.db.partidos || []).length ? window.db.partidos.map(p => `
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-wrap justify-between items-center gap-2">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎾 PadelRank v2.3 - Chile</title>
+  <title>🎾 PadelRank v3.0 - Chile</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
@@ -36,7 +36,7 @@
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-2">
-          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">🎾 v2.3 OFICIAL</span>
+          <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">🎾 v3.0 OFICIAL</span>
           <span id="dbStatus" class="text-xs bg-slate-900/90 border border-slate-700 text-amber-400 font-bold px-3 py-0.5 rounded-full">
             ⏳ Conectando a Firebase...
           </span>
@@ -299,7 +299,7 @@
     <!-- TAB 6: REGLAS Y RESPALDO -->
     <div id="tab-reglas" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs md:text-sm text-slate-300">
-        <h2 class="text-lg font-bold text-yellow-400">📜 Reglas Oficiales (Lógica Excel v2.3)</h2>
+        <h2 class="text-lg font-bold text-yellow-400">📜 Reglas Oficiales (Lógica Excel v3.0)</h2>
         <ul class="list-disc list-inside space-y-1.5">
           <li><strong>Rating inicial:</strong> Todos los jugadores parten con <strong>100 puntos</strong>.</li>
           <li><strong>Victoria 2-0:</strong> +100 pts para cada ganador / +20 pts para cada perdedor.</li>
@@ -370,7 +370,7 @@
     const firestore = getFirestore(app);
     const docRef = doc(firestore, "padelrank_data", "estado_actual");
 
-    const AJUSTE_MAURO_DEFAULT = { pp: 3, pg: 9, pj: 12, puntos: 950 };
+    const AJUSTE_MAURO_V3 = { pp: 3, pg: 9, pj: 12, puntos: 950 };
 
     window.db = {
       jugadores: [],
@@ -378,7 +378,7 @@
       partidos: [],
       controlSemanal: [],
       ajustesStats: {
-        "Mauricio Hernández": { ...AJUSTE_MAURO_DEFAULT }
+        "Mauricio Hernández": { ...AJUSTE_MAURO_V3 }
       },
       usuarios: [
         { id: "1", nombre: "César", rol: "Admin", activo: true },
@@ -412,14 +412,18 @@
 
       if (snap.exists() && snap.data().payload) {
         const parsed = JSON.parse(snap.data().payload);
+        const ajustesRemotos = { ...(parsed.ajustesStats || {}) };
+        delete ajustesRemotos["Mauricio Hernández"];
+
         window.db = {
           ...window.db,
           ...parsed,
           ajustesStats: {
-            "Mauricio Hernández": { ...AJUSTE_MAURO_DEFAULT },
-            ...(parsed.ajustesStats || {})
+            ...ajustesRemotos,
+            "Mauricio Hernández": { ...AJUSTE_MAURO_V3 }
           }
         };
+
         if (typeof window.recalcularStatsInterno === "function") {
           window.recalcularStatsInterno(false);
         }
@@ -673,8 +677,8 @@
       window.db.controlSemanal = controlArr;
 
       const ajustes = {
-        "Mauricio Hernández": { pp: 3, pg: 9, pj: 12, puntos: 950 },
-        ...(window.db.ajustesStats || {})
+        ...(window.db.ajustesStats || {}),
+        "Mauricio Hernández": { pp: 3, pg: 9, pj: 12, puntos: 950 }
       };
       jugadores.forEach(j => {
         const aj = ajustes[j.nombre];
@@ -695,7 +699,7 @@
       if (!isAdmin) return showToast("Solo Admins pueden recalcular", "err");
       window.recalcularStatsInterno(true);
       window.renderAll();
-      showToast("Estadísticas, Dif. Sets y Dif. Juegos recalculados");
+      showToast("Estadísticas v3.0 recalculadas y guardadas en Firebase");
     }
 
     function contarPartidosSemanaJugador(nombreJugador, semanaClave) {
@@ -839,10 +843,16 @@
       if (!isAdmin) return;
       const j = (window.db.jugadores || []).find(x => x.id === id);
       if (!j) return;
-      j.puntos = Math.max(0, (j.puntos || 0) + delta);
+      const nuevoPts = Math.max(0, (j.puntos || 0) + delta);
+      j.puntos = nuevoPts;
+      window.db.ajustesStats = window.db.ajustesStats || {};
+      window.db.ajustesStats[j.nombre] = {
+        ...(window.db.ajustesStats[j.nombre] || {}),
+        puntos: nuevoPts
+      };
       window.renderAll();
       window.guardarFirebase();
-      showToast(`Puntos actualizados (${delta > 0 ? "+" : ""}${delta})`);
+      showToast(`Puntos de ${j.nombre}: ${nuevoPts} pts`);
     }
 
     function eliminarJugador(id) {
@@ -858,7 +868,7 @@
       const blob = new Blob([JSON.stringify(window.db, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `padelrank_v2_3_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `padelrank_v3_0_${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
     }
 
@@ -932,8 +942,8 @@
         }));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(partRows), "Partidos");
 
-        XLSX.writeFile(wb, `PadelRank_v2_3_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
-        showToast("Excel v2.3 descargado correctamente");
+        XLSX.writeFile(wb, `PadelRank_v3_0_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        showToast("Excel v3.0 descargado correctamente");
       } catch (err) {
         showToast("Error al generar Excel", "err");
       }

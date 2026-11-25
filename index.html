@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎾 PadelRank v2.0 - Chile</title>
+  <title>PadelRank v2.0 - Chile</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
@@ -13,7 +13,7 @@
       font-family: system-ui, -apple-system, sans-serif;
     }
     .hero-banner {
-      background: linear-gradient(180deg, rgba(2,6,23,0.35) 0%, rgba(2,6,23,0.97) 100%),
+      background: linear-gradient(180deg, rgba(2,6,23,0.4) 0%, rgba(2,6,23,0.97) 100%),
                   url('https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?q=80&w=1200&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
@@ -23,7 +23,6 @@
     body.espectador .admin-only {
       opacity: 0.45;
       pointer-events: none;
-      position: relative;
       user-select: none;
     }
     body.espectador .admin-hide {
@@ -33,93 +32,84 @@
 </head>
 <body class="espectador pb-14">
 
-  <!-- ENCABEZADO HERO CON IMAGEN -->
   <header class="hero-banner border-b border-slate-800 px-4 py-6 md:px-8">
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-2">
           <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">v2.0 OFICIAL</span>
           <span id="dbStatus" class="text-xs bg-slate-900/90 border border-slate-700 text-amber-400 font-bold px-3 py-0.5 rounded-full">
-            ⏳ Conectando a Firebase...
+            Conectando a Firebase...
           </span>
         </div>
-        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight flex items-center gap-2">
-          🎾 PadelRank <span class="text-yellow-400">Chile</span>
+        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight">
+          PadelRank <span class="text-yellow-400">Chile</span>
         </h1>
-        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual dinámico, control semanal y exportación a Excel.</p>
+        <p class="text-slate-300 text-xs md:text-sm mt-1">Ranking individual dinamico, control semanal y exportacion a Excel.</p>
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <button onclick="exportarAExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm flex items-center gap-1.5 shadow-lg transition">
-          📥 Descargar Excel (.xlsx)
+        <button onclick="exportarAExcel()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm shadow-lg transition">
+          Descargar Excel (.xlsx)
         </button>
-        <button id="btn-login" onclick="abrirModalLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm flex items-center gap-1.5 shadow-lg transition">
-          🔑 Entrar como Admin
+        <button id="btn-login" onclick="abrirModalLogin()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm shadow-lg transition">
+          Entrar como Admin
         </button>
-        <button id="btn-logout" onclick="cerrarSesion()" class="hidden bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm flex items-center gap-1.5 shadow-lg transition">
-          🚪 Salir (<span id="usuario-activo"></span>)
+        <button id="btn-logout" onclick="cerrarSesion()" class="hidden bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 px-3.5 rounded-lg text-xs md:text-sm shadow-lg transition">
+          Salir (<span id="usuario-activo"></span>)
         </button>
       </div>
     </div>
   </header>
 
-  <!-- BANNER MODO ESPECTADOR -->
   <div id="alerta-espectador" class="bg-slate-900 border-b border-slate-800 text-slate-300 px-4 py-2 text-center text-xs flex justify-center items-center gap-2 flex-wrap">
-    <span>👀 Estás en <strong>Modo Espectador</strong> (solo lectura).</span>
-    <button onclick="abrirModalLogin()" class="text-yellow-400 font-bold underline hover:text-yellow-300">Iniciar sesión Admin (César / Mauro)</button>
+    <span>Estas en <strong>Modo Espectador</strong> (solo lectura).</span>
+    <button onclick="abrirModalLogin()" class="text-yellow-400 font-bold underline hover:text-yellow-300">Iniciar sesion Admin (Cesar / Mauro)</button>
   </div>
 
-  <!-- CONTENEDOR PRINCIPAL -->
   <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
 
-    <!-- PODIO TOP 3 -->
     <section class="grid grid-cols-3 gap-2.5 md:gap-5 items-end pt-2">
-      <!-- 2DO LUGAR -->
       <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-36 md:h-44">
-        <div class="w-11 h-11 md:w-16 md:h-16 rounded-full bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-xl md:text-2xl shadow mb-1.5">🥈</div>
+        <div class="w-11 h-11 md:w-16 md:h-16 rounded-full bg-slate-800 border-2 border-slate-400 flex items-center justify-center text-base md:text-xl font-black text-slate-200 shadow mb-1.5">#2</div>
         <h4 id="podio-2-nombre" class="font-bold text-xs md:text-base text-slate-100 truncate max-w-full">--</h4>
         <span id="podio-2-puntos" class="text-yellow-400 text-xs md:text-base font-black mt-0.5">-- pts</span>
       </div>
 
-      <!-- 1ER LUGAR -->
       <div class="podium-card bg-gradient-to-b from-yellow-950/30 to-slate-900 border border-yellow-500/40 rounded-2xl p-3 md:p-6 text-center flex flex-col items-center justify-center h-44 md:h-52 shadow-xl">
-        <div class="text-xl md:text-2xl -mb-1">👑</div>
-        <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-amber-600/30 border-2 border-yellow-400 flex items-center justify-center text-2xl md:text-3xl shadow-lg mb-1.5">🥇</div>
+        <div class="text-[11px] font-black uppercase tracking-wider text-yellow-300 mb-1">Lider</div>
+        <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-amber-600/30 border-2 border-yellow-400 flex items-center justify-center text-xl md:text-2xl font-black text-yellow-300 shadow-lg mb-1.5">#1</div>
         <h3 id="podio-1-nombre" class="font-black text-xs md:text-lg text-yellow-200 truncate max-w-full">--</h3>
         <span id="podio-1-puntos" class="text-yellow-400 text-sm md:text-xl font-black mt-0.5">-- pts</span>
       </div>
 
-      <!-- 3ER LUGAR -->
       <div class="podium-card bg-slate-900/90 border border-slate-700/70 rounded-xl p-3 md:p-5 text-center flex flex-col items-center justify-center h-32 md:h-40">
-        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-lg md:text-xl shadow mb-1.5">🥉</div>
+        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full bg-slate-800 border-2 border-amber-700 flex items-center justify-center text-sm md:text-lg font-black text-amber-500 shadow mb-1.5">#3</div>
         <h4 id="podio-3-nombre" class="font-bold text-xs md:text-base text-slate-200 truncate max-w-full">--</h4>
         <span id="podio-3-puntos" class="text-yellow-400 text-xs md:text-base font-black mt-0.5">-- pts</span>
       </div>
     </section>
 
-    <!-- NAVEGACIÓN -->
     <nav class="flex border-b border-slate-800 gap-1 overflow-x-auto">
-      <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-yellow-400 text-yellow-400 whitespace-nowrap">🏆 Ranking</button>
-      <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">⚔️ Partidos (2v2)</button>
-      <button onclick="cambiarTab('tab-premios')" id="btn-tab-premios" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">🏅 Premios</button>
-      <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">👥 Jugadores</button>
-      <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">⚙️ Reglas y Respaldo</button>
+      <button onclick="cambiarTab('tab-ranking')" id="btn-tab-ranking" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-yellow-400 text-yellow-400 whitespace-nowrap">Ranking</button>
+      <button onclick="cambiarTab('tab-partidos')" id="btn-tab-partidos" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Partidos (2v2)</button>
+      <button onclick="cambiarTab('tab-premios')" id="btn-tab-premios" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Premios</button>
+      <button onclick="cambiarTab('tab-jugadores')" id="btn-tab-jugadores" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Jugadores</button>
+      <button onclick="cambiarTab('tab-reglas')" id="btn-tab-reglas" class="py-2.5 px-3.5 font-bold text-xs md:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">Reglas y Respaldo</button>
     </nav>
 
-    <!-- TAB 1: RANKING -->
     <div id="tab-ranking" class="space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <div class="p-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-bold text-white">📊 Tabla General Individual</h2>
+            <h2 class="text-lg font-bold text-white">Tabla General Individual</h2>
             <p class="text-xs text-slate-400">Ordenado por Puntos, % Victorias, PG, Dif. Sets y Dif. Juegos.</p>
           </div>
           <select id="filtro-categoria" onchange="renderAll()" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-1.5 text-xs">
-            <option value="todos">Todas las categorías</option>
-            <option value="3ra">3ra Categoría</option>
-            <option value="4ta">4ta Categoría</option>
-            <option value="5ta">5ta Categoría</option>
-            <option value="6ta">6ta Categoría</option>
+            <option value="todos">Todas las categorias</option>
+            <option value="3ra">3ra Categoria</option>
+            <option value="4ta">4ta Categoria</option>
+            <option value="5ta">5ta Categoria</option>
+            <option value="6ta">6ta Categoria</option>
           </select>
         </div>
 
@@ -144,18 +134,16 @@
       </div>
     </div>
 
-    <!-- TAB 2: PARTIDOS -->
     <div id="tab-partidos" class="hidden space-y-6">
       <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-yellow-400">⚔️ Registrar Partido (2 vs 2)</h2>
-          <span class="text-xs text-slate-400">Límite: 2 partidos válidos por semana (Lun-Dom)</span>
+        <div class="flex flex-wrap justify-between items-center gap-2">
+          <h2 class="text-lg font-bold text-yellow-400">Registrar Partido (2 vs 2)</h2>
+          <span class="text-xs text-slate-400">Limite: 2 partidos validos por semana (Lun-Dom)</span>
         </div>
 
         <form onsubmit="registrarPartido(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- PAREJA A -->
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-            <h3 class="font-bold text-sky-400 text-sm">🔵 Pareja A</h3>
+            <h3 class="font-bold text-sky-400 text-sm">Pareja A</h3>
             <div>
               <label class="block text-xs text-slate-400 mb-1">Jugador 1 A</label>
               <select id="pA1" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
@@ -176,9 +164,8 @@
             </div>
           </div>
 
-          <!-- PAREJA B -->
           <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-            <h3 class="font-bold text-rose-400 text-sm">🔴 Pareja B</h3>
+            <h3 class="font-bold text-rose-400 text-sm">Pareja B</h3>
             <div>
               <label class="block text-xs text-slate-400 mb-1">Jugador 1 B</label>
               <select id="pB1" onchange="previsualizarPartido()" required class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm"></select>
@@ -199,7 +186,6 @@
             </div>
           </div>
 
-          <!-- DETALLES -->
           <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
             <div>
               <label class="block text-xs text-slate-400 mb-1">Fecha</label>
@@ -210,54 +196,51 @@
               <input type="text" id="obsPartido" placeholder="6-4/6-3" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
             </div>
             <div>
-              <label class="block text-xs text-slate-400 mb-1">¿Walkover (WO)?</label>
+              <label class="block text-xs text-slate-400 mb-1">Walkover (WO)</label>
               <select id="esWO" onchange="previsualizarPartido()" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm">
                 <option value="no">No (Partido normal)</option>
-                <option value="si">Sí (WO: 100 / 0 pts)</option>
+                <option value="si">Si (WO: 100 / 0 pts)</option>
               </select>
             </div>
           </div>
 
           <div id="previewBox" class="md:col-span-2 bg-slate-950/90 border border-yellow-500/30 rounded-lg p-3 text-xs text-yellow-300">
-            Selecciona los 4 jugadores para ver el cálculo previo de promedio y sorpresa.
+            Selecciona los 4 jugadores para ver el calculo previo de promedio y sorpresa.
           </div>
 
           <div class="md:col-span-2 flex justify-end">
             <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2.5 px-6 rounded-lg text-sm transition">
-              💾 Guardar Partido en Firebase
+              Guardar Partido en Firebase
             </button>
           </div>
         </form>
       </div>
 
-      <!-- HISTORIAL -->
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
         <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold">📋 Historial de Partidos (<span id="total-partidos-badge">0</span>)</h2>
+          <h2 class="text-lg font-bold">Historial de Partidos (<span id="total-partidos-badge">0</span>)</h2>
         </div>
         <div id="listaPartidos" class="space-y-2.5"></div>
       </div>
     </div>
 
-    <!-- TAB 3: PREMIOS AUTOMÁTICOS -->
     <div id="tab-premios" class="hidden space-y-4">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <h2 class="text-lg font-bold text-yellow-400">🏅 Premios Automáticos de la Liga</h2>
+        <h2 class="text-lg font-bold text-yellow-400">Premios Automaticos de la Liga</h2>
         <div id="gridPremios" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
     </div>
 
-    <!-- TAB 4: JUGADORES -->
     <div id="tab-jugadores" class="hidden space-y-6">
       <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-        <h2 class="text-lg font-bold text-yellow-400">➕ Agregar Nuevo Jugador</h2>
+        <h2 class="text-lg font-bold text-yellow-400">Agregar Nuevo Jugador</h2>
         <form onsubmit="agregarJugador(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
           <div>
             <label class="block text-xs text-slate-400 mb-1">Nombre</label>
-            <input type="text" id="newJugNombre" placeholder="Ej: Césario" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
+            <input type="text" id="newJugNombre" placeholder="Ej: Cesario" required class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs text-slate-400 mb-1">Categoría</label>
+            <label class="block text-xs text-slate-400 mb-1">Categoria</label>
             <select id="newJugCat" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm">
               <option value="3ra">3ra</option>
               <option value="4ta">4ta</option>
@@ -276,35 +259,34 @@
       </div>
 
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
-        <h2 class="text-lg font-bold">👥 Plantel de Jugadores (<span id="total-jugadores-badge">0</span>)</h2>
+        <h2 class="text-lg font-bold">Plantel de Jugadores (<span id="total-jugadores-badge">0</span>)</h2>
         <div id="listaJugadoresAdmin" class="space-y-2"></div>
       </div>
     </div>
 
-    <!-- TAB 5: REGLAS Y RESPALDO -->
     <div id="tab-reglas" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs md:text-sm text-slate-300">
-        <h2 class="text-lg font-bold text-yellow-400">📜 Reglas Oficiales (Lógica Excel v2.0)</h2>
+        <h2 class="text-lg font-bold text-yellow-400">Reglas Oficiales (Logica Excel v2.0)</h2>
         <ul class="list-disc list-inside space-y-1.5">
           <li><strong>Rating inicial:</strong> Todos los jugadores parten con <strong>100 puntos</strong>.</li>
           <li><strong>Victoria 2-0:</strong> +100 pts para cada ganador / +20 pts para cada perdedor.</li>
           <li><strong>Victoria 2-1:</strong> +80 pts para cada ganador / +40 pts para cada perdedor.</li>
           <li><strong>Victoria por WO:</strong> +100 pts para cada ganador / 0 pts para cada perdedor.</li>
           <li><strong>Victoria Sorpresa:</strong> Si gana la pareja con menor promedio de rating previo, cada ganador suma <strong>+30 pts</strong> extra y cada perdedor resta <strong>-30 pts</strong>.</li>
-          <li><strong>Límite semanal (Lunes a Domingo):</strong> Cada jugador puntúa solo en sus <strong>2 primeros partidos válidos</strong> de la semana. Desde el 3° juega como <em>Acompañante</em> (0 pts).</li>
+          <li><strong>Limite semanal (Lunes a Domingo):</strong> Cada jugador puntua solo en sus <strong>2 primeros partidos validos</strong> de la semana. Desde el 3o juega como <em>Acompanante</em> (0 pts).</li>
         </ul>
       </div>
 
       <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-        <h2 class="text-lg font-bold text-white">💾 Respaldo y Restauración (.JSON)</h2>
+        <h2 class="text-lg font-bold text-white">Respaldo y Restauracion (.JSON)</h2>
         <p class="text-xs text-slate-400">Descarga una copia de seguridad o restaura un archivo JSON (solo Admins pueden restaurar).</p>
         <div class="flex flex-wrap gap-3">
           <button onclick="descargarJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2 px-4 rounded-lg text-xs">
-            ⬇️ Descargar Respaldo (.json)
+            Descargar Respaldo (.json)
           </button>
           <input type="file" id="importFile" accept=".json" class="hidden" onchange="importarJSON(event)" />
           <button onclick="document.getElementById('importFile').click()" class="admin-only bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg text-xs">
-            ⬆️ Restaurar desde JSON
+            Restaurar desde JSON
           </button>
         </div>
       </div>
@@ -312,12 +294,10 @@
 
   </main>
 
-  <!-- MODAL LOGIN ADMIN -->
   <div id="modal-login" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm p-6 space-y-4 relative shadow-2xl">
       <button onclick="cerrarModalLogin()" class="absolute top-3 right-4 text-slate-400 hover:text-white text-2xl">&times;</button>
       <div class="text-center">
-        <div class="text-3xl mb-1">🔐</div>
         <h3 class="text-lg font-black text-white">Acceso Administrador</h3>
         <p class="text-xs text-slate-400">Ingresa tus credenciales para registrar partidos o editar puntos.</p>
       </div>
@@ -328,535 +308,557 @@
         </div>
         <div>
           <label class="block text-xs text-slate-400 mb-1">PIN / Clave</label>
-          <input type="password" id="login-pin" placeholder="••••" class="w-full buevo Partido (2 vs 2)</h2>
-        <form id="form-partido" onsubmit="registrarPartido(event)" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- PAREJA A -->
-          <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">
-            <h3 class="font-bold text-slate-200 flex items-center gap-2">🔵 Pareja A</h3>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Jugador 1 A *</label>
-              <select id="pA-j1" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400"></select>
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Jugador 2 A *</label>
-              <select id="pA-j2" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400"></select>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-4">
-              <div>
-                <label class="block text-xs text-slate-400 mb-1">Sets Ganados (A)</label>
-                <input type="number" id="setsA" min="0" max="2" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400" value="0">
-              </div>
-              <div>
-                <label class="block text-xs text-slate-400 mb-1">Total Juegos (A)</label>
-                <input type="number" id="juegosA" min="0" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400" value="0">
-              </div>
-            </div>
-          </div>
-
-          <!-- PAREJA B -->
-          <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">
-            <h3 class="font-bold text-slate-200 flex items-center gap-2">🔴 Pareja B</h3>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Jugador 1 B *</label>
-              <select id="pB-j1" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400"></select>
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Jugador 2 B *</label>
-              <select id="pB-j2" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400"></select>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-4">
-              <div>
-                <label class="block text-xs text-slate-400 mb-1">Sets Ganados (B)</label>
-                <input type="number" id="setsB" min="0" max="2" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400" value="0">
-              </div>
-              <div>
-                <label class="block text-xs text-slate-400 mb-1">Total Juegos (B)</label>
-                <input type="number" id="juegosB" min="0" required class="w-full bg-slate-900 border border-slate-750 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400" value="0">
-              </div>
-            </div>
-          </div>
-
-          <!-- PARÁMETROS DEL PARTIDO -->
-          <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950 p-4 rounded-lg border border-slate-800">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Tipo de Partido *</label>
-              <select id="tipoPartido" class="w-full bg-slate-900 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-                <option value="1">Amistoso / Liga (x1)</option>
-                <option value="1.5">Torneo / Desafío (x1.5)</option>
-                <option value="2">Final / Máster (x2)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">¿Fue WO?</label>
-              <select id="esWO" class="w-full bg-slate-900 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-                <option value="no">No</option>
-                <option value="si">Sí (Por incomparecencia)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-slate-450 mb-1">Fecha del Partido</label>
-              <input type="date" id="fechaPartido" class="w-full bg-slate-900 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-            </div>
-          </div>
-
-          <div class="md:col-span-2 flex justify-end gap-2">
-            <button type="button" onclick="cargarJugadoresFormulario()" class="bg-slate-800 hover:bg-slate-700 font-bold py-2 px-4 rounded text-sm transition text-slate-300">🔄 Refrescar Jugadores</button>
-            <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-extrabold py-2 px-6 rounded text-sm transition">💾 Guardar Partido en Firebase</button>
-          </div>
-        </form>
-      </div>
-
-      <!-- HISTORIAL DE PARTIDOS -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-          <h2 class="text-lg font-bold flex items-center gap-2">📜 Historial de Partidos</h2>
-          <span class="text-xs text-slate-400">Actualizado en tiempo real</span>
+          <input type="password" id="login-pin" placeholder="••••" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-3 py-2 text-sm" />
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr class="bg-slate-950 text-slate-400 font-semibold border-b border-slate-800">
-                <th class="py-3 px-4">Fecha</th>
-                <th class="py-3 px-4">Pareja A</th>
-                <th class="py-3 px-4 text-center">Sets</th>
-                <th class="py-3 px-4 text-center">Juegos</th>
-                <th class="py-3 px-4">Pareja B</th>
-                <th class="py-3 px-4 text-center">Multiplicador</th>
-                <th class="py-3 px-4 text-center">Sorpresa</th>
-                <th class="py-3 px-4 text-right pr-6 admin-only">Opciones</th>
-              </tr>
-            </thead>
-            <tbody id="tabla-partidos-cuerpo">
-              <!-- Datos de partidos dinámicos -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: JUGADORES Y ADMINS -->
-    <div id="tab-jugadores" class="hidden space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- AGREGAR NUEVO JUGADOR -->
-        <div class="admin-only bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h2 class="text-lg font-bold text-yellow-400 flex items-center gap-1">➕ Agregar Jugador</h2>
-          <form id="form-jugador" onsubmit="agregarJugador(event)" class="space-y-3">
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Nombre o Apodo *</label>
-              <input type="text" id="nombreJugador" required class="w-full bg-slate-850 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Categoría *</label>
-              <select id="categoriaJugador" required class="w-full bg-slate-850 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-                <option value="3ra">3ª Categoría</option>
-                <option value="4ta" selected>4ª Categoría</option>
-                <option value="5ta">5ª Categoría</option>
-                <option value="6ta">6ª Categoría</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-slate-400 mb-1">Puntos Iniciales</label>
-              <input type="number" id="puntosIniciales" class="w-full bg-slate-850 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400" value="100">
-            </div>
-            <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-extrabold py-2 rounded text-sm transition">Agregar a Firebase</button>
-          </form>
-        </div>
-
-        <!-- LISTA Y GESTIÓN DE JUGADORES -->
-        <div class="md:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-          <h2 class="text-lg font-bold flex items-center justify-between">
-            <span>👥 Todos los Jugadores registrados</span>
-            <span id="cant-jugadores" class="text-xs bg-slate-800 text-slate-400 py-0.5 px-2.5 rounded-full">-- / --</span>
-          </h2>
-          <div class="overflow-y-auto max-h-96 pr-2 space-y-2" id="lista-jugadores-gestion">
-            <!-- Cargado en tiempo real -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 4: REGLAS -->
-    <div id="tab-reglas" class="hidden space-y-6">
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4">
-        <h2 class="text-xl font-bold flex items-center gap-2 text-yellow-400">⚙️ Reglas y Configuración del Torneo</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-300">
-          <div class="space-y-4 bg-slate-950 p-4 rounded-lg border border-slate-800">
-            <h3 class="font-bold text-yellow-400 flex items-center gap-2">🎖️ Distribución de Puntos por Resultado</h3>
-            <ul class="space-y-2 list-disc list-inside">
-              <li><strong>2-0 (Victoria / Derrota):</strong> +100 puntos / +20 puntos.</li>
-              <li><strong>2-1 (Victoria / Derrota):</strong> +80 puntos / +40 puntos.</li>
-              <li><strong>Victoria por WO:</strong> +100 puntos / +0 puntos.</li>
-            </ul>
-          </div>
-          <div class="space-y-4 bg-slate-950 p-4 rounded-lg border border-slate-800">
-            <h3 class="font-bold text-yellow-400 flex items-center gap-2">⭐ Victoria Sorpresa (Cláusula Especial)</h3>
-            <p>Se activa automáticamente cuando la pareja con <strong>menor promedio de puntaje histórico</strong> de ranking le gana a la favorita:</p>
-            <ul class="space-y-1 list-disc list-inside">
-              <li><strong>Pareja Ganadora (Sorpresa):</strong> Suma +30 puntos de bonificación.</li>
-              <li><strong>Pareja Perdedora (Favorita):</strong> Resta -30 puntos como penalización.</li>
-            </ul>
-          </div>
-          <div class="md:col-span-2 space-y-4 bg-slate-950 p-4 rounded-lg border border-slate-800">
-            <h3 class="font-bold text-yellow-400 flex items-center gap-2">⏳ Límite Semanal de Partidos Válidos</h3>
-            <p>Con el fin de evitar "la cagá" y el juego excesivo, <strong>cada jugador solo sumará puntos por sus 2 primeros partidos registrados</strong> en la semana (Lunes a Domingo).</p>
-            <p>A partir de su <strong>3er partido semanal</strong>, el jugador podrá seguir jugando pero figurará como <strong>Acompañante</strong> (obteniendo 0 puntos de ranking, aunque el partido se registra para su pareja si ella no excede el límite).</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- MODAL DE LOGIN ADMIN -->
-  <div id="modal-login" class="hidden fixed inset-0 z-50 bg-black/85 flex justify-center items-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-xl w-full max-w-sm p-6 shadow-2xl relative space-y-4">
-      <button onclick="cerrarModalLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">&times;</button>
-      <div class="text-center">
-        <span class="text-3xl">🔑</span>
-        <h3 class="text-xl font-bold mt-2">Acceso Administrador</h3>
-        <p class="text-xs text-slate-400 mt-1">Solo para el organizador o Mauro para validar ingresos.</p>
-      </div>
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Nombre de Usuario</label>
-          <input type="text" id="login-usuario" placeholder="ej. cesar o mauro" class="w-full bg-slate-850 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">PIN / Contraseña</label>
-          <input type="password" id="login-pin" placeholder="Ingrese PIN" class="w-full bg-slate-850 border border-slate-700 text-white rounded px-3 py-2 text-sm focus:ring-1 focus:ring-yellow-400">
-        </div>
-        <button onclick="intentarLogin()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-extrabold py-2.5 rounded text-sm transition">Iniciar Sesión</button>
+        <button onclick="intentarLogin()" class="w-full bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black py-2.5 rounded-lg text-sm transition">
+          Desbloquear Edicion
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT CON LÓGICA Y DATOS LOCALES -->
+  <div id="toast" class="hidden fixed bottom-5 right-5 bg-emerald-500 text-slate-950 font-bold px-4 py-3 rounded-xl shadow-xl text-xs md:text-sm z-50"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAFoimQyKdFdiNwAvptItveCUGm7HKC4oI",
+      authDomain: "padelrank-6jrs4.firebaseapp.com",
+      projectId: "padelrank-6jrs4",
+      storageBucket: "padelrank-6jrs4.firebasestorage.app",
+      messagingSenderId: "772355783928",
+      appId: "1:772355783928:web:b84403cac8d57e9612cf0d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const firestore = getFirestore(app);
+    const docRef = doc(firestore, "padelrank_data", "estado_actual");
+
+    window.db = {
+      jugadores: [],
+      equipos: [],
+      partidos: [],
+      usuarios: [
+        { id: "1", nombre: "Cesario", rol: "Admin", activo: true },
+        { id: "2", nombre: "Mauricio Hernandez", rol: "Admin", activo: true }
+      ],
+      reglas: { nombre: "Liga PadelRank 2026", winBase: 100, lossBase: 20 }
+    };
+
+    window.guardarFirebase = async function() {
+      const statusEl = document.getElementById("dbStatus");
+      statusEl.textContent = "Guardando...";
+      try {
+        await setDoc(docRef, {
+          payload: JSON.stringify(window.db),
+          updatedAt: new Date().toISOString()
+        });
+        statusEl.textContent = "Conectado a Firebase";
+        statusEl.className = "text-xs bg-emerald-950/80 border border-emerald-700 text-emerald-400 font-bold px-3 py-0.5 rounded-full";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "Error al guardar";
+        statusEl.className = "text-xs bg-rose-950/80 border border-rose-700 text-rose-400 font-bold px-3 py-0.5 rounded-full";
+        showToast("Error al guardar en Firebase", "err");
+      }
+    };
+
+    onSnapshot(docRef, (snap) => {
+      const statusEl = document.getElementById("dbStatus");
+      statusEl.textContent = "Conectado a Firebase";
+      statusEl.className = "text-xs bg-emerald-950/80 border border-emerald-700 text-emerald-400 font-bold px-3 py-0.5 rounded-full";
+
+      if (snap.exists() && snap.data().payload) {
+        const parsed = JSON.parse(snap.data().payload);
+        window.db = { ...window.db, ...parsed };
+      }
+      if (typeof window.renderAll === "function") {
+        window.renderAll();
+      }
+    }, (err) => {
+      console.error(err);
+      const statusEl = document.getElementById("dbStatus");
+      statusEl.textContent = "Sin conexion";
+      statusEl.className = "text-xs bg-rose-950/80 border border-rose-700 text-rose-400 font-bold px-3 py-0.5 rounded-full";
+    });
+  </script>
+
   <script>
-    // ESTADO LOCAL DE PRUEBA (Para demostración autónoma)
-    let jugadores = [
-      { id: "1", nombre: "Mauro Hernández", categoria: "3ra", pj: 12, pg: 9, pp: 3, difSets: 12, difJuegos: 45, puntos: 1630 },
-      { id: "2", nombre: "Manio Fuenez", categoria: "3ra", pj: 10, pg: 7, pp: 3, difSets: 8, difJuegos: 32, puntos: 720 },
-      { id: "3", nombre: "Alena Maga", categoria: "4ta", pj: 8, pg: 6, pp: 2, difSets: 6, difJuegos: 21, puntos: 180 },
-      { id: "4", nombre: "Jarma Naitfhez", categoria: "4ta", pj: 7, pg: 5, pp: 2, difSets: 5, difJuegos: 15, puntos: 170 },
-      { id: "5", nombre: "Checro Carresta", categoria: "5ta", pj: 9, pg: 4, pp: 5, difSets: -1, difJuegos: -8, puntos: 170 }
-    ];
+    let isAdmin = false;
 
-    let partidos = [
-      { id: "p1", fecha: "2026-11-20", pA_j1: "Mauro Hernández", pA_j2: "Manio Fuenez", pB_j1: "Alena Maga", pB_j2: "Jarma Naitfhez", setsA: 2, setsB: 0, juegosA: 12, juegosB: 6, tipoPartido: "1.5", esWO: "no", sorpresa: "No" },
-      { id: "p2", fecha: "2026-11-18", pA_j1: "Mauro Hernández", pA_j2: "Checro Carresta", pB_j1: "Manio Fuenez", pB_j2: "Alena Maga", setsA: 2, setsB: 1, juegosA: 15, juegosB: 12, tipoPartido: "1", esWO: "no", sorpresa: "Sí" }
-    ];
-
-    // INICIO DE LA APP
     document.addEventListener("DOMContentLoaded", () => {
-      // Ajustar fecha actual por defecto
-      document.getElementById('fechaPartido').value = new Date().toISOString().split('T')[0];
-      
-      // Cargar UI
-      actualizarTablaRanking();
-      actualizarHistorialPartidos();
-      cargarJugadoresFormulario();
-      actualizarGestionJugadores();
-      
-      // Revisar login persistente
-      const user = localStorage.getItem("padelrank_usuario");
-      if (user) activarModoAdmin(user);
+      document.getElementById("fechaPartido").value = new Date().toISOString().split("T")[0];
+      const savedUser = localStorage.getItem("padelrank_admin_user");
+      if (savedUser) activarModoAdmin(savedUser);
+      if (typeof window.renderAll === "function") window.renderAll();
     });
 
-    // CAMBIO DE TABS
+    function showToast(msg, type = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = `fixed bottom-5 right-5 font-bold px-4 py-3 rounded-xl shadow-xl text-xs md:text-sm z-50 ${type === "err" ? "bg-rose-600 text-white" : "bg-emerald-500 text-slate-950"}`;
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 3200);
+    }
+
     function cambiarTab(tabId) {
-      document.querySelectorAll("main > div").forEach(div => div.classList.add("hidden"));
-      document.getElementById(tabId).classList.remove("hidden");
-      
-      document.querySelectorAll("nav button").forEach(btn => {
+      ["tab-ranking", "tab-partidos", "tab-premios", "tab-jugadores", "tab-reglas"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+        const btn = document.getElementById("btn-" + id);
         btn.classList.remove("border-yellow-400", "text-yellow-400");
         btn.classList.add("border-transparent", "text-slate-400");
       });
-      
-      document.getElementById("btn-" + tabId).classList.add("border-yellow-400", "text-yellow-400");
-      document.getElementById("btn-" + tabId).classList.remove("border-transparent", "text-slate-400");
+      document.getElementById(tabId).classList.remove("hidden");
+      const activeBtn = document.getElementById("btn-" + tabId);
+      activeBtn.classList.add("border-yellow-400", "text-yellow-400");
+      activeBtn.classList.remove("border-transparent", "text-slate-400");
     }
 
-    // ACCESO (MÓDULOS DE SEGURIDAD)
-    function abrirModalLogin() {
-      document.getElementById("modal-login").classList.remove("hidden");
-    }
-    function cerrarModalLogin() {
-      document.getElementById("modal-login").classList.add("hidden");
-    }
+    function abrirModalLogin() { document.getElementById("modal-login").classList.remove("hidden"); }
+    function cerrarModalLogin() { document.getElementById("modal-login").classList.add("hidden"); }
 
     function intentarLogin() {
-      const user = document.getElementById("login-usuario").value.trim().toLowerCase();
-      const pin = document.getElementById("login-pin").value;
-
-      if ((user === "cesar" && pin === "1234") || (user === "mauro" && pin === "2026")) {
-        activarModoAdmin(user.toUpperCase());
+      const u = document.getElementById("login-usuario").value.trim().toLowerCase();
+      const p = document.getElementById("login-pin").value.trim();
+      if ((u === "cesar" && p === "1234") || (u === "mauro" && p === "2026")) {
+        activarModoAdmin(u === "cesar" ? "Cesar" : "Mauro");
         cerrarModalLogin();
+        showToast("Modo Admin desbloqueado");
       } else {
-        alert("🚨 Credenciales incorrectas. Intenta de nuevo.");
+        showToast("Usuario o PIN incorrecto", "err");
       }
     }
 
-    function activarModoAdmin(usuario) {
-      localStorage.setItem("padelrank_usuario", usuario);
+    function activarModoAdmin(nombre) {
+      isAdmin = true;
+      localStorage.setItem("padelrank_admin_user", nombre);
       document.body.classList.remove("espectador");
       document.getElementById("alerta-espectador").classList.add("hidden");
       document.getElementById("btn-login").classList.add("hidden");
       document.getElementById("btn-logout").classList.remove("hidden");
-      document.getElementById("usuario-activo").innerText = usuario;
+      document.getElementById("usuario-activo").textContent = nombre;
+      if (window.renderAll) window.renderAll();
     }
 
     function cerrarSesion() {
-      localStorage.removeItem("padelrank_usuario");
+      isAdmin = false;
+      localStorage.removeItem("padelrank_admin_user");
       document.body.classList.add("espectador");
       document.getElementById("alerta-espectador").classList.remove("hidden");
       document.getElementById("btn-login").classList.remove("hidden");
       document.getElementById("btn-logout").classList.add("hidden");
+      if (window.renderAll) window.renderAll();
+      showToast("Volviste a Modo Espectador");
     }
 
-    // TABLA DE RANKING
-    function actualizarTablaRanking() {
-      const catFiltro = document.getElementById("filtro-categoria").value;
-      const cuerpo = document.getElementById("tabla-ranking-cuerpo");
-      cuerpo.innerHTML = "";
-
-      let filtrados = catFiltro === "todos" ? jugadores : jugadores.filter(j => j.categoria === catFiltro);
-      // Ordenar por puntos (y diferencia de sets/partidos ganados en caso de empate)
-      filtrados.sort((a,b) => b.puntos - a.puntos || b.pg - a.pg || b.difSets - a.difSets);
-
-      // Actualizar Podio
-      if(filtrados[0]) {
-        document.getElementById("podio-1-nombre").innerText = filtrados[0].nombre;
-        document.getElementById("podio-1-puntos").innerText = filtrados[0].puntos + " pts";
+    function obtenerClaveSemana(fechaStr) {
+      const parts = (fechaStr || "").split("-");
+      let d;
+      if (parts.length === 3 && parts[0].length === 4) {
+        d = new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2])));
+      } else if (parts.length === 3) {
+        d = new Date(Date.UTC(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])));
+      } else {
+        d = new Date();
       }
-      if(filtrados[1]) {
-        document.getElementById("podio-2-nombre").innerText = filtrados[1].nombre;
-        document.getElementById("podio-2-puntos").innerText = filtrados[1].puntos + " pts";
-      }
-      if(filtrados[2]) {
-        document.getElementById("podio-3-nombre").innerText = filtrados[2].nombre;
-        document.getElementById("podio-3-puntos").innerText = filtrados[2].puntos + " pts";
-      }
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getUTCFullYear()}-W${weekNo}`;
+    }
 
-      filtrados.forEach((j, index) => {
-        const %vic = j.pj > 0 ? ((j.pg / j.pj) * 100).toFixed(0) + "%" : "0%";
-        cuerpo.innerHTML += `
-          <tr class="border-b border-slate-800 hover:bg-slate-800/40">
-            <td class="py-3 px-4 text-center font-bold text-slate-400">${index + 1}</td>
-            <td class="py-3 px-4 font-bold text-white flex items-center gap-2">
-              <span class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-xs border border-slate-700">${j.nombre[0]}</span>
-              ${j.nombre}
-            </td>
-            <td class="py-3 px-4 text-center text-slate-350"><span class="bg-slate-800 text-xs px-2 py-0.5 rounded">${j.categoria}</span></td>
-            <td class="py-3 px-4 text-center text-slate-300 font-medium">${j.pj}</td>
-            <td class="py-3 px-4 text-center text-green-400 font-bold">${j.pg}</td>
-            <td class="py-3 px-4 text-center text-red-400 font-bold">${j.pp}</td>
-            <td class="py-3 px-4 text-center font-bold text-slate-350">${j.difSets > 0 ? '+' : ''}${j.difSets}</td>
-            <td class="py-3 px-4 text-center font-bold text-slate-350">${j.difJuegos > 0 ? '+' : ''}${j.difJuegos}</td>
-            <td class="py-3 px-4 text-center font-semibold text-indigo-400">${%vic}</td>
-            <td class="py-3 px-4 text-right pr-6 font-black text-yellow-400">${j.puntos} pts</td>
-          </tr>
-        `;
+    function contarPartidosSemanaJugador(nombreJugador, semanaClave) {
+      let count = 0;
+      (window.db.partidos || []).forEach(p => {
+        const fRaw = (p.fecha || "").split(" ")[0];
+        if (obtenerClaveSemana(fRaw) === semanaClave) {
+          const texto = `${p.parejaA} / ${p.parejaB}`;
+          if (texto.includes(nombreJugador)) count++;
+        }
       });
+      return count;
     }
 
-    // CARGAR SELECTS DE FORMULARIOS
-    function cargarJugadoresFormulario() {
-      const selects = ["pA-j1", "pA-j2", "pB-j1", "pB-j2"];
-      selects.forEach(sId => {
-        const sel = document.getElementById(sId);
-        sel.innerHTML = "<option value=''>-- Selecciona un jugador --</option>";
-        jugadores.forEach(j => {
-          sel.innerHTML += `<option value="${j.nombre}">${j.nombre} (${j.categoria})</option>`;
-        });
-      });
+    function previsualizarPartido() {
+      const a1 = document.getElementById("pA1").value;
+      const a2 = document.getElementById("pA2").value;
+      const b1 = document.getElementById("pB1").value;
+      const b2 = document.getElementById("pB2").value;
+      const setsA = parseInt(document.getElementById("setsA").value) || 0;
+      const setsB = parseInt(document.getElementById("setsB").value) || 0;
+      const esWO = document.getElementById("esWO").value === "si";
+      const fecha = document.getElementById("fechaPartido").value;
+      const box = document.getElementById("previewBox");
+
+      if (!a1 || !a2 || !b1 || !b2) {
+        box.textContent = "Selecciona los 4 jugadores para calcular promedios, sorpresa y cupo semanal.";
+        return;
+      }
+
+      const getJ = id => window.db.jugadores.find(x => x.id === id);
+      const jA1 = getJ(a1), jA2 = getJ(a2), jB1 = getJ(b1), jB2 = getJ(b2);
+      if (!jA1 || !jA2 || !jB1 || !jB2) return;
+
+      const promA = (jA1.puntos + jA2.puntos) / 2;
+      const promB = (jB1.puntos + jB2.puntos) / 2;
+      const ganaA = setsA > setsB;
+
+      let baseWin = 100, baseLoss = 20;
+      if (esWO) { baseWin = 100; baseLoss = 0; }
+      else if ((setsA === 2 && setsB === 1) || (setsB === 2 && setsA === 1)) { baseWin = 80; baseLoss = 40; }
+
+      const esSorpresa = (ganaA && promA < promB) || (!ganaA && promB < promA);
+      const ptsGanador = baseWin + (esSorpresa ? 30 : 0);
+      const ptsPerdedor = baseLoss - (esSorpresa ? 30 : 0);
+
+      const sem = obtenerClaveSemana(fecha);
+      const acomp = [jA1, jA2, jB1, jB2]
+        .filter(j => contarPartidosSemanaJugador(j.nombre, sem) >= 2)
+        .map(j => j.nombre);
+
+      box.innerHTML = `
+        <div><strong>Promedios previos:</strong> Pareja A (${promA.toFixed(0)} pts) vs Pareja B (${promB.toFixed(0)} pts)</div>
+        <div><strong>Resultado proyectado:</strong> ${esSorpresa ? "VICTORIA SORPRESA (+30 / -30)" : "Normal"} -> Ganadores: <strong>+${ptsGanador} pts</strong> | Perdedores: <strong>${ptsPerdedor >= 0 ? "+" : ""}${ptsPerdedor} pts</strong></div>
+        ${acomp.length ? `<div class="text-amber-400 mt-1">Limite semanal (2 partidos): <strong>${acomp.join(", ")}</strong> jugara(n) como Acompanante (0 pts).</div>` : ""}
+      `;
     }
 
-    // REGISTRAR PARTIDO (2v2)
     function registrarPartido(e) {
       e.preventDefault();
-      
-      const pA_j1 = document.getElementById("pA-j1").value;
-      const pA_j2 = document.getElementById("pA-j2").value;
-      const pB_j1 = document.getElementById("pB-j1").value;
-      const pB_j2 = document.getElementById("pB-j2").value;
+      if (!isAdmin) return showToast("Solo Admins pueden registrar partidos", "err");
 
-      const setsA = parseInt(document.getElementById("setsA").value);
-      const setsB = parseInt(document.getElementById("setsB").value);
-      const juegosA = parseInt(document.getElementById("juegosA").value);
-      const juegosB = parseInt(document.getElementById("juegosB").value);
-      
-      const tipoPartido = document.getElementById("tipoPartido").value;
-      const esWO = document.getElementById("esWO").value;
+      const a1 = document.getElementById("pA1").value;
+      const a2 = document.getElementById("pA2").value;
+      const b1 = document.getElementById("pB1").value;
+      const b2 = document.getElementById("pB2").value;
+      const setsA = parseInt(document.getElementById("setsA").value) || 0;
+      const setsB = parseInt(document.getElementById("setsB").value) || 0;
+      const juegosA = parseInt(document.getElementById("juegosA").value) || 0;
+      const juegosB = parseInt(document.getElementById("juegosB").value) || 0;
       const fecha = document.getElementById("fechaPartido").value;
+      const obs = document.getElementById("obsPartido").value.trim();
+      const esWO = document.getElementById("esWO").value === "si";
 
-      // Validación simple
-      if ([pA_j1, pA_j2, pB_j1, pB_j2].includes("")) {
-        alert("❌ Debes seleccionar todos los 4 jugadores para parejas 2v2.");
-        return;
-      }
-      
-      // Validar repetidos
-      const setUnicos = new Set([pA_j1, pA_j2, pB_j1, pB_j2]);
-      if(setUnicos.size !== 4) {
-        alert("❌ No puedes duplicar jugadores en la misma partida.");
-        return;
-      }
+      if (new Set([a1, a2, b1, b2]).size !== 4) return showToast("No repitas jugadores", "err");
+      if (setsA === setsB) return showToast("No puede haber empate en sets", "err");
 
-      if(setsA === setsB && esWO === "no") {
-        alert("❌ No se permite empate en los sets de Pádel.");
-        return;
-      }
+      const getJ = id => window.db.jugadores.find(x => x.id === id);
+      const jA1 = getJ(a1), jA2 = getJ(a2), jB1 = getJ(b1), jB2 = getJ(b2);
 
-      // Procesamiento de victoria sorpresa
-      let sorpresa = "No";
-      // (Lógica demostrativa - Aquí se calcularía el promedio y compararía, marcando "Sí")
+      const promA = (jA1.puntos + jA2.puntos) / 2;
+      const promB = (jB1.puntos + jB2.puntos) / 2;
+      const ganaA = setsA > setsB;
 
-      // Registro local
-      partidos.unshift({
-        id: "p_" + Date.now(),
-        fecha, pA_j1, pA_j2, pB_j1, pB_j2,
-        setsA, setsB, juegosA, juegosB,
-        tipoPartido, esWO, sorpresa
+      let baseWin = 100, baseLoss = 20;
+      if (esWO) { baseWin = 100; baseLoss = 0; }
+      else if ((setsA === 2 && setsB === 1) || (setsB === 2 && setsA === 1)) { baseWin = 80; baseLoss = 40; }
+
+      const esSorpresa = (ganaA && promA < promB) || (!ganaA && promB < promA);
+      const ptsGanador = baseWin + (esSorpresa ? 30 : 0);
+      const ptsPerdedor = baseLoss - (esSorpresa ? 30 : 0);
+
+      const sem = obtenerClaveSemana(fecha);
+      const acompList = [];
+
+      const aplicarEstadisticas = (jug, esGanador, sMas, sMenos, jMas, jMenos) => {
+        jug.difSets = (jug.difSets || 0);
+        jug.difJuegos = (jug.difJuegos || 0);
+        if (contarPartidosSemanaJugador(jug.nombre, sem) >= 2) {
+          acompList.push(jug.nombre);
+          return;
+        }
+        jug.pj = (jug.pj || 0) + 1;
+        if (esGanador) {
+          jug.pg = (jug.pg || 0) + 1;
+          jug.puntos = Math.max(0, (jug.puntos || 0) + ptsGanador);
+        } else {
+          jug.pp = (jug.pp || 0) + 1;
+          jug.puntos = Math.max(0, (jug.puntos || 0) + ptsPerdedor);
+        }
+        jug.difSets += (sMas - sMenos);
+        jug.difJuegos += (jMas - jMenos);
+      };
+
+      aplicarEstadisticas(jA1, ganaA, setsA, setsB, juegosA, juegosB);
+      aplicarEstadisticas(jA2, ganaA, setsA, setsB, juegosA, juegosB);
+      aplicarEstadisticas(jB1, !ganaA, setsB, setsA, juegosB, juegosA);
+      aplicarEstadisticas(jB2, !ganaA, setsB, setsA, juegosB, juegosA);
+
+      const partsFecha = fecha.split("-");
+      const fechaFmt = partsFecha.length === 3 ? `${partsFecha[2]}-${partsFecha[1]}-${partsFecha[0]}` : fecha;
+
+      window.db.partidos.unshift({
+        id: "part_" + Date.now(),
+        fecha: obs ? `${fechaFmt} (${obs})` : fechaFmt,
+        parejaA: `${jA1.nombre} / ${jA2.nombre}`,
+        parejaB: `${jB1.nombre} / ${jB2.nombre}`,
+        resultado: `${setsA} - ${setsB}`,
+        juegos: `${juegosA} - ${juegosB}`,
+        ganador: ganaA ? "A" : "B",
+        sorpresa: esSorpresa ? "Si" : "No",
+        wo: esWO ? "Si" : "No",
+        acompanantes: acompList.join(", ")
       });
 
-      // Sumatoria rápida a jugadores (Lógica interna demo)
-      actualizarHistorialPartidos();
-      alert("✅ Partido registrado exitosamente!");
-      document.getElementById("form-partido").reset();
-    }
-
-    // ACTUALIZAR HISTORIAL
-    function actualizarHistorialPartidos() {
-      const cuerpo = document.getElementById("tabla-partidos-cuerpo");
-      cuerpo.innerHTML = "";
-
-      partidos.forEach(p => {
-        const claseWO = p.esWO === "si" ? "text-red-400 italic" : "";
-        cuerpo.innerHTML += `
-          <tr class="border-b border-slate-800 hover:bg-slate-800/40 ${claseWO}">
-            <td class="py-3 px-4 text-slate-400 font-medium">${p.fecha}</td>
-            <td class="py-3 px-4 text-blue-400 font-bold">${p.pA_j1} / ${p.pA_j2}</td>
-            <td class="py-3 px-4 text-center font-extrabold text-white">${p.setsA} - ${p.setsB}</td>
-            <td class="py-3 px-4 text-center text-slate-450">${p.juegosA} - ${p.juegosB}</td>
-            <td class="py-3 px-4 text-red-400 font-bold">${p.pB_j1} / ${p.pB_j2}</td>
-            <td class="py-3 px-4 text-center"><span class="bg-indigo-950 text-indigo-350 text-xs px-2 py-0.5 rounded-full font-bold">x${p.tipoPartido}</span></td>
-            <td class="py-3 px-4 text-center"><span class="${p.sorpresa === 'Sí' ? 'bg-yellow-950 text-yellow-400' : 'bg-slate-800 text-slate-400'} text-xs px-2 py-0.5 rounded-full font-bold">${p.sorpresa}</span></td>
-            <td class="py-3 px-4 text-right pr-6 admin-only">
-              <button onclick="eliminarPartido('${p.id}')" class="text-xs bg-red-950/40 hover:bg-red-500 hover:text-white text-red-400 border border-red-900 px-2.5 py-1 rounded-md transition font-bold">Borrar</button>
-            </td>
-          </tr>
-        `;
-      });
+      window.renderAll();
+      window.guardarFirebase();
+      document.getElementById("obsPartido").value = "";
+      showToast("Partido guardado y ranking actualizado");
     }
 
     function eliminarPartido(id) {
-      if(confirm("¿Seguro que quieres borrar este partido? Se restarán los puntos respectivos.")) {
-        partidos = partidos.filter(p => p.id !== id);
-        actualizarHistorialPartidos();
-      }
+      if (!isAdmin) return;
+      if (!confirm("Eliminar este partido del historial?")) return;
+      window.db.partidos = window.db.partidos.filter(p => p.id !== id);
+      window.renderAll();
+      window.guardarFirebase();
+      showToast("Partido eliminado");
     }
 
-    // JUGADORES (AGREGAR Y GESTIONAR)
     function agregarJugador(e) {
       e.preventDefault();
-      const nombre = document.getElementById("nombreJugador").value.trim();
-      const categoria = document.getElementById("categoriaJugador").value;
-      const puntos = parseInt(document.getElementById("puntosIniciales").value);
+      if (!isAdmin) return showToast("Solo Admins pueden agregar jugadores", "err");
+      const nombre = document.getElementById("newJugNombre").value.trim();
+      const categoria = document.getElementById("newJugCat").value;
+      const puntos = parseInt(document.getElementById("newJugPts").value) || 100;
+      if (!nombre) return;
 
-      if (jugadores.some(j => j.nombre.toLowerCase() === nombre.toLowerCase())) {
-        alert("❌ El jugador ya existe.");
-        return;
+      if (window.db.jugadores.some(j => j.nombre.toLowerCase() === nombre.toLowerCase())) {
+        return showToast("Ese jugador ya existe", "err");
       }
 
-      jugadores.push({
-        id: "j_" + Date.now(),
-        nombre, categoria,
-        pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, puntos
+      window.db.jugadores.push({
+        id: "jug_" + Date.now(),
+        nombre,
+        categoria,
+        puntos,
+        pj: 0,
+        pg: 0,
+        pp: 0,
+        difSets: 0,
+        difJuegos: 0
       });
 
-      actualizarGestionJugadores();
-      actualizarTablaRanking();
-      cargarJugadoresFormulario();
-      alert("✅ Jugador agregado!");
-      document.getElementById("form-jugador").reset();
+      document.getElementById("newJugNombre").value = "";
+      window.renderAll();
+      window.guardarFirebase();
+      showToast("Jugador agregado");
     }
 
-    function actualizarGestionJugadores() {
-      const cont = document.getElementById("lista-jugadores-gestion");
-      const cant = document.getElementById("cant-jugadores");
-      cont.innerHTML = "";
-      cant.innerText = `${jugadores.length} Registrados`;
-
-      jugadores.forEach(j => {
-        cont.innerHTML += `
-          <div class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 hover:border-slate-700 transition">
-            <div class="flex items-center gap-3">
-              <span class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-black">${j.nombre[0]}</span>
-              <div>
-                <h4 class="font-bold text-slate-100 text-sm">${j.nombre}</h4>
-                <div class="flex gap-2 text-xs text-slate-400 mt-0.5">
-                  <span class="bg-slate-800 text-slate-350 px-1.5 py-0.2 rounded font-semibold">${j.categoria}</span>
-                  <span>PJ: ${j.pj}</span>
-                  <span class="text-yellow-400 font-bold">${j.puntos} pts</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="flex items-center gap-1 admin-only">
-              <button onclick="ajustarPuntos('${j.id}', 10)" class="bg-indigo-950 hover:bg-indigo-900 border border-indigo-900 text-indigo-400 text-xs px-2 py-1 rounded transition font-black">+10</button>
-              <button onclick="ajustarPuntos('${j.id}', -10)" class="bg-indigo-950 hover:bg-indigo-900 border border-indigo-900 text-indigo-450 text-xs px-2 py-1 rounded transition font-black">-10</button>
-              <button onclick="eliminarJugador('${j.id}')" class="bg-red-950/40 hover:bg-red-500 hover:text-white border border-red-900 text-red-400 text-xs px-2.5 py-1 rounded transition font-bold ml-1">Quitar</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function ajustarPuntos(id, cantidad) {
-      const j = jugadores.find(jg => jg.id === id);
-      if(j) {
-        j.puntos += cantidad;
-        actualizarGestionJugadores();
-        actualizarTablaRanking();
-      }
+    function ajustarPuntos(id, delta) {
+      if (!isAdmin) return;
+      const j = window.db.jugadores.find(x => x.id === id);
+      if (!j) return;
+      j.puntos = Math.max(0, (j.puntos || 0) + delta);
+      window.renderAll();
+      window.guardarFirebase();
+      showToast(`Puntos actualizados (${delta > 0 ? "+" : ""}${delta})`);
     }
 
     function eliminarJugador(id) {
-      if(confirm("¿Seguro que quieres eliminar a este jugador de la base de datos?")) {
-        jugadores = jugadores.filter(j => j.id !== id);
-        actualizarGestionJugadores();
-        actualizarTablaRanking();
-        cargarJugadoresFormulario();
-      }
+      if (!isAdmin) return;
+      if (!confirm("Seguro que deseas eliminar este jugador?")) return;
+      window.db.jugadores = window.db.jugadores.filter(x => x.id !== id);
+      window.renderAll();
+      window.guardarFirebase();
+      showToast("Jugador eliminado");
     }
 
-    // EXPORTAR A EXCEL (.xlsx v2.0)
+    function descargarJSON() {
+      const blob = new Blob([JSON.stringify(window.db, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `padelrank_v2_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+    }
+
+    function importarJSON(ev) {
+      if (!isAdmin) return showToast("Inicia sesion como Admin para restaurar", "err");
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.jugadores) {
+            window.db = { ...window.db, ...data };
+            window.renderAll();
+            window.guardarFirebase();
+            showToast("Base de datos restaurada en Firebase");
+          }
+        } catch (err) {
+          showToast("Archivo JSON invalido", "err");
+        }
+      };
+      reader.readAsText(file);
+    }
+
     function exportarAExcel() {
       try {
         const wb = XLSX.utils.book_new();
+        const ordenados = [...(window.db.jugadores || [])].sort((a, b) =>
+          (b.puntos - a.puntos) ||
+          ((b.pj ? b.pg / b.pj : 0) - (a.pj ? a.pg / a.pj : 0)) ||
+          (b.pg - a.pg) ||
+          ((b.difSets || 0) - (a.difSets || 0)) ||
+          ((b.difJuegos || 0) - (a.difJuegos || 0))
+        );
 
-        // 1. Ranking General
-        const rankingData = jugadores.map((j, i) => ({
-          "Pos": i + 1, "Nombre": j.nombre, "Categoría": j.categoria,
-          "Partidos Jugados": j.pj, "Ganados": j.pg, "Perdidos": j.pp,
-          "Diferencia Sets": j.difSets, "Diferencia Juegos": j.difJuegos, "Puntos": j.puntos
+        const rankRows = ordenados.map((j, idx) => ({
+          "Pos": idx + 1,
+          "Jugador": j.nombre,
+          "Categoria": j.categoria || "5ta",
+          "Rating": j.puntos,
+          "PJ": j.pj,
+          "PG": j.pg,
+          "PP": j.pp,
+          "% Victorias": j.pj > 0 ? Number(((j.pg / j.pj) * 100).toFixed(1)) : 0,
+          "Dif Sets": j.difSets || 0,
+          "Dif Juegos": j.difJuegos || 0
         }));
-        const wsRanking = XLSX.utils.json_to_sheet(rankingData);
-        XLSX.utils.book_append_sheet(wb, wsRanking, "Ranking");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rankRows), "Ranking Individual");
 
-        // 2. Historial de Partidos
-        const partidosData = partidos.map(p => ({
-          "Fecha": p.fecha, "Jugador 1 Pareja A": p.pA_j1, "Jugador 2 Pareja A": p.pA_j2,
-          "Sets A": p.setsA, "Juegos A": p.juegosA, "Jugador 1 Pareja B": p.pB_j1, "Jugador 2 Pareja B": p.pB_j2,
-          "Sets B": p.setsB, "Juegos B": p.juegosB, "Multiplicador": p.tipoPartido, "Sorpresa": p.sorpresa, "WO": p.esWO
+        const partRows = (window.db.partidos || []).map((p, idx) => ({
+          "N": (window.db.partidos || []).length - idx,
+          "Fecha y Marcador": p.fecha,
+          "Pareja A": p.parejaA,
+          "Pareja B": p.parejaB,
+          "Sets": p.resultado,
+          "Juegos": p.juegos || "-",
+          "Ganador": p.ganador === "A" ? "Equipo A" : "Equipo B",
+          "Sorpresa": p.sorpresa || "No",
+          "Acompanantes": p.acompanantes || ""
         }));
-        const wsPartidos = XLSX.utils.json_to_sheet(partidosData);
-        XLSX.utils.book_append_sheet(wb, wsPartidos, "Historial de Partidos");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(partRows), "Partidos");
 
-        XLSX.writeFile(wb, `PadelRank_v2.0_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+        XLSX.writeFile(wb, `PadelRank_v2_Oficial_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        showToast("Excel descargado correctamente");
       } catch (err) {
-        alert("Error al exportar a Excel: " + err.message);
+        showToast("Error al generar Excel", "err");
       }
     }
+
+    window.renderAll = function() {
+      const ordenados = [...(window.db.jugadores || [])].sort((a, b) =>
+        (b.puntos - a.puntos) ||
+        ((b.pj ? b.pg / b.pj : 0) - (a.pj ? a.pg / a.pj : 0)) ||
+        (b.pg - a.pg) ||
+        ((b.difSets || 0) - (a.difSets || 0)) ||
+        ((b.difJuegos || 0) - (a.difJuegos || 0))
+      );
+
+      [0, 1, 2].forEach(idx => {
+        const j = ordenados[idx];
+        document.getElementById(`podio-${idx + 1}-nombre`).textContent = j ? j.nombre : "--";
+        document.getElementById(`podio-${idx + 1}-puntos`).textContent = j ? `${j.puntos} pts` : "-- pts";
+      });
+
+      const cat = document.getElementById("filtro-categoria").value;
+      const filtrados = cat === "todos" ? ordenados : ordenados.filter(j => j.categoria === cat);
+
+      document.getElementById("tbodyRanking").innerHTML = filtrados.length ? filtrados.map((j, i) => {
+        const pct = j.pj > 0 ? Math.round((j.pg / j.pj) * 100) + "%" : "0%";
+        const ds = j.difSets || 0;
+        const dj = j.difJuegos || 0;
+        return `
+          <tr class="border-b border-slate-800/80 hover:bg-slate-800/40">
+            <td class="py-3 px-3 text-center font-bold text-slate-400">${i + 1}</td>
+            <td class="py-3 px-3 font-bold text-white">${j.nombre} <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded ml-1">${j.categoria || "5ta"}</span></td>
+            <td class="py-3 px-2 text-center text-slate-300">${j.pj}</td>
+            <td class="py-3 px-2 text-center text-emerald-400 font-bold">${j.pg}</td>
+            <td class="py-3 px-2 text-center text-rose-400 font-bold">${j.pp}</td>
+            <td class="py-3 px-2 text-center text-indigo-300 font-semibold">${pct}</td>
+            <td class="py-3 px-2 text-center text-slate-300">${ds > 0 ? "+" + ds : ds}</td>
+            <td class="py-3 px-2 text-center text-slate-300">${dj > 0 ? "+" + dj : dj}</td>
+            <td class="py-3 px-4 text-right font-black text-yellow-400">${j.puntos}</td>
+          </tr>
+        `;
+      }).join("") : `<tr><td colspan="9" class="py-6 text-center text-slate-500">Sin jugadores registrados.</td></tr>`;
+
+      const opts = `<option value="">-- Seleccionar --</option>` +
+        [...(window.db.jugadores || [])].sort((a, b) => a.nombre.localeCompare(b.nombre))
+          .map(j => `<option value="${j.id}">${j.nombre} (${j.puntos} pts)</option>`).join("");
+      ["pA1", "pA2", "pB1", "pB2"].forEach(id => {
+        const sel = document.getElementById(id);
+        const prev = sel.value;
+        sel.innerHTML = opts;
+        sel.value = prev;
+      });
+
+      document.getElementById("total-partidos-badge").textContent = (window.db.partidos || []).length;
+      document.getElementById("listaPartidos").innerHTML = (window.db.partidos || []).length ? window.db.partidos.map(p => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-wrap justify-between items-center gap-2">
+          <div>
+            <div class="text-[11px] text-slate-400 flex items-center gap-2">
+              <span>Fecha: ${p.fecha}</span>
+              ${p.sorpresa === "Si" ? `<span class="bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 px-2 py-0.2 rounded-full font-bold">Sorpresa</span>` : ""}
+              ${p.juegos ? `<span class="text-slate-300">Juegos: <strong>${p.juegos}</strong></span>` : ""}
+            </div>
+            <div class="text-xs md:text-sm mt-1">
+              <strong class="${p.ganador === "A" ? "text-emerald-400" : "text-slate-200"}">${p.parejaA}</strong>
+              <span class="text-slate-500 mx-1.5">vs</span>
+              <strong class="${p.ganador === "B" ? "text-emerald-400" : "text-slate-200"}">${p.parejaB}</strong>
+            </div>
+            ${p.acompanantes ? `<div class="text-[11px] text-amber-400 mt-0.5">Acompanante: ${p.acompanantes}</div>` : ""}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="bg-yellow-400 text-slate-950 font-black px-2.5 py-1 rounded-lg text-xs">${p.resultado}</span>
+            <button onclick="eliminarPartido('${p.id}')" class="admin-hide bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-700 px-2 py-1 rounded-lg text-xs font-bold">X</button>
+          </div>
+        </div>
+      `).join("") : `<p class="text-xs text-slate-500">Aun no hay partidos registrados.</p>`;
+
+      if (ordenados.length) {
+        const campeon = ordenados[0];
+        const masPJ = [...ordenados].sort((a, b) => b.pj - a.pj)[0];
+        const masPG = [...ordenados].sort((a, b) => b.pg - a.pg)[0];
+        const mejorPct = [...ordenados].filter(j => j.pj >= 3).sort((a, b) => (b.pg / b.pj) - (a.pg / a.pj))[0] || campeon;
+
+        document.getElementById("gridPremios").innerHTML = `
+          <div class="bg-slate-950 border border-yellow-500/30 rounded-xl p-4">
+            <div class="text-xs text-yellow-400 font-bold uppercase">Lider del Ranking</div>
+            <div class="text-lg font-black text-white mt-1">${campeon.nombre}</div>
+            <div class="text-xs text-slate-400">${campeon.puntos} puntos acumulados</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+            <div class="text-xs text-sky-400 font-bold uppercase">Mas Activo en Cancha</div>
+            <div class="text-lg font-black text-white mt-1">${masPJ.nombre}</div>
+            <div class="text-xs text-slate-400">${masPJ.pj} partidos validos jugados</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+            <div class="text-xs text-emerald-400 font-bold uppercase">Mas Victorias</div>
+            <div class="text-lg font-black text-white mt-1">${masPG.nombre}</div>
+            <div class="text-xs text-slate-400">${masPG.pg} partidos ganados</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+            <div class="text-xs text-indigo-400 font-bold uppercase">Mejor Efectividad (min. 3 PJ)</div>
+            <div class="text-lg font-black text-white mt-1">${mejorPct.nombre}</div>
+            <div class="text-xs text-slate-400">${mejorPct.pj ? Math.round((mejorPct.pg / mejorPct.pj) * 100) : 0}% de victorias</div>
+          </div>
+        `;
+      }
+
+      document.getElementById("total-jugadores-badge").textContent = ordenados.length;
+      document.getElementById("listaJugadoresAdmin").innerHTML = ordenados.map(j => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-wrap justify-between items-center gap-2">
+          <div>
+            <strong class="text-sm text-white">${j.nombre}</strong>
+            <span class="text-xs text-slate-400 ml-1">(${j.categoria || "5ta"})</span>
+            <span class="text-xs text-yellow-400 font-bold ml-2">${j.puntos} pts</span>
+          </div>
+          <div class="admin-hide flex items-center gap-1.5">
+            <button onclick="ajustarPuntos('${j.id}', 10)" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-2 py-1 rounded text-xs font-bold">+10</button>
+            <button onclick="ajustarPuntos('${j.id}', -10)" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2 py-1 rounded text-xs font-bold">-10</button>
+            <button onclick="eliminarJugador('${j.id}')" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-700 px-2 py-1 rounded text-xs font-bold">X</button>
+          </div>
+        </div>
+      `).join("");
+
+      previsualizarPartido();
+    };
   </script>
 </body>
 </html>

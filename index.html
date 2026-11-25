@@ -1,207 +1,309 @@
-
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ranking Sepultureros · Padre Hurtado (v4)</title>
+  <title>Ranking Sepultureros · Padre Hurtado (v4.5)</title>
   <style>
-    :root {
-      --bg: #070b14;
-      --card: #101828;
-      --card-2: #162136;
-      --border: #1e293b;
-      --blue: #3b82f6;
+    :root[data-theme="dark"] {
+      --bg: #050914;
+      --surface: rgba(13, 21, 38, 0.90);
+      --surface-2: rgba(20, 32, 56, 0.95);
+      --border: #1e2d4a;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --violet: #a855f7;
+      --pink: #ec4899;
       --cyan: #06b6d4;
       --ok: #10b981;
       --warn: #f59e0b;
       --bad: #ef4444;
-      --text: #f8fafc;
-      --muted: #94a3b8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: radial-gradient(circle at top, #0f172a 0%, var(--bg) 70%); color: var(--text); min-height: 100vh; padding: 14px; }
+    :root[data-theme="light"] {
+      --bg: #f1f5f9;
+      --surface: rgba(255, 255, 255, 0.92);
+      --surface-2: rgba(248, 250, 252, 0.96);
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --blue: #0284c7;
+      --violet: #7c3aed;
+      --pink: #db2777;
+      --cyan: #0891b2;
+      --ok: #059669;
+      --warn: #d97706;
+      --bad: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+    body {
+      background:
+        radial-gradient(circle at 15% 12%, rgba(56, 189, 248, 0.14), transparent 42%),
+        radial-gradient(circle at 85% 18%, rgba(168, 85, 247, 0.14), transparent 42%),
+        radial-gradient(circle at 50% 88%, rgba(236, 72, 153, 0.08), transparent 48%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 14px;
+    }
     .wrap { max-width: 1040px; margin: 0 auto; }
-    .hero {
-      background: linear-gradient(135deg, #0a1222 0%, #12203a 100%);
-      border: 1px solid #1d4ed8;
-      box-shadow: 0 0 26px rgba(59, 130, 246, 0.3);
+    .topbar {
+      background: linear-gradient(125deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--blue);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.18);
       border-radius: 18px;
-      padding: 18px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
       display: flex;
-      gap: 18px;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
-    .escudo-box {
-      width: 98px;
-      height: 136px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 2px solid var(--cyan);
-      background: #050811;
-      flex-shrink: 0;
-    }
-    .escudo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .hero-body { flex: 1; min-width: 220px; }
-    .pill {
+    .chip {
       display: inline-block;
-      background: rgba(6, 182, 212, 0.14);
-      color: var(--cyan);
-      border: 1px solid rgba(6, 182, 212, 0.35);
       padding: 3px 10px;
       border-radius: 999px;
       font-size: 0.72rem;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
+      background: rgba(168, 85, 247, 0.16);
+      color: var(--violet);
+      border: 1px solid rgba(168, 85, 247, 0.4);
       margin-bottom: 6px;
     }
     h1 {
       font-size: 1.75rem;
-      font-weight: 800;
-      background: linear-gradient(90deg, #fff, #60a5fa, #22d3ee);
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--blue), var(--violet), var(--pink));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .sub { color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
-    .role-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 16px; }
-    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
-    .kpi-k { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; }
-    .kpi-v { font-size: 1.2rem; font-weight: 800; margin-top: 3px; }
-    .kpi-s { font-size: 0.76rem; color: var(--cyan); margin-top: 2px; }
-    .nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
-    .nav button {
-      background: var(--card); color: var(--muted); border: 1px solid var(--border);
-      padding: 9px 14px; border-radius: 11px; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap;
+    .sub { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+    .controls-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--cyan);
+      border-radius: 14px;
+      padding: 12px 14px;
     }
-    .nav button.active { background: linear-gradient(135deg, #2563eb, #0284c7); color: #fff; border-color: #38bdf8; }
-    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; }
-    .panel h2 { font-size: 1.1rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .kpi:nth-child(2) { border-top-color: var(--blue); }
+    .kpi:nth-child(3) { border-top-color: var(--violet); }
+    .kpi:nth-child(4) { border-top-color: var(--pink); }
+    .kpi-l { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; }
+    .kpi-v { font-size: 1.18rem; font-weight: 800; margin-top: 3px; }
+    .kpi-s { font-size: 0.76rem; color: var(--blue); margin-top: 2px; }
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+    .tab {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 9px 14px;
+      border-radius: 11px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #2563eb, #9333ea);
+      color: #fff;
+      border-color: var(--blue);
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      font-size: 1.08rem;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
     .tbl-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     th, td { padding: 9px 7px; border-bottom: 1px solid var(--border); text-align: center; }
-    th { background: #0b111e; color: var(--muted); font-size: 0.74rem; text-transform: uppercase; }
+    th { background: var(--surface-2); color: var(--muted); font-size: 0.74rem; text-transform: uppercase; }
     td.l, th.l { text-align: left; }
-    .rank-num { display: inline-flex; width: 25px; height: 25px; align-items: center; justify-content: center; border-radius: 7px; background: #1e293b; font-weight: 800; font-size: 0.8rem; }
-    .r1 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
-    .r2 { background: rgba(148, 163, 184, 0.2); color: #e2e8f0; border: 1px solid #94a3b8; }
-    .r3 { background: rgba(217, 119, 6, 0.2); color: #f59e0b; border: 1px solid #b45309; }
-    .pts { color: #38bdf8; font-weight: 800; }
-    .plus { color: var(--ok); font-weight: 600; }
-    .minus { color: var(--bad); font-weight: 600; }
-    .match-card { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 9px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .win { color: #38bdf8; font-weight: 800; }
-    .tag-s { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 7px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; }
-    .tag-a { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; padding: 2px 7px; border-radius: 6px; font-size: 0.72rem; margin-top: 4px; display: inline-block; }
+    .pos {
+      display: inline-flex; width: 25px; height: 25px; align-items: center; justify-content: center;
+      border-radius: 7px; background: var(--surface-2); font-weight: 800; font-size: 0.8rem;
+    }
+    .p1 { background: rgba(245, 158, 11, 0.22); color: #fbbf24; border: 1px solid #f59e0b; }
+    .p2 { background: rgba(56, 189, 248, 0.20); color: var(--blue); border: 1px solid var(--blue); }
+    .p3 { background: rgba(236, 72, 153, 0.20); color: var(--pink); border: 1px solid var(--pink); }
+    .pts { color: var(--blue); font-weight: 800; }
+    .plus { color: var(--ok); font-weight: 700; }
+    .minus { color: var(--bad); font-weight: 700; }
+    .match-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--violet);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 9px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .win { color: var(--blue); font-weight: 800; }
+    .tag-s {
+      background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b;
+      padding: 2px 7px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+    }
+    .tag-a {
+      background: rgba(168, 85, 247, 0.18); color: var(--violet);
+      padding: 2px 7px; border-radius: 6px; font-size: 0.72rem; margin-top: 4px; display: inline-block;
+    }
     .grid-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; margin-bottom: 12px; }
     label { display: block; font-size: 0.76rem; color: var(--muted); margin-bottom: 4px; }
-    input, select { width: 100%; background: #090e1a; color: #fff; border: 1px solid #334155; border-radius: 9px; padding: 8px 10px; font-size: 0.86rem; }
-    .btn { background: #1e293b; color: #fff; border: 1px solid #334155; padding: 8px 13px; border-radius: 10px; font-weight: 600; font-size: 0.84rem; cursor: pointer; }
-    .btn-blue { background: linear-gradient(135deg, #4f46e5, #2563eb); border-color: #6366f1; }
-    .btn-green { background: linear-gradient(135deg, #059669, #10b981); border-color: #34d399; }
+    input, select, textarea {
+      width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 9px; padding: 8px 10px; font-size: 0.86rem;
+    }
+    .btn {
+      background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+      padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 0.82rem; cursor: pointer;
+    }
+    .btn-neon { background: linear-gradient(135deg, #0284c7, #9333ea); color: #fff; border: none; }
+    .btn-ok { background: linear-gradient(135deg, #059669, #0891b2); color: #fff; border: none; }
     .awards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
-    .award { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .award { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .modal-bg {
+      position: fixed; inset: 0; z-index: 50; background: rgba(2, 6, 15, 0.78);
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--blue); border-radius: 16px;
+      padding: 20px; width: 100%; max-width: 380px;
+    }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="hero">
-    <div class="escudo-box">
-      <img src="data:image/png;base64,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" alt="Los Sepultureros de Padre Hurtado" />
-    </div>
-    <div class="hero-body">
-      <span class="pill">Padre Hurtado · Versión 4</span>
-      <h1 id="titleApp">Ranking Sepultureros</h1>
-      <p class="sub">Los Sepultureros de Padre Hurtado · Cierre 54 Partidos (Lógica Excel v3.1)</p>
-      <div class="role-row">
-        <select id="roleSel" style="max-width:225px;" onchange="setRole()">
-          <option value="view">👁️ Vista Espectador</option>
-          <option value="admin_cesario">🛡️ Admin: Césario</option>
-          <option value="admin_mauro">🛡️ Admin: Mauricio Hernández</option>
+<div id="loginModal" class="modal-bg hidden">
+  <div class="modal-box">
+    <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros</h3>
+    <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Selecciona tu perfil para administrar en Firebase.</p>
+    <form onsubmit="doLogin(event)">
+      <div style="margin-bottom:10px;">
+        <label>Usuario</label>
+        <select id="uSel">
+          <option value="Césario">Césario (Admin)</option>
+          <option value="Mauricio Hernández">Mauricio Hernández (Admin)</option>
+          <option value="Espectador">Espectador</option>
         </select>
-        <span id="roleTag" class="pill" style="margin:0;">Modo Lectura</span>
       </div>
+      <div style="margin-bottom:12px;">
+        <label>Clave / PIN</label>
+        <input type="password" id="uPass" placeholder="Opcional" />
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button type="button" class="btn" onclick="closeModal()">Cerrar</button>
+        <button type="submit" class="btn btn-neon">Entrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <span class="chip">Padre Hurtado · v4.5 Firebase</span>
+      <h1 id="appTitle">Ranking Sepultureros</h1>
+      <p class="sub" id="dbStatus">Listo para conectar a Firebase (padelrank-6jrs4 · southamerica-east1)</p>
+    </div>
+    <div class="controls-top">
+      <button type="button" class="btn" onclick="toggleTheme()" id="btnTheme">🌓 Tema</button>
+      <span class="chip" id="sessionChip" style="margin:0;">👁️ Espectador</span>
+      <button type="button" class="btn btn-neon" id="btnLogin" onclick="openModal()">🔑 Login</button>
+      <button type="button" class="btn hidden" id="btnLogout" onclick="doLogout()">Salir</button>
     </div>
   </div>
 
   <div class="kpis">
-    <div class="kpi"><div class="kpi-k">Partidos Válidos</div><div class="kpi-v" id="kPart">54</div><div class="kpi-s">Cierre Oficial</div></div>
-    <div class="kpi"><div class="kpi-k">Líder</div><div class="kpi-v" id="kLead">Job Cortes</div><div class="kpi-s" id="kLeadPts">1080 pts</div></div>
-    <div class="kpi"><div class="kpi-k">Más Ganó</div><div class="kpi-v" id="kWin">Job Cortes</div><div class="kpi-s" id="kWinSub">10 victorias</div></div>
-    <div class="kpi"><div class="kpi-k">Más Jugados</div><div class="kpi-v" id="kPj">Franco Araos</div><div class="kpi-s" id="kPjSub">17 partidos</div></div>
+    <div class="kpi"><div class="kpi-l">Partidos</div><div class="kpi-v" id="kPart">0</div><div class="kpi-s">Firestore / JSON</div></div>
+    <div class="kpi"><div class="kpi-l">Líder</div><div class="kpi-v" id="kLead">-</div><div class="kpi-s" id="kLeadPts">0 pts</div></div>
+    <div class="kpi"><div class="kpi-l">Más Ganó</div><div class="kpi-v" id="kWin">-</div><div class="kpi-s" id="kWinSub">0 PG</div></div>
+    <div class="kpi"><div class="kpi-l">Más PJ</div><div class="kpi-v" id="kPj">-</div><div class="kpi-s" id="kPjSub">0 PJ</div></div>
   </div>
 
-  <div class="nav">
-    <button class="active" onclick="openTab('rank', this)">🏆 Ranking</button>
-    <button onclick="openTab('matches', this)">🎾 Partidos</button>
-    <button onclick="openTab('week', this)">📅 Resumen Semanal</button>
-    <button onclick="openTab('ctrl', this)">📋 Control Semanal</button>
-    <button onclick="openTab('awards', this)">🎖️ Premios</button>
-    <button onclick="openTab('add', this)">➕ Nuevo Partido</button>
-    <button onclick="openTab('backup', this)">💾 Respaldo y Reglas</button>
+  <div class="tabs">
+    <button class="tab active" onclick="goTab('rank', this)">🏆 Ranking</button>
+    <button class="tab" onclick="goTab('matches', this)">🎾 Partidos</button>
+    <button class="tab" onclick="goTab('week', this)">📅 Resumen Semanal</button>
+    <button class="tab" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
+    <button class="tab" onclick="goTab('awards', this)">🎖️ Premios</button>
+    <button class="tab" onclick="goTab('add', this)">➕ Nuevo Partido</button>
+    <button class="tab" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
   </div>
 
-  <div id="tab-rank" class="panel">
+  <div id="tab-rank" class="card">
     <h2><span>🏆 Ranking Individual</span><span style="font-size:0.76rem; color:var(--muted);">Rating → % Vic → PG → Dif Sets → Dif Juegos</span></h2>
     <div class="tbl-wrap">
       <table>
-        <thead>
-          <tr><th>Pos</th><th class="l">Jugador</th><th>Pts</th><th>PJ</th><th>PG</th><th>PP</th><th>% Vic</th><th>2-0</th><th>2-1</th><th>1-2</th><th>0-2</th><th>Dif Sets</th><th>Dif Jue</th></tr>
-        </thead>
+        <thead><tr><th>Pos</th><th class="l">Jugador</th><th>Pts</th><th>PJ</th><th>PG</th><th>PP</th><th>% Vic</th><th>2-0</th><th>2-1</th><th>1-2</th><th>0-2</th><th>Dif Sets</th><th>Dif Jue</th></tr></thead>
         <tbody id="rankBody"></tbody>
       </table>
     </div>
   </div>
 
-  <div id="tab-matches" class="panel hidden">
-    <h2>🎾 Partidos Registrados</h2>
+  <div id="tab-matches" class="card hidden">
+    <h2>🎾 Partidos</h2>
     <div style="margin-bottom:10px;"><input type="text" id="qMatch" placeholder="Buscar jugador, fecha o #partido..." oninput="drawMatches()" /></div>
     <div id="matchList"></div>
   </div>
 
-  <div id="tab-week" class="panel hidden">
+  <div id="tab-week" class="card hidden">
     <h2><span>📅 Resumen Semanal</span><select id="wkSel" style="width:auto;" onchange="drawWeek()"></select></h2>
     <div id="wkKpis" class="kpis"></div>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Pos</th><th class="l">Jugador</th><th>Pts Sem</th><th>PG Sem</th><th>PP Sem</th><th>Rating Acum</th><th>PJ Acum</th></tr></thead>
+        <thead><tr><th>Pos</th><th class="l">Jugador</th><th>Pts Sem</th><th>PG Sem</th><th>PP Sem</th><th>Pts Acum</th><th>PJ Acum</th></tr></thead>
         <tbody id="wkBody"></tbody>
       </table>
     </div>
   </div>
 
-  <div id="tab-ctrl" class="panel hidden">
-    <h2><span>📋 Control Semanal (Máx. 2 Válidos / Semana)</span><input type="text" id="qCtrl" placeholder="Filtrar..." style="max-width:220px;" oninput="drawCtrl()" /></h2>
+  <div id="tab-ctrl" class="card hidden">
+    <h2><span>📋 Control Semanal (Tope 2 Válidos)</span><input type="text" id="qCtrl" placeholder="Filtrar..." style="max-width:220px;" oninput="drawCtrl()" /></h2>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Válidos</th><th>Tope</th><th>Estado</th></tr></thead>
+        <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Válidos</th><th>Límite</th><th>Estado</th></tr></thead>
         <tbody id="ctrlBody"></tbody>
       </table>
     </div>
   </div>
 
-  <div id="tab-awards" class="panel hidden">
-    <h2>🎖️ Premios Automáticos y Especiales</h2>
+  <div id="tab-awards" class="card hidden">
+    <h2>🎖️ Premios</h2>
     <div id="awardsBox" class="awards"></div>
-    <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); max-width:420px;">
-      <label for="revInp">Jugador Revelación (Manual)</label>
+    <div style="margin-top:14px; max-width:420px;">
+      <label>Jugador Revelación (Manual)</label>
       <div style="display:flex; gap:8px;">
         <input type="text" id="revInp" placeholder="Nombre jugador revelación" />
-        <button class="btn btn-blue" onclick="saveRev()">Guardar</button>
+        <button type="button" class="btn btn-neon" onclick="saveRev()">Guardar</button>
       </div>
     </div>
   </div>
 
-  <div id="tab-add" class="panel hidden">
+  <div id="tab-add" class="card hidden">
     <h2>➕ Registrar Partido (Solo Admins)</h2>
-    <p id="admNote" style="color:#fbbf24; font-size:0.86rem; margin-bottom:10px;">Selecciona un perfil Admin arriba para guardar partidos.</p>
-    <form onsubmit="saveMatch(event)">
+    <p id="admWarn" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Admin para guardar en Firebase.</p>
+    <form onsubmit="addMatch(event)">
       <div class="grid-f">
         <div><label>Fecha</label><input type="date" id="fDate" required /></div>
-        <div><label>Sets (ej: 6-4/6-3)</label><input type="text" id="fSetsTxt" placeholder="6-4/6-3" required /></div>
+        <div><label>Sets (ej: 6-4/6-3)</label><input type="text" id="fSets" placeholder="6-4/6-3" required /></div>
         <div><label>Equipo A - Jug 1</label><select id="pA1"></select></div>
         <div><label>Equipo A - Jug 2</label><select id="pA2"></select></div>
         <div><label>Equipo B - Jug 1</label><select id="pB1"></select></div>
@@ -212,2442 +314,371 @@
         <div><label>Juegos B</label><input type="number" id="jB" value="6" min="0" required /></div>
         <div><label>WO</label><select id="woSel"><option value="No">No</option><option value="Sí">Sí</option></select></div>
       </div>
-      <button type="submit" class="btn btn-green" id="btnSave">💾 Guardar y Recalcular</button>
+      <button type="submit" class="btn btn-ok" id="btnSaveMatch">💾 Guardar en Firebase y Recalcular</button>
     </form>
   </div>
 
-  <div id="tab-backup" class="panel hidden">
-    <h2>💾 Respaldo (.JSON) y Reglas</h2>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
-      <button class="btn" onclick="dlJson()">⬇️ Descargar .json</button>
-      <button class="btn btn-blue" onclick="pickJson()">⬆️ Restaurar .json</button>
-      <button class="btn" onclick="resetOfficial()">🔄 Restablecer 54 Partidos</button>
-      <input type="file" id="upJson" accept=".json" class="hidden" onchange="loadJsonFile(event)" />
+  <div id="tab-cloud" class="card hidden">
+    <h2>☁️ Firebase (padelrank-6jrs4) y Respaldo JSON</h2>
+    <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
+      Sin código en duro: lee y escribe en Firestore (<code>sepultureros/liga_2026</code>), con caché local y respaldo/restauración <code>.json</code>.
+    </p>
+    <div style="margin-bottom:12px;">
+      <label>Firebase Config JSON</label>
+      <textarea id="fbConfigArea" rows="4" placeholder='{"apiKey":"...","authDomain":"...","projectId":"padelrank-6jrs4"}'></textarea>
+      <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-neon" onclick="saveFbConfig()">Conectar Firebase</button>
+        <button type="button" class="btn btn-ok" onclick="pushToCloud()">☁️ Subir a Firestore</button>
+        <button type="button" class="btn" onclick="pullFromCloud()">🔄 Leer de Firestore</button>
+        <button type="button" class="btn" onclick="exportJson()">⬇️ Exportar .json</button>
+        <button type="button" class="btn" onclick="triggerImport()">⬆️ Importar .json</button>
+        <input type="file" id="fileImport" accept=".json" class="hidden" onchange="importJson(event)" />
+      </div>
     </div>
-    <ul style="padding-left:18px; color:#cbd5e1; font-size:0.86rem; line-height:1.65;">
-      <li>Base inicial: 100 pts. Victoria 2-0: +100 / derrota +20. Victoria 2-1: +80 / derrota +40. WO: +100 ganador / 0 perdedor.</li>
-      <li>Sorpresa: si gana la pareja con menor promedio previo, ganador +30 extra y perdedor -30.</li>
-      <li>Tope semanal: 2 partidos válidos por jugador (lunes a domingo); desde el 3° actúa como acompañante (0 pts).</li>
-    </ul>
   </div>
 </div>
 
-<script>
-const BASE_DATA = {
-  "jugadores": [
-    {
-      "id": "jug_1",
-      "nombre": "Job Cortes",
-      "categoria": "5ta",
-      "puntos": 1080,
-      "pj": 15,
-      "pg": 10,
-      "pp": 5,
-      "difSets": 10,
-      "difJuegos": 29,
-      "g20": 5,
-      "g21": 5,
-      "p12": 5,
-      "p02": 0
-    },
-    {
-      "id": "jug_2",
-      "nombre": "Mauricio Hernández",
-      "categoria": "5ta",
-      "puntos": 950,
-      "pj": 12,
-      "pg": 9,
-      "pp": 3,
-      "difSets": 9,
-      "difJuegos": 24,
-      "g20": 3,
-      "g21": 6,
-      "p12": 3,
-      "p02": 0
-    },
-    {
-      "id": "jug_3",
-      "nombre": "Italo Olivos",
-      "categoria": "5ta",
-      "puntos": 820,
-      "pj": 11,
-      "pg": 6,
-      "pp": 5,
-      "difSets": 2,
-      "difJuegos": 6,
-      "g20": 2,
-      "g21": 4,
-      "p12": 4,
-      "p02": 1
-    },
-    {
-      "id": "jug_4",
-      "nombre": "Ignacio Pardo",
-      "categoria": "5ta",
-      "puntos": 690,
-      "pj": 7,
-      "pg": 5,
-      "pp": 2,
-      "difSets": 4,
-      "difJuegos": 10,
-      "g20": 2,
-      "g21": 3,
-      "p12": 1,
-      "p02": 1
-    },
-    {
-      "id": "jug_5",
-      "nombre": "Franco Araos",
-      "categoria": "5ta",
-      "puntos": 610,
-      "pj": 17,
-      "pg": 7,
-      "pp": 10,
-      "difSets": -1,
-      "difJuegos": -7,
-      "g20": 3,
-      "g21": 4,
-      "p12": 9,
-      "p02": 1
-    },
-    {
-      "id": "jug_6",
-      "nombre": "Benjamin Maldonado",
-      "categoria": "5ta",
-      "puntos": 590,
-      "pj": 7,
-      "pg": 4,
-      "pp": 3,
-      "difSets": 2,
-      "difJuegos": -2,
-      "g20": 2,
-      "g21": 2,
-      "p12": 2,
-      "p02": 1
-    },
-    {
-      "id": "jug_7",
-      "nombre": "Abel Castillo",
-      "categoria": "5ta",
-      "puntos": 560,
-      "pj": 9,
-      "pg": 4,
-      "pp": 5,
-      "difSets": -3,
-      "difJuegos": -5,
-      "g20": 2,
-      "g21": 2,
-      "p12": 1,
-      "p02": 4
-    },
-    {
-      "id": "jug_8",
-      "nombre": "Mario Espinoza",
-      "categoria": "5ta",
-      "puntos": 550,
-      "pj": 10,
-      "pg": 5,
-      "pp": 5,
-      "difSets": 0,
-      "difJuegos": -10,
-      "g20": 2,
-      "g21": 3,
-      "p12": 3,
-      "p02": 2
-    },
-    {
-      "id": "jug_9",
-      "nombre": "Marco Zurita",
-      "categoria": "5ta",
-      "puntos": 540,
-      "pj": 8,
-      "pg": 4,
-      "pp": 4,
-      "difSets": 2,
-      "difJuegos": -2,
-      "g20": 2,
-      "g21": 2,
-      "p12": 4,
-      "p02": 0
-    },
-    {
-      "id": "jug_10",
-      "nombre": "Andres Sandoval",
-      "categoria": "5ta",
-      "puntos": 460,
-      "pj": 8,
-      "pg": 3,
-      "pp": 5,
-      "difSets": -2,
-      "difJuegos": 6,
-      "g20": 1,
-      "g21": 2,
-      "p12": 4,
-      "p02": 1
-    },
-    {
-      "id": "jug_11",
-      "nombre": "Rafael Salazar",
-      "categoria": "5ta",
-      "puntos": 450,
-      "pj": 7,
-      "pg": 3,
-      "pp": 4,
-      "difSets": -4,
-      "difJuegos": -13,
-      "g20": 0,
-      "g21": 3,
-      "p12": 1,
-      "p02": 3
-    },
-    {
-      "id": "jug_12",
-      "nombre": "Raúl Salas",
-      "categoria": "5ta",
-      "puntos": 440,
-      "pj": 4,
-      "pg": 3,
-      "pp": 1,
-      "difSets": 2,
-      "difJuegos": 8,
-      "g20": 0,
-      "g21": 3,
-      "p12": 1,
-      "p02": 0
-    },
-    {
-      "id": "jug_13",
-      "nombre": "Miguel Ramirez",
-      "categoria": "5ta",
-      "puntos": 420,
-      "pj": 6,
-      "pg": 3,
-      "pp": 3,
-      "difSets": 0,
-      "difJuegos": 8,
-      "g20": 1,
-      "g21": 2,
-      "p12": 2,
-      "p02": 1
-    },
-    {
-      "id": "jug_14",
-      "nombre": "Rodrigo Bustos",
-      "categoria": "5ta",
-      "puntos": 390,
-      "pj": 11,
-      "pg": 4,
-      "pp": 7,
-      "difSets": -3,
-      "difJuegos": 3,
-      "g20": 2,
-      "g21": 2,
-      "p12": 5,
-      "p02": 2
-    },
-    {
-      "id": "jug_15",
-      "nombre": "Arturo Silva",
-      "categoria": "5ta",
-      "puntos": 380,
-      "pj": 6,
-      "pg": 2,
-      "pp": 4,
-      "difSets": -2,
-      "difJuegos": -2,
-      "g20": 2,
-      "g21": 0,
-      "p12": 2,
-      "p02": 2
-    },
-    {
-      "id": "jug_16",
-      "nombre": "Pablo Lamilla",
-      "categoria": "5ta",
-      "puntos": 370,
-      "pj": 5,
-      "pg": 2,
-      "pp": 3,
-      "difSets": -1,
-      "difJuegos": -11,
-      "g20": 1,
-      "g21": 1,
-      "p12": 2,
-      "p02": 1
-    },
-    {
-      "id": "jug_18",
-      "nombre": "Ruben Ibarra",
-      "categoria": "5ta",
-      "puntos": 350,
-      "pj": 5,
-      "pg": 2,
-      "pp": 3,
-      "difSets": -2,
-      "difJuegos": -3,
-      "g20": 0,
-      "g21": 2,
-      "p12": 2,
-      "p02": 1
-    },
-    {
-      "id": "jug_17",
-      "nombre": "Erick Flores",
-      "categoria": "5ta",
-      "puntos": 330,
-      "pj": 4,
-      "pg": 2,
-      "pp": 2,
-      "difSets": -1,
-      "difJuegos": 3,
-      "g20": 0,
-      "g21": 2,
-      "p12": 1,
-      "p02": 1
-    },
-    {
-      "id": "jug_20",
-      "nombre": "César Torres",
-      "categoria": "5ta",
-      "puntos": 320,
-      "pj": 4,
-      "pg": 2,
-      "pp": 2,
-      "difSets": 1,
-      "difJuegos": 2,
-      "g20": 2,
-      "g21": 0,
-      "p12": 1,
-      "p02": 1
-    },
-    {
-      "id": "jug_31",
-      "nombre": "Don Daniel",
-      "categoria": "5ta",
-      "puntos": 310,
-      "pj": 4,
-      "pg": 1,
-      "pp": 3,
-      "difSets": -3,
-      "difJuegos": -7,
-      "g20": 1,
-      "g21": 0,
-      "p12": 1,
-      "p02": 2
-    },
-    {
-      "id": "jug_32",
-      "nombre": "Invitado",
-      "categoria": "5ta",
-      "puntos": 300,
-      "pj": 4,
-      "pg": 2,
-      "pp": 2,
-      "difSets": 0,
-      "difJuegos": -5,
-      "g20": 1,
-      "g21": 1,
-      "p12": 1,
-      "p02": 1
-    },
-    {
-      "id": "jug_19",
-      "nombre": "Joshua Flores",
-      "categoria": "5ta",
-      "puntos": 300,
-      "pj": 5,
-      "pg": 2,
-      "pp": 3,
-      "difSets": -2,
-      "difJuegos": -7,
-      "g20": 1,
-      "g21": 1,
-      "p12": 1,
-      "p02": 2
-    },
-    {
-      "id": "jug_21",
-      "nombre": "Jose Vistoso",
-      "categoria": "5ta",
-      "puntos": 270,
-      "pj": 2,
-      "pg": 1,
-      "pp": 1,
-      "difSets": 1,
-      "difJuegos": -7,
-      "g20": 1,
-      "g21": 0,
-      "p12": 1,
-      "p02": 0
-    },
-    {
-      "id": "jug_22",
-      "nombre": "Luis Gamboa",
-      "categoria": "5ta",
-      "puntos": 250,
-      "pj": 2,
-      "pg": 1,
-      "pp": 1,
-      "difSets": 0,
-      "difJuegos": -2,
-      "g20": 1,
-      "g21": 0,
-      "p12": 0,
-      "p02": 1
-    },
-    {
-      "id": "jug_23",
-      "nombre": "Guido Gonzalez",
-      "categoria": "5ta",
-      "puntos": 240,
-      "pj": 3,
-      "pg": 1,
-      "pp": 2,
-      "difSets": -2,
-      "difJuegos": -4,
-      "g20": 0,
-      "g21": 1,
-      "p12": 1,
-      "p02": 1
-    },
-    {
-      "id": "jug_24",
-      "nombre": "Braulio",
-      "categoria": "5ta",
-      "puntos": 230,
-      "pj": 1,
-      "pg": 1,
-      "pp": 0,
-      "difSets": 2,
-      "difJuegos": 8,
-      "g20": 1,
-      "g21": 0,
-      "p12": 0,
-      "p02": 0
-    },
-    {
-      "id": "jug_25",
-      "nombre": "Angelo Espinaza",
-      "categoria": "5ta",
-      "puntos": 230,
-      "pj": 1,
-      "pg": 1,
-      "pp": 0,
-      "difSets": 2,
-      "difJuegos": 4,
-      "g20": 1,
-      "g21": 0,
-      "p12": 0,
-      "p02": 0
-    },
-    {
-      "id": "jug_26",
-      "nombre": "David Polanco",
-      "categoria": "5ta",
-      "puntos": 230,
-      "pj": 1,
-      "pg": 1,
-      "pp": 0,
-      "difSets": 2,
-      "difJuegos": 4,
-      "g20": 1,
-      "g21": 0,
-      "p12": 0,
-      "p02": 0
-    },
-    {
-      "id": "jug_27",
-      "nombre": "Jose Araya",
-      "categoria": "5ta",
-      "puntos": 210,
-      "pj": 1,
-      "pg": 1,
-      "pp": 0,
-      "difSets": 1,
-      "difJuegos": 4,
-      "g20": 0,
-      "g21": 1,
-      "p12": 0,
-      "p02": 0
-    },
-    {
-      "id": "jug_28",
-      "nombre": "Julio Puentes",
-      "categoria": "5ta",
-      "puntos": 200,
-      "pj": 1,
-      "pg": 1,
-      "pp": 0,
-      "difSets": 2,
-      "difJuegos": 6,
-      "g20": 1,
-      "g21": 0,
-      "p12": 0,
-      "p02": 0
-    },
-    {
-      "id": "jug_29",
-      "nombre": "Patricio Cerda",
-      "categoria": "5ta",
-      "puntos": 180,
-      "pj": 2,
-      "pg": 1,
-      "pp": 1,
-      "difSets": -1,
-      "difJuegos": -4,
-      "g20": 0,
-      "g21": 1,
-      "p12": 0,
-      "p02": 1
-    },
-    {
-      "id": "jug_30",
-      "nombre": "Patricio Torres",
-      "categoria": "5ta",
-      "puntos": 180,
-      "pj": 2,
-      "pg": 1,
-      "pp": 1,
-      "difSets": -1,
-      "difJuegos": -4,
-      "g20": 0,
-      "g21": 1,
-      "p12": 0,
-      "p02": 1
-    },
-    {
-      "id": "jug_33",
-      "nombre": "Juan Alfaro",
-      "categoria": "5ta",
-      "puntos": 120,
-      "pj": 1,
-      "pg": 0,
-      "pp": 1,
-      "difSets": -2,
-      "difJuegos": -5,
-      "g20": 0,
-      "g21": 0,
-      "p12": 0,
-      "p02": 1
-    },
-    {
-      "id": "jug_34",
-      "nombre": "Sebastian Garcia",
-      "categoria": "5ta",
-      "puntos": 120,
-      "pj": 1,
-      "pg": 0,
-      "pp": 1,
-      "difSets": -2,
-      "difJuegos": -5,
-      "g20": 0,
-      "g21": 0,
-      "p12": 0,
-      "p02": 1
-    }
-  ],
-  "equipos": [],
-  "partidos": [
-    {
-      "id": "part_54",
-      "fecha": "24-11-2026 (6-4/7-5)",
-      "parejaA": "Don Daniel / Invitado",
-      "parejaB": "Erick Flores / Joshua Flores",
-      "resultado": "2 - 0",
-      "juegos": "13 - 9",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_53",
-      "fecha": "24-11-2026 (6-3/4-6/6-2)",
-      "parejaA": "Ruben Ibarra / Italo Olivos",
-      "parejaB": "Franco Araos / Rodrigo Bustos",
-      "resultado": "2 - 1",
-      "juegos": "16 - 11",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_52",
-      "fecha": "24-11-2026 (3-6/6-1/6-4)",
-      "parejaA": "Job Cortes / Abel Castillo",
-      "parejaB": "Mauricio Hernández / Mario Espinoza",
-      "resultado": "2 - 1",
-      "juegos": "15 - 11",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_51",
-      "fecha": "20-11-2026 (4-6/6-3/6-4)",
-      "parejaA": "Erick Flores / Abel Castillo",
-      "parejaB": "Joshua Flores / Benjamin Maldonado",
-      "resultado": "2 - 1",
-      "juegos": "16 - 13",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Abel Castillo, Benjamin Maldonado"
-    },
-    {
-      "id": "part_50",
-      "fecha": "20-11-2026 (4-6/4-6)",
-      "parejaA": "Job Cortes / Mauricio Hernández",
-      "parejaB": "Benjamin Maldonado / Joshua Flores",
-      "resultado": "0 - 2",
-      "juegos": "8 - 12",
-      "ganador": "B",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Job Cortes, Mauricio Hernández, Benjamin Maldonado"
-    },
-    {
-      "id": "part_49",
-      "fecha": "20-11-2026 (6-4/6-4)",
-      "parejaA": "David Polanco / Guido Gonzalez",
-      "parejaB": "Mauricio Hernández / Mario Espinoza",
-      "resultado": "2 - 0",
-      "juegos": "12 - 8",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Guido Gonzalez, Mauricio Hernández, Mario Espinoza"
-    },
-    {
-      "id": "part_48",
-      "fecha": "23-11-2026 (6-2/4-6/6-4)",
-      "parejaA": "Ignacio Pardo / Jose Araya",
-      "parejaB": "Marco Zurita / César Torres",
-      "resultado": "2 - 1",
-      "juegos": "16 - 12",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_47",
-      "fecha": "20-11-2026 (6-1/7-6)",
-      "parejaA": "Julio Puentes / Franco Araos",
-      "parejaB": "Don Daniel / César Torres",
-      "resultado": "2 - 0",
-      "juegos": "13 - 7",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Franco Araos"
-    },
-    {
-      "id": "part_46",
-      "fecha": "20-11-2026 (7-5/6-4)",
-      "parejaA": "Job Cortes / Abel Castillo",
-      "parejaB": "Marco Zurita / Benjamin Maldonado",
-      "resultado": "2 - 0",
-      "juegos": "13 - 9",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Job Cortes, Marco Zurita, Benjamin Maldonado"
-    },
-    {
-      "id": "part_45",
-      "fecha": "19-11-2026 (6-376-1)",
-      "parejaA": "Mario Espinoza / Mauricio Hernández",
-      "parejaB": "Guido Gonzalez / Italo Olivos",
-      "resultado": "2 - 0",
-      "juegos": "12 - 4",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Mario Espinoza, Guido Gonzalez, Italo Olivos"
-    },
-    {
-      "id": "part_44",
-      "fecha": "18-11-2026 (6-4/6-3)",
-      "parejaA": "Mario Espinoza / Ignacio Pardo",
-      "parejaB": "Job Cortes / Abel Castillo",
-      "resultado": "2 - 0",
-      "juegos": "12 - 7",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Ignacio Pardo, Job Cortes"
-    },
-    {
-      "id": "part_43",
-      "fecha": "17-11-2026 (4-6/5-7)",
-      "parejaA": "Franco Araos / Rodrigo Bustos",
-      "parejaB": "Jose Vistoso / Pablo Lamilla",
-      "resultado": "0 - 2",
-      "juegos": "13 - 9",
-      "ganador": "B",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Franco Araos"
-    },
-    {
-      "id": "part_42",
-      "fecha": "17-11-2026 (2-6/6-3/6-2)",
-      "parejaA": "Guido Gonzalez / Job Cortes",
-      "parejaB": "Benjamin Maldonado / Marco Zurita",
-      "resultado": "2 - 1",
-      "juegos": "14 - 11",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Job Cortes"
-    },
-    {
-      "id": "part_41",
-      "fecha": "16-11-2026 (6-3/6-1)",
-      "parejaA": "Arturo Silva / Braulio",
-      "parejaB": "Patricio Cerda / Patricio Torres",
-      "resultado": "2 - 0",
-      "juegos": "12 - 4",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_40",
-      "fecha": "16-11-2026 (6-3/6-2)",
-      "parejaA": "Job Cortes / César Torres",
-      "parejaB": "Franco Araos / Rafael Salazar",
-      "resultado": "2 - 0",
-      "juegos": "12 - 5",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Franco Araos"
-    },
-    {
-      "id": "part_39",
-      "fecha": "16-11-2026 (2-6/6-4/7-5)",
-      "parejaA": "Benjamin Maldonado / Marco Zurita",
-      "parejaB": "Rodrigo Bustos / Raúl Salas",
-      "resultado": "2 - 1",
-      "juegos": "15 - 15",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_38",
-      "fecha": "16-11-2026 (2-6/7-5/7-5)",
-      "parejaA": "Job Cortes / Mario Espinoza",
-      "parejaB": "Guido Gonzalez / Franco Araos",
-      "resultado": "2 - 1",
-      "juegos": "16 - 16",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_37",
-      "fecha": "16-11-2026 (4-6/6-4/6-2)",
-      "parejaA": "Mauricio Hernández / Ignacio Pardo",
-      "parejaB": "Italo Olivos / Ruben Ibarra",
-      "resultado": "2 - 1",
-      "juegos": "16 - 12",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_36",
-      "fecha": "16-11-2026 (7-5/6-4)",
-      "parejaA": "Ignacio Pardo / Italo Olivos",
-      "parejaB": "Franco Araos / Don Daniel",
-      "resultado": "2 - 0",
-      "juegos": "13 - 9",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_35",
-      "fecha": "13-11-2026 (6-1/7-6)",
-      "parejaA": "Job Cortes / Benjamin Maldonado",
-      "parejaB": "Arturo Silva / Rafael Salazar",
-      "resultado": "2 - 0",
-      "juegos": "12 - 7",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Job Cortes"
-    },
-    {
-      "id": "part_34",
-      "fecha": "13-11-2026 (6-4/6-1)",
-      "parejaA": "Miguel Ramirez / Andres Sandoval",
-      "parejaB": "Mauricio Hernández / Mario Espinoza",
-      "resultado": "2 - 0",
-      "juegos": "12 - 5",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Mauricio Hernández"
-    },
-    {
-      "id": "part_33",
-      "fecha": "10-11-2026 (6-3/3-6/6-3)",
-      "parejaA": "Miguel Ramirez / Invitado",
-      "parejaB": "Pablo Lamilla / Jose Vistoso",
-      "resultado": "2 - 1",
-      "juegos": "15 - 12",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_32",
-      "fecha": "11-11-2026 (3-6/7-5/6-4)",
-      "parejaA": "Italo Olivos / Franco Araos",
-      "parejaB": "Don Daniel / Andres Sandoval",
-      "resultado": "2 - 1",
-      "juegos": "16 - 15",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_31",
-      "fecha": "11-11-2026 (6-3/6-1)",
-      "parejaA": "Mauricio Hernández / Job Cortes",
-      "parejaB": "Ruben Ibarra / Abel Castillo",
-      "resultado": "2 - 0",
-      "juegos": "12 - 4",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_30",
-      "fecha": "10-11-2026 (7-5/2-6/6-0)",
-      "parejaA": "Patricio Cerda / Patricio Torres",
-      "parejaB": "Arturo Silva / Invitado",
-      "resultado": "2 - 1",
-      "juegos": "15 - 11",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_29",
-      "fecha": "10-11-2026 (7-6/6-7/6-3)",
-      "parejaA": "Job Cortes / Abel Castillo",
-      "parejaB": "Mauricio Hernández / Mario Espinoza",
-      "resultado": "2 - 1",
-      "juegos": "19 - 16",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_28",
-      "fecha": "07-11-2026 (6-0/6-4)",
-      "parejaA": "Job Cortes / Abel Castillo",
-      "parejaB": "Benjamin Maldonado / Joshua Flores",
-      "resultado": "2 - 0",
-      "juegos": "12 - 4",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_27",
-      "fecha": "05-11-2026 (6-1/6-4)",
-      "parejaA": "Marco Zurita / Benjamin Maldonado",
-      "parejaB": "Arturo Silva / Invitado",
-      "resultado": "2 - 0",
-      "juegos": "12 - 4",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_26",
-      "fecha": "05-11-2026 (0-6/7-5/6-2)",
-      "parejaA": "Raúl Salas / Rafael Salazar",
-      "parejaB": "Arturo Silva / Erick Flores",
-      "resultado": "2 - 1",
-      "juegos": "13 - 13",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_25",
-      "fecha": "04-11-2026 (6-7/6-4/6-0)",
-      "parejaA": "Ruben Ibarra / Italo Olivos",
-      "parejaB": "Job Cortes / Franco Araos",
-      "resultado": "2 - 1",
-      "juegos": "18 - 11",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_24",
-      "fecha": "03-11-2026 (4-6/6-3/6-3)",
-      "parejaA": "Raúl Salas / Rafael Salazar",
-      "parejaB": "Franco Araos / Rodrigo Bustos",
-      "resultado": "2 - 1",
-      "juegos": "16 - 12",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_23",
-      "fecha": "30-10-2026 (2-6/6-2/6-3)",
-      "parejaA": "Mauricio Hernández / Job Cortes",
-      "parejaB": "Franco Araos / Rodrigo Bustos",
-      "resultado": "2 - 1",
-      "juegos": "14 - 11",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Job Cortes"
-    },
-    {
-      "id": "part_22",
-      "fecha": "29-10-2026 (6-1/6-4)",
-      "parejaA": "Arturo Silva / Italo Olivos",
-      "parejaB": "Guido Gonzalez / Luis Gamboa",
-      "resultado": "2 - 0",
-      "juegos": "12 - 5",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_21",
-      "fecha": "29-10-2026 (6-3/7-6)",
-      "parejaA": "Mauricio Hernández / Mario Espinoza",
-      "parejaB": "Abel Castillo / Miguel Ramirez",
-      "resultado": "2 - 0",
-      "juegos": "13 - 9",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_20",
-      "fecha": "29-10-2026 (6-7/7-6/2-6)",
-      "parejaA": "Franco Araos / Job Cortes",
-      "parejaB": "Joshua Flores / Erick Flores",
-      "resultado": "1 - 2",
-      "juegos": "15 - 19",
-      "ganador": "B",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_19",
-      "fecha": "26-10-2026 (6-4/6-3)",
-      "parejaA": "Job Cortes / César Torres",
-      "parejaB": "Abel Castillo / Ignacio Pardo",
-      "resultado": "2 - 0",
-      "juegos": "12 - 7",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_18",
-      "fecha": "23-10-2026 (6-2/1-6/7-6)",
-      "parejaA": "Franco Araos / Rodrigo Bustos",
-      "parejaB": "Job Cortes / Andres Sandoval",
-      "resultado": "2 - 1",
-      "juegos": "14 - 14",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Franco Araos, Rodrigo Bustos, Job Cortes"
-    },
-    {
-      "id": "part_17",
-      "fecha": "23-10-2026 (7-6/6-2)",
-      "parejaA": "Mauricio Hernández / Mario Espinoza",
-      "parejaB": "Luis Gamboa / Marco Zurita",
-      "resultado": "0 - 2",
-      "juegos": "8 - 13",
-      "ganador": "B",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Mauricio Hernández"
-    },
-    {
-      "id": "part_16",
-      "fecha": "23-10-2026 (7-5/4-6/6-4)",
-      "parejaA": "Mauricio Hernández / Job Cortes",
-      "parejaB": "Miguel Ramirez / Abel Castillo",
-      "resultado": "2 - 1",
-      "juegos": "17 - 15",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": "Job Cortes"
-    },
-    {
-      "id": "part_15",
-      "fecha": "22-10-2026 (7-5/6-4)",
-      "parejaA": "Angelo Espinaza / Ignacio Pardo",
-      "parejaB": "Franco Araos / Rodrigo Bustos",
-      "resultado": "2 - 0",
-      "juegos": "13 - 9",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": "Franco Araos"
-    },
-    {
-      "id": "part_14",
-      "fecha": "22-10-2026 (2-6/6-2/8-6)",
-      "parejaA": "Mauricio Hernández / Job Cortes",
-      "parejaB": "Franco Araos / Rodrigo Bustos",
-      "resultado": "2 - 1",
-      "juegos": "16 - 14",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_13",
-      "fecha": "19-10-2026 (6-1/1-6/6-3)",
-      "parejaA": "Marco Zurita / Benjamin Maldonado",
-      "parejaB": "Ruben Ibarra / Italo Olivos",
-      "resultado": "2 - 1",
-      "juegos": "13 - 10",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_12",
-      "fecha": "19-10-2026 (1-6/6-3/6-2)",
-      "parejaA": "Job Cortes / Franco Araos",
-      "parejaB": "Rafael Salazar / Ignacio Pardo",
-      "resultado": "2 - 1",
-      "juegos": "13 - 11",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_11",
-      "fecha": "15-10-2026 (4-6/6-3/6-3)",
-      "parejaA": "Mauricio Hernández / Mario Espinoza",
-      "parejaB": "Andres Sandoval / Pablo Lamilla",
-      "resultado": "2 - 1",
-      "juegos": "16 - 12",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_10",
-      "fecha": "12-10-2026 (6-3/5-7/6-3)",
-      "parejaA": "Franco Araos / Rodrigo Bustos",
-      "parejaB": "Italo Olivos / Job Cortes",
-      "resultado": "2 - 1",
-      "juegos": "17 - 13",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_9",
-      "fecha": "12-10-2026 (7-6/3-6/6-3)",
-      "parejaA": "Ignacio Pardo / Italo Olivos",
-      "parejaB": "Job Cortes / Franco Araos",
-      "resultado": "2 - 1",
-      "juegos": "16 - 15",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_8",
-      "fecha": "12-10-2026 (6-2/3-6/6-0)",
-      "parejaA": "Pablo Lamilla / Andres Sandoval",
-      "parejaB": "Mauricio Hernández / Mario Espinoza",
-      "resultado": "2 - 1",
-      "juegos": "15 - 8",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_7",
-      "fecha": "06-10-2026 (5-7/6-3/6-3)",
-      "parejaA": "Mario Espinoza / Mauricio Hernández",
-      "parejaB": "Miguel Ramirez / Andres Sandoval",
-      "resultado": "2 - 1",
-      "juegos": "17 - 14",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_6",
-      "fecha": "06-09-2026 (6-4/4-6/6-2)",
-      "parejaA": "Rafael Salazar / Raúl Salas",
-      "parejaB": "Franco Araos / Marco Zurita",
-      "resultado": "2 - 1",
-      "juegos": "16 - 12",
-      "ganador": "A",
-      "sorpresa": "Sí",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_5",
-      "fecha": "06-10-2026 (4-6/6-4/7-6)",
-      "parejaA": "Franco Araos / Rodrigo Bustos",
-      "parejaB": "Italo Olivos / Job Cortes",
-      "resultado": "2 - 1",
-      "juegos": "17 - 16",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_4",
-      "fecha": "06-10-2026 (6-2/6-3)",
-      "parejaA": "Rodrigo Bustos / Franco Araos",
-      "parejaB": "Italo Olivos / Rafael Salazar",
-      "resultado": "2 - 0",
-      "juegos": "12 - 5",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_3",
-      "fecha": "29-09-2026 (6-3/6.2)",
-      "parejaA": "Franco Araos / Job Cortes",
-      "parejaB": "Pablo Lamilla / Andres Sandoval",
-      "resultado": "2 - 0",
-      "juegos": "12 - 5",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_2",
-      "fecha": "28-09-2026 (6-3/4-6/6-0)",
-      "parejaA": "Miguel Ramirez / Andres Sandoval",
-      "parejaB": "Benjamin Maldonado / Marco Zurita",
-      "resultado": "2 - 1",
-      "juegos": "16 - 9",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    },
-    {
-      "id": "part_1",
-      "fecha": "28-09-2026 (6-4/6-3)",
-      "parejaA": "Franco Araos / Rodrigo Bustos",
-      "parejaB": "Juan Alfaro / Sebastian Garcia",
-      "resultado": "2 - 0",
-      "juegos": "12 - 7",
-      "ganador": "A",
-      "sorpresa": "No",
-      "wo": "No",
-      "acompanantes": ""
-    }
-  ],
-  "controlSemanal": [
-    {
-      "semana": "2026-W43",
-      "jugador": "Abel Castillo",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Abel Castillo",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Abel Castillo",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Abel Castillo",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Abel Castillo",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Abel Castillo",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Andres Sandoval",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Andres Sandoval",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Andres Sandoval",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Andres Sandoval",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Andres Sandoval",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Angelo Espinaza",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Arturo Silva",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Arturo Silva",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Arturo Silva",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Arturo Silva",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Benjamin Maldonado",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Benjamin Maldonado",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Benjamin Maldonado",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Benjamin Maldonado",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Benjamin Maldonado",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Braulio",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "César Torres",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "César Torres",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "César Torres",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "David Polanco",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Don Daniel",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Don Daniel",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Erick Flores",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Erick Flores",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Erick Flores",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W36",
-      "jugador": "Franco Araos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Franco Araos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Franco Araos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Franco Araos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Guido Gonzalez",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Guido Gonzalez",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Ignacio Pardo",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Ignacio Pardo",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Ignacio Pardo",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Ignacio Pardo",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Ignacio Pardo",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Invitado",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Invitado",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Italo Olivos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Job Cortes",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Job Cortes",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Job Cortes",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Job Cortes",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Job Cortes",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Job Cortes",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Job Cortes",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Job Cortes",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Job Cortes",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Jose Araya",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Jose Vistoso",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Jose Vistoso",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Joshua Flores",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Joshua Flores",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Joshua Flores",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Juan Alfaro",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Julio Puentes",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Luis Gamboa",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Luis Gamboa",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W36",
-      "jugador": "Marco Zurita",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Marco Zurita",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Marco Zurita",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Marco Zurita",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Marco Zurita",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Marco Zurita",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Mario Espinoza",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Mauricio Hernández",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Miguel Ramirez",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Miguel Ramirez",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Miguel Ramirez",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Miguel Ramirez",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Miguel Ramirez",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Pablo Lamilla",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Pablo Lamilla",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Pablo Lamilla",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Pablo Lamilla",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Patricio Cerda",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Patricio Cerda",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Patricio Torres",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Patricio Torres",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W36",
-      "jugador": "Rafael Salazar",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Rafael Salazar",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Rafael Salazar",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Rafael Salazar",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Rafael Salazar",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Rafael Salazar",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W36",
-      "jugador": "Raúl Salas",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Raúl Salas",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Raúl Salas",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W41",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W42",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W44",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 2,
-      "limite": 2,
-      "estado": "LÍMITE (2/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Rodrigo Bustos",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W43",
-      "jugador": "Ruben Ibarra",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W45",
-      "jugador": "Ruben Ibarra",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W46",
-      "jugador": "Ruben Ibarra",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W47",
-      "jugador": "Ruben Ibarra",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W48",
-      "jugador": "Ruben Ibarra",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    },
-    {
-      "semana": "2026-W40",
-      "jugador": "Sebastian Garcia",
-      "partidosValidos": 1,
-      "limite": 2,
-      "estado": "OK (1/2)"
-    }
-  ],
-  "usuarios": [
-    {
-      "id": "1",
-      "nombre": "Césario",
-      "rol": "Admin",
-      "activo": true
-    },
-    {
-      "id": "2",
-      "nombre": "Mauricio Hernández",
-      "rol": "Admin",
-      "activo": true
-    }
-  ],
-  "reglas": {
-    "nombre": "Ranking Sepultureros",
-    "winBase": 100,
-    "lossBase": 20,
-    "sorpresaPts": 30,
-    "limiteSemanal": 2
-  }
-};
-const KEY_DATA = 'sepultureros_v4_data';
-const KEY_REV = 'sepultureros_v4_rev';
-let db = JSON.parse(localStorage.getItem(KEY_DATA)) || JSON.parse(JSON.stringify(BASE_DATA));
-let revWinner = localStorage.getItem(KEY_REV) || '';
-let adminOk = false;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-function persist() { localStorage.setItem(KEY_DATA, JSON.stringify(db)); }
+  const FB_KEY = 'sepultureros_v45_fb_cfg';
+  const CACHE_KEY = 'sepultureros_v45_cache';
+  const THEME_KEY = 'sepultureros_v45_theme';
+  const USER_KEY = 'sepultureros_v45_user';
 
-function setRole() {
-  const v = document.getElementById('roleSel').value;
-  adminOk = v.startsWith('admin_');
-  const tag = document.getElementById('roleTag');
-  tag.textContent = adminOk ? 'Admin Activo' : 'Modo Lectura';
-  tag.style.color = adminOk ? '#10b981' : '#06b6d4';
-  document.getElementById('admNote').style.display = adminOk ? 'none' : 'block';
-  document.getElementById('btnSave').disabled = !adminOk;
-}
-
-function openTab(name, btn) {
-  ['rank', 'matches', 'week', 'ctrl', 'awards', 'add', 'backup'].forEach(t => {
-    document.getElementById('tab-' + t).classList.add('hidden');
-  });
-  document.getElementById('tab-' + name).classList.remove('hidden');
-  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-}
-
-function weekKey(dStr) {
-  let y, m, d;
-  const parts = dStr.split('-').map(Number);
-  if (parts[0] > 31) { [y, m, d] = parts; } else { [d, m, y] = parts; }
-  const dt = new Date(Date.UTC(y, m - 1, d));
-  const day = dt.getUTCDay() || 7;
-  dt.setUTCDate(dt.getUTCDate() + 4 - day);
-  const yrStart = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
-  const wk = Math.ceil((((dt - yrStart) / 86400000) + 1) / 7);
-  return `${dt.getUTCFullYear()}-W${String(wk).padStart(2, '0')}`;
-}
-
-function recalc() {
-  const map = {};
-  db.jugadores.forEach(j => {
-    map[j.nombre] = { id: j.id, nombre: j.nombre, categoria: j.categoria || '5ta', puntos: 100, pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, g20: 0, g21: 0, p12: 0, p02: 0 };
-  });
-  const crono = [...db.partidos].sort((a, b) => (parseInt(a.id.replace('part_', '')) || 0) - (parseInt(b.id.replace('part_', '')) || 0));
-  const wkCnt = {};
-  const wkStats = {};
-  const ctrl = [];
-
-  crono.forEach(p => {
-    const [a1, a2] = p.parejaA.split('/').map(s => s.trim());
-    const [b1, b2] = p.parejaB.split('/').map(s => s.trim());
-    [a1, a2, b1, b2].forEach(n => {
-      if (!map[n]) map[n] = { id: 'jug_' + (Object.keys(map).length + 1), nombre: n, categoria: '5ta', puntos: 100, pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, g20: 0, g21: 0, p12: 0, p02: 0 };
-    });
-    const wk = weekKey(p.fecha.split(' ')[0]);
-    if (!wkStats[wk]) wkStats[wk] = {};
-    const all = [a1, a2, b1, b2];
-    const validFlag = all.map(n => {
-      const k = wk + '_' + n;
-      const c = wkCnt[k] || 0;
-      if (c < 2) { wkCnt[k] = c + 1; return true; }
-      return false;
-    });
-    const avgA = (map[a1].puntos + map[a2].puntos) / 2;
-    const avgB = (map[b1].puntos + map[b2].puntos) / 2;
-    const [sA, sB] = p.resultado.split('-').map(x => parseInt(x.trim()));
-    const [jA, jB] = p.juegos.split('-').map(x => parseInt(x.trim()));
-    const wo = p.wo === 'Sí';
-    let bA = 0, bB = 0;
-    if (wo) { bA = p.ganador === 'A' ? 100 : 0; bB = p.ganador === 'B' ? 100 : 0; }
-    else if (p.ganador === 'A') { bA = (sA === 2 && sB === 0) ? 100 : 80; bB = (sA === 2 && sB === 0) ? 20 : 40; }
-    else { bA = (sA === 0 && sB === 2) ? 20 : 40; bB = (sA === 0 && sB === 2) ? 100 : 80; }
-    let ptsA = bA, ptsB = bB;
-    const isSorp = (p.ganador === 'A' && avgA < avgB) || (p.ganador === 'B' && avgB < avgA);
-    p.sorpresa = isSorp ? 'Sí' : 'No';
-    if (isSorp) {
-      if (p.ganador === 'A') { ptsA = bA + 30; ptsB = -30; }
-      else { ptsA = -30; ptsB = bB + 30; }
-    }
-    const acomp = [];
-    all.forEach((n, i) => {
-      if (!validFlag[i]) { acomp.push(n); return; }
-      const sideA = i < 2;
-      const won = (sideA && p.ganador === 'A') || (!sideA && p.ganador === 'B');
-      const sf = sideA ? sA : sB, sc = sideA ? sB : sA;
-      const jf = sideA ? jA : jB, jc = sideA ? jB : jA;
-      const gPts = sideA ? ptsA : ptsB;
-      map[n].puntos += gPts;
-      map[n].pj += 1;
-      map[n].difSets += (sf - sc);
-      map[n].difJuegos += (jf - jc);
-      if (won) { map[n].pg += 1; if (sf === 2 && sc === 0) map[n].g20 += 1; else map[n].g21 += 1; }
-      else { map[n].pp += 1; if (sf === 1 && sc === 2) map[n].p12 += 1; else map[n].p02 += 1; }
-      if (!wkStats[wk][n]) wkStats[wk][n] = { pts: 0, pg: 0, pp: 0 };
-      wkStats[wk][n].pts += gPts;
-      if (won) wkStats[wk][n].pg += 1; else wkStats[wk][n].pp += 1;
-    });
-    p.acompanantes = acomp.join(', ');
-  });
-
-  Object.keys(wkStats).sort().reverse().forEach(wk => {
-    Object.keys(wkStats[wk]).sort().forEach(n => {
-      const v = wkStats[wk][n].pg + wkStats[wk][n].pp;
-      ctrl.push({ semana: wk, jugador: n, partidosValidos: v, limite: 2, estado: v >= 2 ? `LÍMITE (${v}/2)` : `OK (${v}/2)` });
-    });
-  });
-
-  db.controlSemanal = ctrl;
-  db._wkStats = wkStats;
-  db.jugadores = Object.values(map).sort((a, b) => {
-    if (b.puntos !== a.puntos) return b.puntos - a.puntos;
-    const pA = a.pj ? a.pg / a.pj : 0, pB = b.pj ? b.pg / b.pj : 0;
-    if (pB !== pA) return pB - pA;
-    if (b.pg !== a.pg) return b.pg - a.pg;
-    if (b.difSets !== a.difSets) return b.difSets - a.difSets;
-    return b.difJuegos - a.difJuegos;
-  });
-}
-
-function render() {
-  document.getElementById('titleApp').textContent = db.reglas?.nombre || 'Ranking Sepultureros';
-  document.getElementById('kPart').textContent = db.partidos.length;
-  const s = db.jugadores;
-  if (s.length) {
-    document.getElementById('kLead').textContent = s[0].nombre;
-    document.getElementById('kLeadPts').textContent = `${s[0].puntos} pts`;
-    const mw = [...s].sort((a, b) => b.pg - a.pg)[0];
-    document.getElementById('kWin').textContent = mw.nombre;
-    document.getElementById('kWinSub').textContent = `${mw.pg} victorias`;
-    const mp = [...s].sort((a, b) => b.pj - a.pj)[0];
-    document.getElementById('kPj').textContent = mp.nombre;
-    document.getElementById('kPjSub').textContent = `${mp.pj} partidos`;
-  }
-  document.getElementById('rankBody').innerHTML = s.map((j, i) => {
-    const r = i + 1;
-    const rc = r <= 3 ? `rank-num r${r}` : 'rank-num';
-    const pct = j.pj ? ((j.pg / j.pj) * 100).toFixed(1) + '%' : '0.0%';
-    return `<tr>
-      <td><span class="${rc}">${r}</span></td>
-      <td class="l"><strong>${j.nombre}</strong></td>
-      <td class="pts">${j.puntos}</td>
-      <td>${j.pj}</td><td>${j.pg}</td><td>${j.pp}</td><td>${pct}</td>
-      <td>${j.g20}</td><td>${j.g21}</td><td>${j.p12}</td><td>${j.p02}</td>
-      <td class="${j.difSets >= 0 ? 'plus' : 'minus'}">${j.difSets > 0 ? '+' + j.difSets : j.difSets}</td>
-      <td class="${j.difJuegos >= 0 ? 'plus' : 'minus'}">${j.difJuegos > 0 ? '+' + j.difJuegos : j.difJuegos}</td>
-    </tr>`;
-  }).join('');
-  fillSelects();
-  drawMatches();
-  fillWeeks();
-  drawWeek();
-  drawCtrl();
-  drawAwards();
-}
-
-function drawMatches() {
-  const q = (document.getElementById('qMatch')?.value || '').toLowerCase();
-  const list = db.partidos.filter(p => p.parejaA.toLowerCase().includes(q) || p.parejaB.toLowerCase().includes(q) || p.fecha.toLowerCase().includes(q) || p.id.toLowerCase().includes(q));
-  document.getElementById('matchList').innerHTML = list.map(p => {
-    const num = p.id.replace('part_', '#');
-    const sp = p.sorpresa === 'Sí' ? `<span class="tag-s">⚡ SORPRESA</span>` : '';
-    const ac = p.acompanantes ? `<div><span class="tag-a">Acompañante: ${p.acompanantes}</span></div>` : '';
-    return `<div class="match-card">
-      <div>
-        <div style="font-size:0.76rem; color:var(--muted);"><strong>${num}</strong> · ${p.fecha} ${sp}</div>
-        <div style="font-size:0.92rem; font-weight:600; margin-top:2px;">
-          <span class="${p.ganador === 'A' ? 'win' : ''}">${p.parejaA}</span> vs <span class="${p.ganador === 'B' ? 'win' : ''}">${p.parejaB}</span>
-        </div>${ac}
-      </div>
-      <div style="text-align:right;"><div style="font-weight:800;">${p.resultado}</div><div style="font-size:0.76rem; color:var(--muted);">Juegos: ${p.juegos}</div></div>
-    </div>`;
-  }).join('');
-}
-
-function fillWeeks() {
-  const wks = Object.keys(db._wkStats || {}).sort().reverse();
-  const sel = document.getElementById('wkSel');
-  if (!sel) return;
-  const prev = sel.value;
-  sel.innerHTML = wks.map(w => `<option value="${w}">${w}</option>`).join('');
-  if (prev && wks.includes(prev)) sel.value = prev; else if (wks[0]) sel.value = wks[0];
-}
-
-function drawWeek() {
-  const wk = document.getElementById('wkSel')?.value;
-  const wm = (db._wkStats && db._wkStats[wk]) || {};
-  const rows = Object.entries(wm).map(([n, st]) => {
-    const pl = db.jugadores.find(x => x.nombre === n) || { puntos: 100, pj: 0 };
-    return { n, pts: st.pts, pg: st.pg, pp: st.pp, acPts: pl.puntos, acPj: pl.pj };
-  }).sort((a, b) => b.pts - a.pts || b.pg - a.pg);
-  const cnt = db.partidos.filter(p => weekKey(p.fecha.split(' ')[0]) === wk).length;
-  document.getElementById('wkKpis').innerHTML = `
-    <div class="kpi"><div class="kpi-k">Semana</div><div class="kpi-v">${wk || '-'}</div><div class="kpi-s">Lun-Dom</div></div>
-    <div class="kpi"><div class="kpi-k">Partidos</div><div class="kpi-v">${cnt}</div><div class="kpi-s">En semana</div></div>
-    <div class="kpi"><div class="kpi-k">Destacado</div><div class="kpi-v" style="font-size:1rem;">${rows[0] ? rows[0].n : '-'}</div><div class="kpi-s">${rows[0] ? rows[0].pts + ' pts' : ''}</div></div>`;
-  document.getElementById('wkBody').innerHTML = rows.map((r, i) => `<tr><td><span class="rank-num">${i + 1}</span></td><td class="l"><strong>${r.n}</strong></td><td class="pts">${r.pts}</td><td>${r.pg}</td><td>${r.pp}</td><td>${r.acPts}</td><td>${r.acPj}</td></tr>`).join('');
-}
-
-function drawCtrl() {
-  const q = (document.getElementById('qCtrl')?.value || '').toLowerCase();
-  const rows = (db.controlSemanal || []).filter(c => c.jugador.toLowerCase().includes(q) || c.semana.toLowerCase().includes(q));
-  document.getElementById('ctrlBody').innerHTML = rows.map(c => `<tr><td><strong>${c.semana}</strong></td><td class="l">${c.jugador}</td><td>${c.partidosValidos}</td><td>${c.limite}</td><td>${c.estado}</td></tr>`).join('');
-}
-
-function drawAwards() {
-  const s = db.jugadores;
-  const c1 = s[0];
-  const mp = [...s].sort((a, b) => b.pj - a.pj)[0];
-  const r20 = [...s].sort((a, b) => b.g20 - a.g20)[0];
-  const nr = [...s].sort((a, b) => b.p12 - a.p12)[0];
-  const mpct = [...s].filter(x => x.pj > 0).sort((a, b) => (b.pg / b.pj) - (a.pg / a.pj))[0];
-  const items = [
-    ['👑 Campeón', c1?.nombre || '-', `${c1?.puntos || 0} pts`],
-    ['🎾 Más PJ', mp?.nombre || '-', `${mp?.pj || 0} PJ`],
-    ['⚡ Rey 2-0', r20?.nombre || '-', `${r20?.g20 || 0} triunfos 2-0`],
-    ['🔥 Nunca se Rindió', nr?.nombre || '-', `${nr?.p12 || 0} caídas 1-2`],
-    ['🎯 Mejor % Vic', mpct?.nombre || '-', mpct ? `${((mpct.pg / mpct.pj) * 100).toFixed(1)}%` : '-'],
-    ['🌟 Revelación', revWinner || 'Por definir', 'Manual']
-  ];
-  document.getElementById('awardsBox').innerHTML = items.map(([t, w, d]) => `<div class="award"><div style="font-size:0.8rem; color:var(--cyan); font-weight:700;">${t}</div><div style="font-size:1.02rem; font-weight:800; margin-top:2px;">${w}</div><div style="font-size:0.76rem; color:var(--muted);">${d}</div></div>`).join('');
-  const inp = document.getElementById('revInp');
-  if (inp && !inp.value) inp.value = revWinner;
-}
-
-function saveRev() {
-  revWinner = document.getElementById('revInp').value.trim();
-  localStorage.setItem(KEY_REV, revWinner);
-  drawAwards();
-}
-
-function fillSelects() {
-  const names = [...db.jugadores].map(j => j.nombre).sort();
-  ['pA1', 'pA2', 'pB1', 'pB2'].forEach((id, idx) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const prev = el.value;
-    el.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join('');
-    if (prev && names.includes(prev)) el.value = prev; else if (names[idx]) el.value = names[idx];
-  });
-}
-
-function saveMatch(e) {
-  e.preventDefault();
-  if (!adminOk) return alert('Solo Admins.');
-  const a1 = pA1.value, a2 = pA2.value, b1 = pB1.value, b2 = pB2.value;
-  if (new Set([a1, a2, b1, b2]).size < 4) return alert('4 jugadores distintos.');
-  const [y, m, d] = fDate.value.split('-');
-  const setsA = parseInt(sA.value), setsB = parseInt(sB.value);
-  const nextId = db.partidos.length + 1;
-  db.partidos.unshift({
-    id: `part_${nextId}`,
-    fecha: `${d}-${m}-${y} (${fSetsTxt.value.trim()})`,
-    parejaA: `${a1} / ${a2}`,
-    parejaB: `${b1} / ${b2}`,
-    resultado: `${setsA} - ${setsB}`,
-    juegos: `${jA.value} - ${jB.value}`,
-    ganador: setsA > setsB ? 'A' : 'B',
-    sorpresa: 'No',
-    wo: woSel.value,
-    acompanantes: ''
-  });
-  recalc(); persist(); render();
-  alert(`Partido #${nextId} guardado.`);
-}
-
-function dlJson() {
-  const blob = new Blob([JSON.stringify({ jugadores: db.jugadores, equipos: db.equipos || [], partidos: db.partidos, controlSemanal: db.controlSemanal || [], usuarios: db.usuarios || [], reglas: db.reglas }, null, 2)], { type: 'application/json' });
-  const u = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = u; a.download = 'ranking_sepultureros_v4.json'; a.click(); URL.revokeObjectURL(u);
-}
-
-function pickJson() { if (!adminOk) return alert('Solo Admins.'); upJson.click(); }
-
-function loadJsonFile(e) {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    try {
-      const obj = JSON.parse(ev.target.result);
-      if (!obj.jugadores || !obj.partidos) throw new Error('JSON inválido');
-      db = obj; recalc(); persist(); render(); alert('Restaurado.');
-    } catch (err) { alert(err.message); }
+  let state = {
+    jugadores: [],
+    partidos: [],
+    controlSemanal: [],
+    revelacion: '',
+    reglas: { nombre: 'Ranking Sepultureros', winBase: 100, lossBase: 20, sorpresaPts: 30, limiteSemanal: 2 }
   };
-  r.readAsText(f);
-}
+  let wkStats = {};
+  let isAdmin = false;
+  let fsDb = null;
 
-function resetOfficial() {
-  if (!adminOk) return alert('Solo Admins.');
-  db = JSON.parse(JSON.stringify(BASE_DATA)); recalc(); persist(); render();
-}
+  function loadTheme() {
+    document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
+  }
+  window.toggleTheme = () => {
+    const nxt = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nxt);
+    localStorage.setItem(THEME_KEY, nxt);
+  };
 
-fDate.valueAsDate = new Date();
-setRole();
-recalc();
-render();
+  function applyRole() {
+    const u = localStorage.getItem(USER_KEY) || 'Espectador';
+    isAdmin = (u === 'Césario' || u === 'Mauricio Hernández');
+    document.getElementById('sessionChip').textContent = isAdmin ? `🛡️ Admin: ${u}` : '👁️ Espectador';
+    document.getElementById('btnLogin').classList.toggle('hidden', isAdmin);
+    document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
+    document.getElementById('admWarn').style.display = isAdmin ? 'none' : 'block';
+    document.getElementById('btnSaveMatch').disabled = !isAdmin;
+  }
+
+  window.openModal = () => document.getElementById('loginModal').classList.remove('hidden');
+  window.closeModal = () => document.getElementById('loginModal').classList.add('hidden');
+  window.doLogin = (e) => {
+    e.preventDefault();
+    localStorage.setItem(USER_KEY, document.getElementById('uSel').value);
+    closeModal(); applyRole();
+  };
+  window.doLogout = () => { localStorage.setItem(USER_KEY, 'Espectador'); applyRole(); };
+
+  window.goTab = (id, btn) => {
+    ['rank', 'matches', 'week', 'ctrl', 'awards', 'add', 'cloud'].forEach(t => document.getElementById('tab-' + t).classList.add('hidden'));
+    document.getElementById('tab-' + id).classList.remove('hidden');
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  };
+
+  function weekKey(dStr) {
+    let y, m, d;
+    const parts = dStr.split('-').map(Number);
+    if (parts[0] > 31) [y, m, d] = parts; else [d, m, y] = parts;
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    const day = dt.getUTCDay() || 7;
+    dt.setUTCDate(dt.getUTCDate() + 4 - day);
+    const yrStart = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+    const wk = Math.ceil((((dt - yrStart) / 86400000) + 1) / 7);
+    return `${dt.getUTCFullYear()}-W${String(wk).padStart(2, '0')}`;
+  }
+
+  function recalc() {
+    const map = {};
+    (state.jugadores || []).forEach(j => {
+      map[j.nombre] = { id: j.id, nombre: j.nombre, categoria: j.categoria || '5ta', puntos: 100, pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, g20: 0, g21: 0, p12: 0, p02: 0 };
+    });
+    const crono = [...(state.partidos || [])].sort((a, b) => (parseInt(String(a.id).replace('part_', '')) || 0) - (parseInt(String(b.id).replace('part_', '')) || 0));
+    const wkCnt = {};
+    wkStats = {};
+    const ctrl = [];
+
+    crono.forEach(p => {
+      const [a1, a2] = String(p.parejaA).split('/').map(s => s.trim());
+      const [b1, b2] = String(p.parejaB).split('/').map(s => s.trim());
+      [a1, a2, b1, b2].forEach(n => {
+        if (n && !map[n]) map[n] = { id: 'jug_' + (Object.keys(map).length + 1), nombre: n, categoria: '5ta', puntos: 100, pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, g20: 0, g21: 0, p12: 0, p02: 0 };
+      });
+      const wk = weekKey(String(p.fecha).split(' ')[0]);
+      if (!wkStats[wk]) wkStats[wk] = {};
+      const all = [a1, a2, b1, b2];
+      const valid = all.map(n => {
+        const k = wk + '_' + n;
+        const c = wkCnt[k] || 0;
+        if (c < 2) { wkCnt[k] = c + 1; return true; }
+        return false;
+      });
+      const avgA = ((map[a1]?.puntos || 100) + (map[a2]?.puntos || 100)) / 2;
+      const avgB = ((map[b1]?.puntos || 100) + (map[b2]?.puntos || 100)) / 2;
+      const [sA, sB] = String(p.resultado).split('-').map(x => parseInt(x.trim()) || 0);
+      const [jA, jB] = String(p.juegos).split('-').map(x => parseInt(x.trim()) || 0);
+      const wo = p.wo === 'Sí';
+      let bA = 0, bB = 0;
+      if (wo) { bA = p.ganador === 'A' ? 100 : 0; bB = p.ganador === 'B' ? 100 : 0; }
+      else if (p.ganador === 'A') { bA = (sA === 2 && sB === 0) ? 100 : 80; bB = (sA === 2 && sB === 0) ? 20 : 40; }
+      else { bA = (sA === 0 && sB === 2) ? 20 : 40; bB = (sA === 0 && sB === 2) ? 100 : 80; }
+      let ptsA = bA, ptsB = bB;
+      const isSorp = (p.ganador === 'A' && avgA < avgB) || (p.ganador === 'B' && avgB < avgA);
+      p.sorpresa = isSorp ? 'Sí' : 'No';
+      if (isSorp) {
+        if (p.ganador === 'A') { ptsA = bA + 30; ptsB = -30; }
+        else { ptsA = -30; ptsB = bB + 30; }
+      }
+      const acomp = [];
+      all.forEach((n, i) => {
+        if (!n) return;
+        if (!valid[i]) { acomp.push(n); return; }
+        const sideA = i < 2;
+        const won = (sideA && p.ganador === 'A') || (!sideA && p.ganador === 'B');
+        const sf = sideA ? sA : sB, sc = sideA ? sB : sA;
+        const jf = sideA ? jA : jB, jc = sideA ? jB : jA;
+        const gPts = sideA ? ptsA : ptsB;
+        map[n].puntos += gPts;
+        map[n].pj += 1;
+        map[n].difSets += (sf - sc);
+        map[n].difJuegos += (jf - jc);
+        if (won) { map[n].pg += 1; if (sf === 2 && sc === 0) map[n].g20 += 1; else map[n].g21 += 1; }
+        else { map[n].pp += 1; if (sf === 1 && sc === 2) map[n].p12 += 1; else map[n].p02 += 1; }
+        if (!wkStats[wk][n]) wkStats[wk][n] = { pts: 0, pg: 0, pp: 0 };
+        wkStats[wk][n].pts += gPts;
+        if (won) wkStats[wk][n].pg += 1; else wkStats[wk][n].pp += 1;
+      });
+      p.acompanantes = acomp.join(', ');
+    });
+
+    Object.keys(wkStats).sort().reverse().forEach(wk => {
+      Object.keys(wkStats[wk]).sort().forEach(n => {
+        const v = wkStats[wk][n].pg + wkStats[wk][n].pp;
+        ctrl.push({ semana: wk, jugador: n, partidosValidos: v, limite: 2, estado: v >= 2 ? `LÍMITE (${v}/2)` : `OK (${v}/2)` });
+      });
+    });
+    state.controlSemanal = ctrl;
+    state.jugadores = Object.values(map).sort((a, b) => b.puntos - a.puntos || ((b.pj ? b.pg/b.pj : 0) - (a.pj ? a.pg/a.pj : 0)) || b.pg - a.pg || b.difSets - a.difSets || b.difJuegos - a.difJuegos);
+  }
+
+  function render() {
+    document.getElementById('appTitle').textContent = state.reglas?.nombre || 'Ranking Sepultureros';
+    document.getElementById('kPart').textContent = (state.partidos || []).length;
+    const s = state.jugadores || [];
+    if (s.length) {
+      document.getElementById('kLead').textContent = s[0].nombre;
+      document.getElementById('kLeadPts').textContent = `${s[0].puntos} pts`;
+      const mw = [...s].sort((a, b) => b.pg - a.pg)[0];
+      document.getElementById('kWin').textContent = mw.nombre;
+      document.getElementById('kWinSub').textContent = `${mw.pg} PG`;
+      const mp = [...s].sort((a, b) => b.pj - a.pj)[0];
+      document.getElementById('kPj').textContent = mp.nombre;
+      document.getElementById('kPjSub').textContent = `${mp.pj} PJ`;
+    }
+    document.getElementById('rankBody').innerHTML = s.map((j, i) => {
+      const r = i + 1;
+      const pc = r <= 3 ? `pos p${r}` : 'pos';
+      const pct = j.pj ? ((j.pg / j.pj) * 100).toFixed(1) + '%' : '0.0%';
+      return `<tr><td><span class="${pc}">${r}</span></td><td class="l"><strong>${j.nombre}</strong></td><td class="pts">${j.puntos}</td><td>${j.pj}</td><td>${j.pg}</td><td>${j.pp}</td><td>${pct}</td><td>${j.g20}</td><td>${j.g21}</td><td>${j.p12}</td><td>${j.p02}</td><td class="${j.difSets>=0?'plus':'minus'}">${j.difSets>0?'+'+j.difSets:j.difSets}</td><td class="${j.difJuegos>=0?'plus':'minus'}">${j.difJuegos>0?'+'+j.difJuegos:j.difJuegos}</td></tr>`;
+    }).join('');
+    fillSelects(); drawMatches(); fillWeeks(); drawWeek(); drawCtrl(); drawAwards();
+  }
+
+  window.drawMatches = () => {
+    const q = (document.getElementById('qMatch')?.value || '').toLowerCase();
+    const list = (state.partidos || []).filter(p => String(p.parejaA).toLowerCase().includes(q) || String(p.parejaB).toLowerCase().includes(q) || String(p.fecha).toLowerCase().includes(q) || String(p.id).toLowerCase().includes(q));
+    document.getElementById('matchList').innerHTML = list.map(p => {
+      const num = String(p.id).replace('part_', '#');
+      const sp = p.sorpresa === 'Sí' ? `<span class="tag-s">⚡ SORPRESA</span>` : '';
+      const ac = p.acompanantes ? `<div><span class="tag-a">Acompañante: ${p.acompanantes}</span></div>` : '';
+      return `<div class="match-card"><div><div style="font-size:0.76rem; color:var(--muted);"><strong>${num}</strong> · ${p.fecha} ${sp}</div><div style="font-size:0.92rem; font-weight:700; margin-top:2px;"><span class="${p.ganador==='A'?'win':''}">${p.parejaA}</span> vs <span class="${p.ganador==='B'?'win':''}">${p.parejaB}</span></div>${ac}</div><div style="text-align:right;"><div style="font-weight:800;">${p.resultado}</div><div style="font-size:0.76rem; color:var(--muted);">Juegos: ${p.juegos}</div></div></div>`;
+    }).join('');
+  };
+
+  function fillWeeks() {
+    const wks = Object.keys(wkStats).sort().reverse();
+    const sel = document.getElementById('wkSel');
+    if (!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = wks.map(w => `<option value="${w}">${w}</option>`).join('');
+    if (prev && wks.includes(prev)) sel.value = prev; else if (wks[0]) sel.value = wks[0];
+  }
+
+  window.drawWeek = () => {
+    const wk = document.getElementById('wkSel')?.value;
+    const wm = wkStats[wk] || {};
+    const rows = Object.entries(wm).map(([n, st]) => {
+      const pl = state.jugadores.find(x => x.nombre === n) || { puntos: 100, pj: 0 };
+      return { n, pts: st.pts, pg: st.pg, pp: st.pp, acPts: pl.puntos, acPj: pl.pj };
+    }).sort((a, b) => b.pts - a.pts || b.pg - a.pg);
+    const cnt = (state.partidos || []).filter(p => weekKey(String(p.fecha).split(' ')[0]) === wk).length;
+    document.getElementById('wkKpis').innerHTML = `<div class="kpi"><div class="kpi-l">Semana</div><div class="kpi-v">${wk||'-'}</div></div><div class="kpi"><div class="kpi-l">Partidos</div><div class="kpi-v">${cnt}</div></div><div class="kpi"><div class="kpi-l">Destacado</div><div class="kpi-v" style="font-size:1rem;">${rows[0]?rows[0].n:'-'}</div></div>`;
+    document.getElementById('wkBody').innerHTML = rows.map((r, i) => `<tr><td><span class="pos">${i+1}</span></td><td class="l"><strong>${r.n}</strong></td><td class="pts">${r.pts}</td><td>${r.pg}</td><td>${r.pp}</td><td>${r.acPts}</td><td>${r.acPj}</td></tr>`).join('');
+  };
+
+  window.drawCtrl = () => {
+    const q = (document.getElementById('qCtrl')?.value || '').toLowerCase();
+    const rows = (state.controlSemanal || []).filter(c => String(c.jugador).toLowerCase().includes(q) || String(c.semana).toLowerCase().includes(q));
+    document.getElementById('ctrlBody').innerHTML = rows.map(c => `<tr><td><strong>${c.semana}</strong></td><td class="l">${c.jugador}</td><td>${c.partidosValidos}</td><td>${c.limite}</td><td>${c.estado}</td></tr>`).join('');
+  };
+
+  function drawAwards() {
+    const s = state.jugadores || [];
+    const c1 = s[0], mp = [...s].sort((a,b)=>b.pj-a.pj)[0], r20 = [...s].sort((a,b)=>b.g20-a.g20)[0], nr = [...s].sort((a,b)=>b.p12-a.p12)[0];
+    const items = [
+      ['👑 Campeón', c1?.nombre || '-', `${c1?.puntos||0} pts`],
+      ['🎾 Más PJ', mp?.nombre || '-', `${mp?.pj||0} PJ`],
+      ['⚡ Rey 2-0', r20?.nombre || '-', `${r20?.g20||0} 2-0`],
+      ['🔥 Nunca se Rindió', nr?.nombre || '-', `${nr?.p12||0} 1-2`],
+      ['🌟 Revelación', state.revelacion || 'Por definir', 'Manual']
+    ];
+    document.getElementById('awardsBox').innerHTML = items.map(([t,w,d]) => `<div class="award"><div style="font-size:0.8rem; color:var(--violet); font-weight:800;">${t}</div><div style="font-size:1.02rem; font-weight:800; margin-top:2px;">${w}</div><div style="font-size:0.76rem; color:var(--muted);">${d}</div></div>`).join('');
+  }
+
+  window.saveRev = async () => {
+    if (!isAdmin) return alert('Solo Admins.');
+    state.revelacion = document.getElementById('revInp').value.trim();
+    localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+    drawAwards();
+    await pushToCloud(true);
+  };
+
+  function fillSelects() {
+    const names = (state.jugadores || []).map(j => j.nombre).sort();
+    ['pA1','pA2','pB1','pB2'].forEach((id, idx) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const prev = el.value;
+      el.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join('');
+      if (prev && names.includes(prev)) el.value = prev; else if (names[idx]) el.value = names[idx];
+    });
+  }
+
+  window.addMatch = async (e) => {
+    e.preventDefault();
+    if (!isAdmin) return alert('Solo Admins.');
+    const a1 = pA1.value, a2 = pA2.value, b1 = pB1.value, b2 = pB2.value;
+    if (new Set([a1,a2,b1,b2]).size < 4) return alert('4 jugadores distintos.');
+    const [y,m,d] = fDate.value.split('-');
+    const setsA = parseInt(sA.value), setsB = parseInt(sB.value);
+    const nextN = (state.partidos || []).length + 1;
+    state.partidos.unshift({
+      id: `part_${nextN}`, fecha: `${d}-${m}-${y} (${fSets.value.trim()})`,
+      parejaA: `${a1} / ${a2}`, parejaB: `${b1} / ${b2}`,
+      resultado: `${setsA} - ${setsB}`, juegos: `${jA.value} - ${jB.value}`,
+      ganador: setsA > setsB ? 'A' : 'B', sorpresa: 'No', wo: woSel.value, acompanantes: ''
+    });
+    recalc();
+    localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+    render();
+    await pushToCloud(true);
+    alert(`Partido #${nextN} guardado.`);
+  };
+
+  window.saveFbConfig = async () => {
+    try {
+      const cfg = JSON.parse(document.getElementById('fbConfigArea').value);
+      localStorage.setItem(FB_KEY, JSON.stringify(cfg));
+      await initFirebase(cfg);
+      alert('Conectado a Firebase.');
+    } catch (err) { alert('JSON de Firebase inválido: ' + err.message); }
+  };
+
+  window.pullFromCloud = async () => {
+    if (!fsDb) return alert('Conecta primero Firebase.');
+    const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
+    if (snap.exists()) {
+      state = { ...state, ...snap.data() };
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      render();
+      document.getElementById('dbStatus').textContent = 'Datos actualizados desde Firestore';
+      alert('Datos cargados desde Firestore.');
+    } else {
+      alert('Documento sepultureros/liga_2026 aún no existe.');
+    }
+  };
+
+  window.pushToCloud = async (silent = false) => {
+    if (!fsDb) return silent ? null : alert('Configura primero Firebase.');
+    await setDoc(doc(fsDb, 'sepultureros', 'liga_2026'), {
+      jugadores: state.jugadores,
+      partidos: state.partidos,
+      controlSemanal: state.controlSemanal,
+      revelacion: state.revelacion,
+      reglas: state.reglas
+    });
+    document.getElementById('dbStatus').textContent = 'Sincronizado con Firestore (padelrank-6jrs4)';
+    if (!silent) alert('Subido a Firestore.');
+  };
+
+  window.exportJson = () => {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const u = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = u; a.download = 'ranking_sepultureros_v45.json'; a.click(); URL.revokeObjectURL(u);
+  };
+
+  window.triggerImport = () => { if (!isAdmin) return alert('Solo Admins.'); fileImport.click(); };
+  window.importJson = async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = async (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        state = { ...state, ...parsed };
+        recalc();
+        localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+        render();
+        await pushToCloud(true);
+        alert('JSON importado y recalculado.');
+      } catch (err) { alert(err.message); }
+    };
+    r.readAsText(f);
+  };
+
+  async function initFirebase(cfg) {
+    if (!cfg || !cfg.projectId) return;
+    const app = initializeApp(cfg, 'sepultureros_v45_app');
+    fsDb = getFirestore(app);
+    const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
+    if (snap.exists()) {
+      state = { ...state, ...snap.data() };
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      render();
+      document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId})`;
+    } else {
+      document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId})`;
+    }
+  }
+
+  loadTheme();
+  applyRole();
+  fDate.valueAsDate = new Date();
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) { state = JSON.parse(cached); recalc(); render(); }
+  const savedCfg = localStorage.getItem(FB_KEY);
+  if (savedCfg) {
+    document.getElementById('fbConfigArea').value = savedCfg;
+    initFirebase(JSON.parse(savedCfg)).catch(() => {});
+  }
 </script>
 </body>
 </html>

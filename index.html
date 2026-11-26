@@ -1,438 +1,386 @@
 <!DOCTYPE html>
-<html lang="es-CL">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ranking Sepultureros · v4.8</title>
+  <title>Ranking Sepultureros · Padre Hurtado</title>
   <style>
-    :root {
-      --bg: #0b1020;
-      --surface: #131b31;
-      --surface-2: #1a2542;
-      --text: #f3f6ff;
-      --muted: #9fb0d3;
-      --accent: #7c5cff;
-      --accent-2: #19c37d;
-      --warn: #ffb020;
-      --danger: #ff5c77;
-      --border: rgba(255, 255, 255, 0.1);
-      --watermark-opacity: 0.08;
+    :root[data-theme="dark"] {
+      --bg: #050914;
+      --surface: rgba(13, 21, 38, 0.90);
+      --surface-2: rgba(20, 32, 56, 0.95);
+      --border: #1e2d4a;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --blue: #38bdf8;
+      --violet: #a855f7;
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --bad: #ef4444;
     }
-
-    body.light-theme {
-      --bg: #eef2fb;
-      --surface: #ffffff;
-      --surface-2: #f4f7fd;
-      --text: #111827;
-      --muted: #55637d;
-      --accent: #5b3df5;
-      --accent-2: #0e9f6e;
-      --warn: #c27803;
-      --danger: #dc2626;
-      --border: rgba(17, 24, 39, 0.12);
-      --watermark-opacity: 0.07;
+    :root[data-theme="light"] {
+      --bg: #f1f5f9;
+      --surface: rgba(255, 255, 255, 0.92);
+      --surface-2: rgba(248, 250, 252, 0.96);
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --blue: #0284c7;
+      --violet: #7c3aed;
+      --pink: #db2777;
+      --cyan: #0891b2;
+      --ok: #059669;
+      --warn: #d97706;
+      --bad: #dc2626;
     }
-
-    * { box-sizing: border-box; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(56, 189, 248, 0.14), transparent 42%),
+        radial-gradient(circle at 85% 18%, rgba(168, 85, 247, 0.14), transparent 42%),
+        radial-gradient(circle at 50% 88%, rgba(236, 72, 153, 0.08), transparent 48%),
+        var(--bg);
       color: var(--text);
       min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .bg-logo {
-      position: fixed;
-      inset: 0;
-      background-image: url("./logo.png");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: min(65vw, 420px);
-      opacity: var(--watermark-opacity);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .app-wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 1060px;
-      margin: 0 auto;
-      padding: 16px 14px 48px;
-    }
-
-    .header-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-
-    .header-top {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    .brand-box {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      width: 52px;
-      height: 52px;
-      object-fit: contain;
-      display: none;
-      background: transparent;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(124, 92, 255, 0.18);
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(1.45rem, 3vw, 2rem);
-      line-height: 1.15;
-    }
-
-    .sub {
-      margin: 5px 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .controls-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-top: 14px;
-    }
-
-    button, select, input, textarea {
-      font: inherit;
-      color: var(--text);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 12px;
-    }
-
-    button {
-      cursor: pointer;
-      font-weight: 600;
-      transition: transform 0.08s ease, opacity 0.15s ease;
-    }
-
-    button:active { transform: scale(0.98); }
-    button.primary { background: var(--accent); color: #fff; border-color: transparent; }
-    button.success { background: var(--accent-2); color: #fff; border-color: transparent; }
-    button.danger { background: var(--danger); color: #fff; border-color: transparent; }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
       padding: 14px;
     }
-
-    .kpi-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; }
-    .kpi-val { font-size: 1.35rem; font-weight: 800; margin-top: 4px; }
-    .kpi-foot { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
+    .wrap { max-width: 1040px; margin: 0 auto; }
+    .topbar {
+      background: linear-gradient(125deg, var(--surface), var(--surface-2));
+      border: 1px solid var(--blue);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.18);
+      border-radius: 18px;
+      padding: 18px 20px;
       margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
-
-    .tab-btn.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: transparent;
+    .chip {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      background: rgba(168, 85, 247, 0.16);
+      color: var(--violet);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      margin-bottom: 6px;
     }
-
-    .panel {
-      display: none;
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--blue), var(--violet), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+    .controls-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--cyan);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .kpi:nth-child(2) { border-top-color: var(--blue); }
+    .kpi:nth-child(3) { border-top-color: var(--violet); }
+    .kpi:nth-child(4) { border-top-color: var(--pink); }
+    .kpi-l { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; }
+    .kpi-v { font-size: 1.18rem; font-weight: 800; margin-top: 3px; }
+    .kpi-s { font-size: 0.76rem; color: var(--blue); margin-top: 2px; }
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
+    .tab {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 9px 14px;
+      border-radius: 11px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab.active { background: linear-gradient(135deg, #2563eb, #9333ea); color: #fff; border-color: var(--blue); }
+    .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 16px;
+      margin-bottom: 16px;
     }
-
-    .panel.active { display: block; }
-
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    th, td {
-      padding: 9px 10px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-      white-space: nowrap;
+    .card h2 {
+      font-size: 1.08rem;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { padding: 9px 7px; border-bottom: 1px solid var(--border); text-align: center; }
+    th { background: var(--surface-2); color: var(--muted); font-size: 0.74rem; text-transform: uppercase; }
+    td.l, th.l { text-align: left; }
+    .pos {
+      display: inline-flex;
+      width: 25px;
+      height: 25px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      background: var(--surface-2);
+      font-weight: 800;
+      font-size: 0.8rem;
     }
-
-    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
-    .field label { font-size: 0.82rem; color: var(--muted); }
-
-    textarea { width: 100%; min-height: 140px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; }
-
-    .status-banner {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
+    .p1 { background: rgba(245, 158, 11, 0.22); color: #fbbf24; border: 1px solid #f59e0b; }
+    .p2 { background: rgba(56, 189, 248, 0.20); color: var(--blue); border: 1px solid var(--blue); }
+    .p3 { background: rgba(236, 72, 153, 0.20); color: var(--pink); border: 1px solid var(--pink); }
+    .pts { color: var(--blue); font-weight: 800; }
+    .plus { color: var(--ok); font-weight: 700; }
+    .minus { color: var(--bad); font-weight: 700; }
+    .match-card {
       background: var(--surface-2);
       border: 1px solid var(--border);
+      border-left: 4px solid var(--violet);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 9px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .win { color: var(--blue); font-weight: 800; }
+    .tag-s {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .tag-a {
+      background: rgba(168, 85, 247, 0.18);
+      color: var(--violet);
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      margin-top: 4px;
+      display: inline-block;
+    }
+    .grid-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    label { display: block; font-size: 0.76rem; color: var(--muted); margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 10px;
       font-size: 0.86rem;
     }
-
-    .muted { color: var(--muted); }
+    .btn {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .btn-neon { background: linear-gradient(135deg, #0284c7, #9333ea); color: #fff; border: none; }
+    .btn-ok { background: linear-gradient(135deg, #059669, #0891b2); color: #fff; border: none; }
+    .awards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+    .award { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(2, 6, 15, 0.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--blue);
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 380px;
+    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <div class="bg-logo" aria-hidden="true"></div>
-
-  <div class="app-wrap">
-    <div class="header-card">
-      <div class="header-top">
-        <div class="brand-box">
-          <img id="headerLogo" class="brand-logo" src="./logo.png" alt="Logo Ranking Sepultureros" />
-          <div>
-            <div class="badge">V4.8 · FIREBASE PÚBLICO</div>
-            <h1 id="appTitle">Ranking Sepultureros</h1>
-            <p id="syncStatus" class="sub">Iniciando conexión con Firestore (padelrank-6jrs4)...</p>
-          </div>
+  <div id="loginModal" class="modal-bg hidden">
+    <div class="modal-box">
+      <h3 style="margin-bottom:6px;">🔐 Acceso · Ranking Sepultureros</h3>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Selecciona tu modo de acceso.</p>
+      <form onsubmit="doLogin(event)">
+        <div style="margin-bottom:10px;">
+          <label>Perfil</label>
+          <select id="uSel">
+            <option value="Espectador">Espectador</option>
+            <option value="Administrador">Administrador</option>
+          </select>
         </div>
-      </div>
+        <div style="margin-bottom:12px;">
+          <label>Clave / PIN</label>
+          <input type="password" id="uPass" placeholder="Opcional" />
+        </div>
+        <div style="display:flex; gap:8px; justify-content:flex-end;">
+          <button type="button" class="btn" onclick="closeModal()">Cerrar</button>
+          <button type="submit" class="btn btn-neon">Entrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-      <div class="controls-row">
-        <button id="themeBtn" type="button">🌓 Tema</button>
-        <span id="roleBadge" class="badge" style="margin:0;">👁️ ESPECTADOR</span>
-        <select id="adminSelect" aria-label="Seleccionar administrador">
-          <option value="">Modo Espectador</option>
-          <option value="Césario">Césario (Admin)</option>
-          <option value="Mauricio Hernández">Mauricio Hernández (Admin)</option>
-        </select>
-        <button id="syncNowBtn" type="button" class="primary">🔄 Leer Firestore</button>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <span class="chip">Padre Hurtado · Firebase</span>
+        <h1 id="appTitle">Ranking Sepultureros</h1>
+        <p class="sub" id="dbStatus">Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
       </div>
-
-      <div id="statusMsg" class="status-banner">Esperando respuesta de Firestore en <code>sepultureros/liga_2026</code>...</div>
+      <div class="controls-top">
+        <button type="button" class="btn" onclick="toggleTheme()" id="btnTheme">🌓 Tema</button>
+        <span class="chip" id="sessionChip" style="margin:0;">👁️ Espectador</span>
+        <button type="button" class="btn btn-neon" id="btnLogin" onclick="openModal()">🔑 Login</button>
+        <button type="button" class="btn hidden" id="btnLogout" onclick="doLogout()">Salir</button>
+      </div>
     </div>
 
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Partidos</div>
-        <div id="kpiPartidos" class="kpi-val">0</div>
-        <div id="kpiFuente" class="kpi-foot">Sin datos cargados</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Líder</div>
-        <div id="kpiLider" class="kpi-val">—</div>
-        <div id="kpiLiderPts" class="kpi-foot">0 pts</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Más Ganó</div>
-        <div id="kpiMasGanador" class="kpi-val">—</div>
-        <div id="kpiMasGanadorVal" class="kpi-foot">0 PG</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Más PJ</div>
-        <div id="kpiMasPj" class="kpi-val">—</div>
-        <div id="kpiMasPjVal" class="kpi-foot">0 PJ</div>
-      </div>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-l">Partidos</div><div class="kpi-v" id="kPart">0</div><div class="kpi-s">Firestore / JSON</div></div>
+      <div class="kpi"><div class="kpi-l">Líder</div><div class="kpi-v" id="kLead">-</div><div class="kpi-s" id="kLeadPts">0 pts</div></div>
+      <div class="kpi"><div class="kpi-l">Más Ganó</div><div class="kpi-v" id="kWin">-</div><div class="kpi-s" id="kWinSub">0 PG</div></div>
+      <div class="kpi"><div class="kpi-l">Más PJ</div><div class="kpi-v" id="kPj">-</div><div class="kpi-s" id="kPjSub">0 PJ</div></div>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="ranking" type="button">🏆 Ranking</button>
-      <button class="tab-btn" data-tab="partidos" type="button">🎾 Partidos</button>
-      <button class="tab-btn" data-tab="semanal" type="button">📅 Control Semanal</button>
-      <button class="tab-btn" data-tab="nuevo" type="button">➕ Nuevo Partido</button>
-      <button class="tab-btn" data-tab="cloud" type="button">☁️ Firebase y JSON</button>
+      <button class="tab active" onclick="goTab('rank', this)">🏆 Ranking</button>
+      <button class="tab" onclick="goTab('matches', this)">🎾 Partidos</button>
+      <button class="tab" onclick="goTab('week', this)">📅 Resumen Semanal</button>
+      <button class="tab" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
+      <button class="tab" onclick="goTab('awards', this)">🎖️ Premios</button>
+      <button class="tab" onclick="goTab('add', this)">➕ Nuevo Partido</button>
+      <button class="tab" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
     </div>
 
-    <section id="tab-ranking" class="panel active">
-      <h2>🏆 Ranking Individual</h2>
-      <p class="muted">Ordenado por Puntos → % Victorias → PG → Dif. Sets → Dif. Juegos.</p>
-      <div class="table-wrap">
+    <div id="tab-rank" class="card">
+      <h2><span>🏆 Ranking Individual</span><span style="font-size:0.76rem; color:var(--muted);">Rating → % Vic → PG → Dif Sets → Dif Juegos</span></h2>
+      <div class="tbl-wrap">
         <table>
           <thead>
             <tr>
-              <th>Pos</th>
-              <th>Jugador</th>
-              <th>Pts</th>
-              <th>PJ</th>
-              <th>PG</th>
-              <th>PP</th>
-              <th>% Vic</th>
-              <th>Dif Sets</th>
-              <th>Dif Juegos</th>
+              <th>Pos</th><th class="l">Jugador</th><th>Pts</th><th>PJ</th><th>PG</th><th>PP</th>
+              <th>% Vic</th><th>2-0</th><th>2-1</th><th>1-2</th><th>0-2</th><th>Dif Sets</th><th>Dif Jue</th>
             </tr>
           </thead>
-          <tbody id="rankingBody"></tbody>
+          <tbody id="rankBody"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <section id="tab-partidos" class="panel">
-      <h2>🎾 Partidos Registrados</h2>
-      <div class="table-wrap">
+    <div id="tab-matches" class="card hidden">
+      <h2>🎾 Partidos</h2>
+      <div style="margin-bottom:10px;"><input type="text" id="qMatch" placeholder="Buscar jugador, fecha o #partido..." oninput="drawMatches()" /></div>
+      <div id="matchList"></div>
+    </div>
+
+    <div id="tab-week" class="card hidden">
+      <h2><span>📅 Resumen Semanal</span><select id="wkSel" style="width:auto;" onchange="drawWeek()"></select></h2>
+      <div id="wkKpis" class="kpis"></div>
+      <div class="tbl-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Fecha / Detalle</th>
-              <th>Pareja A</th>
-              <th>Pareja B</th>
-              <th>Sets</th>
-              <th>Juegos</th>
-              <th>Ganador</th>
-              <th>Sorpresa</th>
-            </tr>
-          </thead>
-          <tbody id="partidosBody"></tbody>
+          <thead><tr><th>Pos</th><th class="l">Jugador</th><th>Pts Sem</th><th>PG Sem</th><th>PP Sem</th><th>Pts Acum</th><th>PJ Acum</th></tr></thead>
+          <tbody id="wkBody"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <section id="tab-semanal" class="panel">
-      <h2>📅 Control Semanal</h2>
-      <div class="table-wrap">
+    <div id="tab-ctrl" class="card hidden">
+      <h2><span>📋 Control Semanal (Tope 2 Válidos)</span><input type="text" id="qCtrl" placeholder="Filtrar..." style="max-width:220px;" oninput="drawCtrl()" /></h2>
+      <div class="tbl-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Semana</th>
-              <th>Jugador</th>
-              <th>Válidos</th>
-              <th>Límite</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="semanalBody"></tbody>
+          <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Válidos</th><th>Límite</th><th>Estado</th></tr></thead>
+          <tbody id="ctrlBody"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <section id="tab-nuevo" class="panel">
-      <h2>➕ Registrar Partido (Solo Admin)</h2>
-      <p id="adminGuardNote" class="muted">Selecciona Césario o Mauricio Hernández arriba para habilitar registro y subida a Firestore.</p>
-      <form id="matchForm" class="grid-2">
-        <div class="field">
-          <label>Fecha (DD-MM-AAAA)</label>
-          <input id="mFecha" type="text" placeholder="25-11-2026" required />
+    <div id="tab-awards" class="card hidden">
+      <h2>🎖️ Premios</h2>
+      <div id="awardsBox" class="awards"></div>
+      <div style="margin-top:14px; max-width:420px;">
+        <label>Jugador Revelación (Manual)</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="revInp" placeholder="Nombre jugador revelación" />
+          <button type="button" class="btn btn-neon" onclick="saveRev()">Guardar</button>
         </div>
-        <div class="field">
-          <label>Ganador</label>
-          <select id="mGanador">
-            <option value="A">Pareja A</option>
-            <option value="B">Pareja B</option>
-          </select>
+      </div>
+    </div>
+
+    <div id="tab-add" class="card hidden">
+      <h2>➕ Registrar Partido (Solo Admins)</h2>
+      <p id="admWarn" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Administrador para guardar en Firebase.</p>
+      <form onsubmit="addMatch(event)">
+        <div class="grid-f">
+          <div><label>Fecha</label><input type="date" id="fDate" required /></div>
+          <div><label>Sets (ej: 6-4/6-3)</label><input type="text" id="fSets" placeholder="6-4/6-3" required /></div>
+          <div><label>Equipo A - Jug 1</label><select id="pA1"></select></div>
+          <div><label>Equipo A - Jug 2</label><select id="pA2"></select></div>
+          <div><label>Equipo B - Jug 1</label><select id="pB1"></select></div>
+          <div><label>Equipo B - Jug 2</label><select id="pB2"></select></div>
+          <div><label>Sets A</label><select id="sA"><option value="2">2</option><option value="1">1</option><option value="0">0</option></select></div>
+          <div><label>Sets B</label><select id="sB"><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></div>
+          <div><label>Juegos A</label><input type="number" id="jA" value="12" min="0" required /></div>
+          <div><label>Juegos B</label><input type="number" id="jB" value="6" min="0" required /></div>
+          <div><label>WO</label><select id="woSel"><option value="No">No</option><option value="Sí">Sí</option></select></div>
         </div>
-        <div class="field">
-          <label>Jugador A1</label>
-          <input id="mA1" type="text" required />
-        </div>
-        <div class="field">
-          <label>Jugador A2</label>
-          <input id="mA2" type="text" required />
-        </div>
-        <div class="field">
-          <label>Jugador B1</label>
-          <input id="mB1" type="text" required />
-        </div>
-        <div class="field">
-          <label>Jugador B2</label>
-          <input id="mB2" type="text" required />
-        </div>
-        <div class="field">
-          <label>Resultado Sets (ej. 2 - 0 o 2 - 1)</label>
-          <input id="mSets" type="text" value="2 - 0" required />
-        </div>
-        <div class="field">
-          <label>Juegos Totales (ej. 12 - 5)</label>
-          <input id="mJuegos" type="text" value="12 - 5" required />
-        </div>
-        <div class="field">
-          <label>¿Sorpresa?</label>
-          <select id="mSorpresa">
-            <option value="No">No</option>
-            <option value="Sí">Sí</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>¿W.O.?</label>
-          <select id="mWo">
-            <option value="No">No</option>
-            <option value="Sí">Sí</option>
-          </select>
-        </div>
-        <div class="field" style="grid-column: 1 / -1;">
-          <button type="submit" class="primary">Guardar Partido y Recalcular</button>
-        </div>
+        <button type="submit" class="btn btn-ok" id="btnSaveMatch">💾 Guardar en Firebase y Recalcular</button>
       </form>
-    </section>
+    </div>
 
-    <section id="tab-cloud" class="panel">
-      <h2>☁️ Firebase y Respaldo JSON</h2>
-      <p class="muted">Colección: <code>sepultureros</code> · Documento: <code>liga_2026</code> · Proyecto: <code>padelrank-6jrs4</code></p>
-
-      <div class="controls-row" style="margin-bottom:12px;">
-        <button id="uploadFirestoreBtn" type="button" class="success">☁️ Subir Estado Actual a Firestore</button>
-        <button id="exportJsonBtn" type="button">⬇️ Descargar JSON</button>
-        <input id="importFileInput" type="file" accept=".json,application/json" />
+    <div id="tab-cloud" class="card hidden">
+      <h2>☁️ Firebase (padelrank-6jrs4) y Respaldo JSON</h2>
+      <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
+        Lee automáticamente desde Firestore (<code>sepultureros/liga_2026</code>) para cualquier visitante y permite respaldar/restaurar <code>.json</code>.
+      </p>
+      <div style="margin-bottom:12px;">
+        <label>Firebase Config JSON</label>
+        <textarea id="fbConfigArea" rows="6"></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-neon" onclick="saveFbConfig()">Conectar Firebase</button>
+          <button type="button" class="btn btn-ok" onclick="pushToCloud()">☁️ Subir a Firestore</button>
+          <button type="button" class="btn" onclick="pullFromCloud()">🔄 Leer de Firestore</button>
+          <button type="button" class="btn" onclick="exportJson()">⬇️ Exportar .json</button>
+          <button type="button" class="btn" onclick="triggerImport()">⬆️ Importar .json</button>
+          <input type="file" id="fileImport" accept=".json" class="hidden" onchange="importJson(event)" />
+        </div>
       </div>
-
-      <div class="field">
-        <label>JSON de datos (puedes pegar aquí o exportar/importar archivo .json)</label>
-        <textarea id="jsonBox" placeholder='{"jugadores":[],"partidos":[],"controlSemanal":[],"usuarios":[],"reglas":{"nombre":"Ranking Sepultureros","winBase":100,"lossBase":20,"sorpresaPts":30,"limiteSemanal":2}}'></textarea>
-      </div>
-      <div class="controls-row">
-        <button id="applyJsonBtn" type="button" class="primary">Cargar JSON en la App</button>
-      </div>
-    </section>
+    </div>
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-    const BRAND_TITLE = "Ranking Sepultureros";
-    const STORAGE_KEY = "sepultureros_v4_8_cache";
-
-    const firebaseConfig = {
+    const DEFAULT_FB_CONFIG = {
       apiKey: "AIzaSyAFoimQyKdFdiNwAvptItveCUGm7HKC4oI",
       authDomain: "padelrank-6jrs4.firebaseapp.com",
       projectId: "padelrank-6jrs4",
@@ -441,109 +389,182 @@
       appId: "1:772355783928:web:b84403cac8d57e9612cf0d"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const ligaDocRef = doc(db, "sepultureros", "liga_2026");
-
-    let state = {
-      jugadores: [],
-      equipos: [],
-      partidos: [],
-      controlSemanal: [],
-      usuarios: [],
-      reglas: {
-        nombre: BRAND_TITLE,
-        winBase: 100,
-        lossBase: 20,
-        sorpresaPts: 30,
-        limiteSemanal: 2
-      },
-      _source: "vacío"
+    const EXCEL_SEED_DATA = {
+      "jugadores": [
+        {"id": "jug_1", "nombre": "Mauricio Hernández", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_2", "nombre": "Mario Espinoza", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_3", "nombre": "Italo Olivos", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_4", "nombre": "Job Cortes", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_5", "nombre": "Andres Sandoval", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_6", "nombre": "Pablo Lamilla", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_7", "nombre": "Miguel Ramirez", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_8", "nombre": "Angelo Espinaza", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_9", "nombre": "Abel Castillo", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_10", "nombre": "Luis Gamboa", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_11", "nombre": "Juan Alfaro", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_12", "nombre": "Sebastian Garcia", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_13", "nombre": "Erick Flores", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_14", "nombre": "Joshua Flores", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_15", "nombre": "Franco Araos", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_16", "nombre": "Benjamin Maldonado", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_17", "nombre": "César Torres", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_18", "nombre": "Ruben Ibarra", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_19", "nombre": "Ignacio Pardo", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_20", "nombre": "Rodrigo Bustos", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_21", "nombre": "Raúl Salas", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_22", "nombre": "Marco Zurita", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_23", "nombre": "Rafael Salazar", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_24", "nombre": "Arturo Silva", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_25", "nombre": "Guido Gonzalez", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_26", "nombre": "Invitado", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_27", "nombre": "Patricio Cerda", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_28", "nombre": "Patricio Torres", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_29", "nombre": "Don Daniel", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_30", "nombre": "Jose Vistoso", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_31", "nombre": "Braulio", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_32", "nombre": "Julio Puentes", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_33", "nombre": "Jose Araya", "categoria": "5ta", "activo": "Sí"},
+        {"id": "jug_34", "nombre": "David Polanco", "categoria": "5ta", "activo": "Sí"}
+      ],
+      "partidos": [
+        {"id": "part_54", "fecha": "2026-11-24 (6-4/7-5)", "fechaIso": "2026-11-24", "parejaA": "Don Daniel / Invitado", "parejaB": "Erick Flores / Joshua Flores", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_53", "fecha": "2026-11-24 (6-3/4-6/6-2)", "fechaIso": "2026-11-24", "parejaA": "Ruben Ibarra / Italo Olivos", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "16 - 11", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_52", "fecha": "2026-11-24 (3-6/6-1/6-4)", "fechaIso": "2026-11-24", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 1", "juegos": "15 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_51", "fecha": "2026-11-20 (4-6/6-3/6-4)", "fechaIso": "2026-11-20", "parejaA": "Erick Flores / Abel Castillo", "parejaB": "Joshua Flores / Benjamin Maldonado", "resultado": "2 - 1", "juegos": "16 - 13", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Abel Castillo, Benjamin Maldonado"},
+        {"id": "part_50", "fecha": "2026-11-20 (4-6/4-6)", "fechaIso": "2026-11-20", "parejaA": "Job Cortes / Mauricio Hernández", "parejaB": "Benjamin Maldonado / Joshua Flores", "resultado": "0 - 2", "juegos": "8 - 12", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": "Job Cortes, Mauricio Hernández, Benjamin Maldonado"},
+        {"id": "part_49", "fecha": "2026-11-20 (6-4/6-4)", "fechaIso": "2026-11-20", "parejaA": "David Polanco / Guido Gonzalez", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 0", "juegos": "12 - 8", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Guido Gonzalez, Mauricio Hernández, Mario Espinoza"},
+        {"id": "part_48", "fecha": "2026-11-23 (6-2/4-6/6-4)", "fechaIso": "2026-11-23", "parejaA": "Ignacio Pardo / Jose Araya", "parejaB": "Marco Zurita / César Torres", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_47", "fecha": "2026-11-20 (6-1/7-6)", "fechaIso": "2026-11-20", "parejaA": "Julio Puentes / Franco Araos", "parejaB": "Don Daniel / César Torres", "resultado": "2 - 0", "juegos": "13 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Franco Araos"},
+        {"id": "part_46", "fecha": "2026-11-20 (7-5/6-4)", "fechaIso": "2026-11-20", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Marco Zurita / Benjamin Maldonado", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes, Marco Zurita, Benjamin Maldonado"},
+        {"id": "part_45", "fecha": "2026-11-19 (6-376-1)", "fechaIso": "2026-11-19", "parejaA": "Mario Espinoza / Mauricio Hernández", "parejaB": "Guido Gonzalez / Italo Olivos", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Mario Espinoza, Guido Gonzalez, Italo Olivos"},
+        {"id": "part_44", "fecha": "2026-11-18 (6-4/6-3)", "fechaIso": "2026-11-18", "parejaA": "Mario Espinoza / Ignacio Pardo", "parejaB": "Job Cortes / Abel Castillo", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Ignacio Pardo, Job Cortes"},
+        {"id": "part_43", "fecha": "2026-11-17 (4-6/5-7)", "fechaIso": "2026-11-17", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Jose Vistoso / Pablo Lamilla", "resultado": "0 - 2", "juegos": "13 - 9", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": "Franco Araos"},
+        {"id": "part_42", "fecha": "2026-11-17 (2-6/6-3/6-2)", "fechaIso": "2026-11-17", "parejaA": "Guido Gonzalez / Job Cortes", "parejaB": "Benjamin Maldonado / Marco Zurita", "resultado": "2 - 1", "juegos": "14 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
+        {"id": "part_41", "fecha": "2026-11-16 (6-3/6-1)", "fechaIso": "2026-11-16", "parejaA": "Arturo Silva / Braulio", "parejaB": "Patricio Cerda / Patricio Torres", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_40", "fecha": "2026-11-16 (6-3/6-2)", "fechaIso": "2026-11-16", "parejaA": "Job Cortes / César Torres", "parejaB": "Franco Araos / Rafael Salazar", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Franco Araos"},
+        {"id": "part_39", "fecha": "2026-11-16 (2-6/6-4/7-5)", "fechaIso": "2026-11-16", "parejaA": "Benjamin Maldonado / Marco Zurita", "parejaB": "Rodrigo Bustos / Raúl Salas", "resultado": "2 - 1", "juegos": "15 - 15", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_38", "fecha": "2026-11-16 (2-6/7-5/7-5)", "fechaIso": "2026-11-16", "parejaA": "Job Cortes / Mario Espinoza", "parejaB": "Guido Gonzalez / Franco Araos", "resultado": "2 - 1", "juegos": "16 - 16", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_37", "fecha": "2026-11-16 (4-6/6-4/6-2)", "fechaIso": "2026-11-16", "parejaA": "Mauricio Hernández / Ignacio Pardo", "parejaB": "Italo Olivos / Ruben Ibarra", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_36", "fecha": "2026-11-16 (7-5/6-4)", "fechaIso": "2026-11-16", "parejaA": "Ignacio Pardo / Italo Olivos", "parejaB": "Franco Araos / Don Daniel", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_35", "fecha": "2026-11-13 (6-1/7-6)", "fechaIso": "2026-11-13", "parejaA": "Job Cortes / Benjamin Maldonado", "parejaB": "Arturo Silva / Rafael Salazar", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
+        {"id": "part_34", "fecha": "2026-11-13 (6-4/6-1)", "fechaIso": "2026-11-13", "parejaA": "Miguel Ramirez / Andres Sandoval", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Mauricio Hernández"},
+        {"id": "part_33", "fecha": "2026-11-10 (6-3/3-6/6-3)", "fechaIso": "2026-11-10", "parejaA": "Miguel Ramirez / Invitado", "parejaB": "Pablo Lamilla / Jose Vistoso", "resultado": "2 - 1", "juegos": "15 - 12", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_32", "fecha": "2026-11-11 (3-6/7-5/6-4)", "fechaIso": "2026-11-11", "parejaA": "Italo Olivos / Franco Araos", "parejaB": "Don Daniel / Andres Sandoval", "resultado": "2 - 1", "juegos": "16 - 15", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_31", "fecha": "2026-11-11 (6-3/6-1)", "fechaIso": "2026-11-11", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Ruben Ibarra / Abel Castillo", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_30", "fecha": "2026-11-10 (7-5/2-6/6-0)", "fechaIso": "2026-11-10", "parejaA": "Patricio Cerda / Patricio Torres", "parejaB": "Arturo Silva / Invitado", "resultado": "2 - 1", "juegos": "15 - 11", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_29", "fecha": "2026-11-10 (7-6/6-7/6-3)", "fechaIso": "2026-11-10", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 1", "juegos": "19 - 16", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_28", "fecha": "2026-11-07 (6-0/6-4)", "fechaIso": "2026-11-07", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Benjamin Maldonado / Joshua Flores", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_27", "fecha": "2026-11-05 (6-1/6-4)", "fechaIso": "2026-11-05", "parejaA": "Marco Zurita / Benjamin Maldonado", "parejaB": "Arturo Silva / Invitado", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_26", "fecha": "2026-11-05 (0-6/7-5/6-2)", "fechaIso": "2026-11-05", "parejaA": "Raúl Salas / Rafael Salazar", "parejaB": "Arturo Silva / Erick Flores", "resultado": "2 - 1", "juegos": "13 - 13", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_25", "fecha": "2026-11-04 (6-7/6-4/6-0)", "fechaIso": "2026-11-04", "parejaA": "Ruben Ibarra / Italo Olivos", "parejaB": "Job Cortes / Franco Araos", "resultado": "2 - 1", "juegos": "18 - 11", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_24", "fecha": "2026-11-03 (4-6/6-3/6-3)", "fechaIso": "2026-11-03", "parejaA": "Raúl Salas / Rafael Salazar", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_23", "fecha": "2026-10-30 (2-6/6-2/6-3)", "fechaIso": "2026-10-30", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "14 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
+        {"id": "part_22", "fecha": "2026-10-29 (6-1/6-4)", "fechaIso": "2026-10-29", "parejaA": "Arturo Silva / Italo Olivos", "parejaB": "Guido Gonzalez / Luis Gamboa", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_21", "fecha": "2026-10-29 (6-3/7-6)", "fechaIso": "2026-10-29", "parejaA": "Mauricio Hernández / Mario Espinoza", "parejaB": "Abel Castillo / Miguel Ramirez", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_20", "fecha": "2026-10-29 (6-7/7-6/2-6)", "fechaIso": "2026-10-29", "parejaA": "Franco Araos / Job Cortes", "parejaB": "Joshua Flores / Erick Flores", "resultado": "1 - 2", "juegos": "15 - 19", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_19", "fecha": "2026-10-26 (6-4/6-3)", "fechaIso": "2026-10-26", "parejaA": "Job Cortes / César Torres", "parejaB": "Abel Castillo / Ignacio Pardo", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_18", "fecha": "2026-10-23 (6-2/1-6/7-6)", "fechaIso": "2026-10-23", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Job Cortes / Andres Sandoval", "resultado": "2 - 1", "juegos": "14 - 14", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Franco Araos, Rodrigo Bustos, Job Cortes"},
+        {"id": "part_17", "fecha": "2026-10-23 (7-6/6-2)", "fechaIso": "2026-10-23", "parejaA": "Mauricio Hernández / Mario Espinoza", "parejaB": "Luis Gamboa / Marco Zurita", "resultado": "0 - 2", "juegos": "8 - 13", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": "Mauricio Hernández"},
+        {"id": "part_16", "fecha": "2026-10-23 (7-5/4-6/6-4)", "fechaIso": "2026-10-23", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Miguel Ramirez / Abel Castillo", "resultado": "2 - 1", "juegos": "17 - 15", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
+        {"id": "part_15", "fecha": "2026-10-22 (7-5/6-4)", "fechaIso": "2026-10-22", "parejaA": "Angelo Espinaza / Ignacio Pardo", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Franco Araos"},
+        {"id": "part_14", "fecha": "2026-10-22 (2-6/6-2/8-6)", "fechaIso": "2026-10-22", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "16 - 14", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_13", "fecha": "2026-10-19 (6-1/1-6/6-3)", "fechaIso": "2026-10-19", "parejaA": "Marco Zurita / Benjamin Maldonado", "parejaB": "Ruben Ibarra / Italo Olivos", "resultado": "2 - 1", "juegos": "13 - 10", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_12", "fecha": "2026-10-19 (1-6/6-3/6-2)", "fechaIso": "2026-10-19", "parejaA": "Job Cortes / Franco Araos", "parejaB": "Rafael Salazar / Ignacio Pardo", "resultado": "2 - 1", "juegos": "13 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_11", "fecha": "2026-10-15 (4-6/6-3/6-3)", "fechaIso": "2026-10-15", "parejaA": "Mauricio Hernández / Mario Espinoza", "parejaB": "Andres Sandoval / Pablo Lamilla", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_10", "fecha": "2026-10-12 (6-3/5-7/6-3)", "fechaIso": "2026-10-12", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Italo Olivos / Job Cortes", "resultado": "2 - 1", "juegos": "17 - 13", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_9", "fecha": "2026-10-12 (7-6/3-6/6-3)", "fechaIso": "2026-10-12", "parejaA": "Ignacio Pardo / Italo Olivos", "parejaB": "Job Cortes / Franco Araos", "resultado": "2 - 1", "juegos": "16 - 15", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_8", "fecha": "2026-10-12 (6-2/3-6/6-0)", "fechaIso": "2026-10-12", "parejaA": "Pablo Lamilla / Andres Sandoval", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 1", "juegos": "15 - 8", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_7", "fecha": "2026-10-06 (5-7/6-3/6-3)", "fechaIso": "2026-10-06", "parejaA": "Mario Espinoza / Mauricio Hernández", "parejaB": "Miguel Ramirez / Andres Sandoval", "resultado": "2 - 1", "juegos": "17 - 14", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_6", "fecha": "2026-09-06 (6-4/4-6/6-2)", "fechaIso": "2026-09-06", "parejaA": "Rafael Salazar / Raúl Salas", "parejaB": "Franco Araos / Marco Zurita", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
+        {"id": "part_5", "fecha": "2026-10-06 (4-6/6-4/7-6)", "fechaIso": "2026-10-06", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Italo Olivos / Job Cortes", "resultado": "2 - 1", "juegos": "17 - 16", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_4", "fecha": "2026-10-06 (6-2/6-3)", "fechaIso": "2026-10-06", "parejaA": "Rodrigo Bustos / Franco Araos", "parejaB": "Italo Olivos / Rafael Salazar", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_3", "fecha": "2026-09-29 (6-3/6.2)", "fechaIso": "2026-09-29", "parejaA": "Franco Araos / Job Cortes", "parejaB": "Pablo Lamilla / Andres Sandoval", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_2", "fecha": "2026-09-28 (6-3/4-6/6-0)", "fechaIso": "2026-09-28", "parejaA": "Miguel Ramirez / Andres Sandoval", "parejaB": "Benjamin Maldonado / Marco Zurita", "resultado": "2 - 1", "juegos": "16 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
+        {"id": "part_1", "fecha": "2026-09-28 (6-4/6-3)", "fechaIso": "2026-09-28", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Juan Alfaro / Sebastian Garcia", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""}
+      ],
+      "controlSemanal": [],
+      "revelacion": "",
+      "reglas": {
+        "nombre": "Ranking Sepultureros",
+        "winBase": 100,
+        "lossBase": 20,
+        "sorpresaPts": 30,
+        "limiteSemanal": 2
+      }
     };
 
-    let currentAdmin = "";
+    const FB_KEY = 'sepultureros_fb_cfg_v1';
+    const CACHE_KEY = 'sepultureros_cache_v1';
+    const THEME_KEY = 'sepultureros_theme_v1';
+    const ROLE_KEY = 'sepultureros_role_v1';
 
-    const el = (id) => document.getElementById(id);
+    let state = structuredClone(EXCEL_SEED_DATA);
+    let wkStats = {};
+    let isAdmin = false;
+    let fsDb = null;
 
-    // Logo check
-    const headerLogo = el("headerLogo");
-    headerLogo.addEventListener("load", () => { headerLogo.style.display = "block"; });
-    headerLogo.addEventListener("error", () => { headerLogo.style.display = "none"; });
-
-    function setStatus(msg, shortMsg = null) {
-      el("statusMsg").textContent = msg;
-      if (shortMsg) el("syncStatus").textContent = shortMsg;
+    function loadTheme() {
+      document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
     }
 
-    function sanitizeState(raw, sourceLabel) {
-      const safe = raw && typeof raw === "object" ? raw : {};
-      const reglas = Object.assign(
-        {
-          nombre: BRAND_TITLE,
-          winBase: 100,
-          lossBase: 20,
-          sorpresaPts: 30,
-          limiteSemanal: 2
-        },
-        safe.reglas || {},
-        { nombre: BRAND_TITLE }
-      );
+    window.toggleTheme = () => {
+      const nxt = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nxt);
+      localStorage.setItem(THEME_KEY, nxt);
+    };
 
-      return {
-        jugadores: Array.isArray(safe.jugadores) ? safe.jugadores : [],
-        equipos: Array.isArray(safe.equipos) ? safe.equipos : [],
-        partidos: Array.isArray(safe.partidos) ? safe.partidos : [],
-        controlSemanal: Array.isArray(safe.controlSemanal) ? safe.controlSemanal : [],
-        usuarios: Array.isArray(safe.usuarios) ? safe.usuarios : [],
-        reglas,
-        _source: sourceLabel
-      };
+    function applyRole() {
+      const r = localStorage.getItem(ROLE_KEY) || 'Espectador';
+      isAdmin = (r === 'Administrador');
+      document.getElementById('sessionChip').textContent = isAdmin ? '🛡️ Admin' : '👁️ Espectador';
+      document.getElementById('btnLogin').classList.toggle('hidden', isAdmin);
+      document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
+      document.getElementById('admWarn').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('btnSaveMatch').disabled = !isAdmin;
     }
 
-    function saveLocalCache() {
-      try {
-        const { _source, ...clean } = state;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
-      } catch (_) {}
-    }
+    window.openModal = () => document.getElementById('loginModal').classList.remove('hidden');
+    window.closeModal = () => document.getElementById('loginModal').classList.add('hidden');
+    window.doLogin = (e) => {
+      e.preventDefault();
+      localStorage.setItem(ROLE_KEY, document.getElementById('uSel').value);
+      closeModal();
+      applyRole();
+    };
+    window.doLogout = () => {
+      localStorage.setItem(ROLE_KEY, 'Espectador');
+      applyRole();
+    };
 
-    function loadLocalCache() {
-      try {
-        const txt = localStorage.getItem(STORAGE_KEY);
-        if (!txt) return false;
-        const parsed = JSON.parse(txt);
-        if (Array.isArray(parsed.jugadores) || Array.isArray(parsed.partidos)) {
-          state = sanitizeState(parsed, "caché local");
-          return true;
-        }
-      } catch (_) {}
-      return false;
-    }
+    window.goTab = (id, btn) => {
+      ['rank', 'matches', 'week', 'ctrl', 'awards', 'add', 'cloud'].forEach(t => document.getElementById('tab-' + t).classList.add('hidden'));
+      document.getElementById('tab-' + id).classList.remove('hidden');
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    };
 
-    function getIsoWeek(dateStr) {
-      const first = String(dateStr || "").split(" ")[0].trim();
-      const parts = first.split("-").map((n) => parseInt(n, 10));
-      if (parts.length !== 3 || parts.some(Number.isNaN)) return "2026-W00";
-      const [d, m, y] = parts[0] > 31 ? [parts[2], parts[1], parts[0]] : parts;
+    function weekKey(dStr) {
+      let y, m, d;
+      const parts = String(dStr || '').split('-').map(Number);
+      if (parts.length === 3 && parts[0] > 31) [y, m, d] = parts;
+      else if (parts.length === 3) [d, m, y] = parts;
+      else return '2026-W00';
       const dt = new Date(Date.UTC(y, m - 1, d));
-      const dayNum = dt.getUTCDay() || 7;
-      dt.setUTCDate(dt.getUTCDate() + 4 - dayNum);
-      const yearStart = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
-      const weekNo = Math.ceil((((dt - yearStart) / 86400000) + 1) / 7);
-      return `${dt.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
+      const day = dt.getUTCDay() || 7;
+      dt.setUTCDate(dt.getUTCDate() + 4 - day);
+      const yrStart = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+      const wk = Math.ceil((((dt - yrStart) / 86400000) + 1) / 7);
+      return `${dt.getUTCFullYear()}-W${String(wk).padStart(2, '0')}`;
     }
 
-    function recalcAll() {
-      const limite = Number(state.reglas?.limiteSemanal) || 2;
-      const mapJug = {};
-
-      for (const j of state.jugadores) {
-        if (!j || !j.nombre) continue;
-        mapJug[j.nombre] = {
-          id: j.id || `jug_${Object.keys(mapJug).length + 1}`,
+    function recalc() {
+      const map = {};
+      (state.jugadores || []).forEach(j => {
+        map[j.nombre] = {
+          id: j.id,
           nombre: j.nombre,
-          categoria: j.categoria || "5ta",
-          puntos: Number(state.reglas?.winBase) || 100,
+          categoria: j.categoria || '5ta',
+          puntos: 100,
           pj: 0,
           pg: 0,
           pp: 0,
@@ -554,365 +575,441 @@
           p12: 0,
           p02: 0
         };
-      }
-
-      const crono = [...state.partidos].sort((a, b) => {
-        const na = parseInt(String(a.id || "").replace(/\D+/g, ""), 10) || 0;
-        const nb = parseInt(String(b.id || "").replace(/\D+/g, ""), 10) || 0;
-        return na - nb;
       });
 
-      const wkCount = {};
-      const wkTracker = {};
+      const crono = [...(state.partidos || [])].sort(
+        (a, b) => (parseInt(String(a.id).replace('part_', '')) || 0) - (parseInt(String(b.id).replace('part_', '')) || 0)
+      );
 
-      for (const p of crono) {
-        const [a1, a2] = String(p.parejaA || "").split("/").map((s) => s.trim());
-        const [b1, b2] = String(p.parejaB || "").split("/").map((s) => s.trim());
-        const all = [a1, a2, b1, b2].filter(Boolean);
-        if (all.length < 4) continue;
+      const wkCnt = {};
+      wkStats = {};
+      const ctrl = [];
 
-        for (const n of all) {
-          if (!mapJug[n]) {
-            mapJug[n] = {
-              id: `jug_${Object.keys(mapJug).length + 1}`,
+      crono.forEach(p => {
+        const [a1, a2] = String(p.parejaA).split('/').map(s => s.trim());
+        const [b1, b2] = String(p.parejaB).split('/').map(s => s.trim());
+        [a1, a2, b1, b2].forEach(n => {
+          if (n && !map[n]) {
+            map[n] = {
+              id: 'jug_' + (Object.keys(map).length + 1),
               nombre: n,
-              categoria: "5ta",
-              puntos: Number(state.reglas?.winBase) || 100,
-              pj: 0, pg: 0, pp: 0, difSets: 0, difJuegos: 0, g20: 0, g21: 0, p12: 0, p02: 0
+              categoria: '5ta',
+              puntos: 100,
+              pj: 0,
+              pg: 0,
+              pp: 0,
+              difSets: 0,
+              difJuegos: 0,
+              g20: 0,
+              g21: 0,
+              p12: 0,
+              p02: 0
             };
           }
-        }
+        });
 
-        const wk = getIsoWeek(p.fecha);
-        const valid = all.map((n) => {
-          const key = `${wk}_${n}`;
-          const used = wkCount[key] || 0;
-          if (used < limite) {
-            wkCount[key] = used + 1;
+        const rawDate = p.fechaIso || String(p.fecha).split(' ')[0];
+        const wk = weekKey(rawDate);
+        if (!wkStats[wk]) wkStats[wk] = {};
+
+        const all = [a1, a2, b1, b2];
+        const valid = all.map(n => {
+          const k = wk + '_' + n;
+          const c = wkCnt[k] || 0;
+          if (c < 2) {
+            wkCnt[k] = c + 1;
             return true;
           }
           return false;
         });
 
-        for (let i = 0; i < all.length; i++) {
-          const n = all[i];
-          const k = `${wk}__${n}`;
-          if (!wkTracker[k]) wkTracker[k] = { semana: wk, jugador: n, partidosValidos: 0, limite };
-          if (valid[i]) wkTracker[k].partidosValidos += 1;
-        }
+        const avgA = ((map[a1]?.puntos || 100) + (map[a2]?.puntos || 100)) / 2;
+        const avgB = ((map[b1]?.puntos || 100) + (map[b2]?.puntos || 100)) / 2;
+        const [sA, sB] = String(p.resultado).split('-').map(x => parseInt(x.trim()) || 0);
+        const [jA, jB] = String(p.juegos).split('-').map(x => parseInt(x.trim()) || 0);
+        const wo = p.wo === 'Sí';
 
-        const [sa, sb] = String(p.resultado || "0 - 0").split("-").map((x) => parseInt(x.trim(), 10) || 0);
-        const [ja, jb] = String(p.juegos || "0 - 0").split("-").map((x) => parseInt(x.trim(), 10) || 0);
-        const avgA = (mapJug[a1].puntos + mapJug[a2].puntos) / 2;
-        const avgB = (mapJug[b1].puntos + mapJug[b2].puntos) / 2;
-        const wo = p.wo === "Sí";
-
-        let ptsA = 0, ptsB = 0;
+        let bA = 0, bB = 0;
         if (wo) {
-          ptsA = p.ganador === "A" ? 100 : 0;
-          ptsB = p.ganador === "B" ? 100 : 0;
-        } else if (p.ganador === "A") {
-          ptsA = (sa === 2 && sb === 0) ? 100 : 80;
-          ptsB = (sa === 2 && sb === 0) ? 20 : 40;
+          bA = p.ganador === 'A' ? 100 : 0;
+          bB = p.ganador === 'B' ? 100 : 0;
+        } else if (p.ganador === 'A') {
+          bA = (sA === 2 && sB === 0) ? 100 : 80;
+          bB = (sA === 2 && sB === 0) ? 20 : 40;
         } else {
-          ptsA = (sa === 0 && sb === 2) ? 20 : 40;
-          ptsB = (sa === 0 && sb === 2) ? 100 : 80;
+          bA = (sA === 0 && sB === 2) ? 20 : 40;
+          bB = (sA === 0 && sB === 2) ? 100 : 80;
         }
 
-        const isSorp = (p.ganador === "A" && avgA < avgB) || (p.ganador === "B" && avgB < avgA);
+        let ptsA = bA, ptsB = bB;
+        const isSorp = (p.ganador === 'A' && avgA < avgB) || (p.ganador === 'B' && avgB < avgA);
+        p.sorpresa = isSorp ? 'Sí' : 'No';
         if (isSorp) {
-          if (p.ganador === "A") { ptsA += 30; ptsB -= 30; }
-          else { ptsA -= 30; ptsB += 30; }
-        }
-
-        for (let i = 0; i < 4; i++) {
-          if (!valid[i]) continue;
-          const n = all[i];
-          const isA = i < 2;
-          const won = (isA && p.ganador === "A") || (!isA && p.ganador === "B");
-          const sf = isA ? sa : sb;
-          const sc = isA ? sb : sa;
-          const jf = isA ? ja : jb;
-          const jc = isA ? jb : ja;
-          const delta = isA ? ptsA : ptsB;
-
-          mapJug[n].puntos += delta;
-          mapJug[n].pj += 1;
-          mapJug[n].difSets += (sf - sc);
-          mapJug[n].difJuegos += (jf - jc);
-          if (won) {
-            mapJug[n].pg += 1;
-            if (sf === 2 && sc === 0) mapJug[n].g20 += 1;
-            else mapJug[n].g21 += 1;
+          if (p.ganador === 'A') {
+            ptsA = bA + 30;
+            ptsB = -30;
           } else {
-            mapJug[n].pp += 1;
-            if (sf === 1 && sc === 2) mapJug[n].p12 += 1;
-            else mapJug[n].p02 += 1;
+            ptsA = -30;
+            ptsB = bB + 30;
           }
         }
-      }
 
-      state.jugadores = Object.values(mapJug);
-      state.controlSemanal = Object.values(wkTracker)
-        .map((r) => ({
-          semana: r.semana,
-          jugador: r.jugador,
-          partidosValidos: r.partidosValidos,
-          limite: r.limite,
-          estado: r.partidosValidos >= r.limite ? `LÍMITE (${r.partidosValidos}/${r.limite})` : `OK (${r.partidosValidos}/${r.limite})`
-        }))
-        .sort((a, b) => a.jugador.localeCompare(b.jugador) || a.semana.localeCompare(b.semana));
+        const acomp = [];
+        all.forEach((n, i) => {
+          if (!n) return;
+          if (!valid[i]) {
+            acomp.push(n);
+            return;
+          }
+          const sideA = i < 2;
+          const won = (sideA && p.ganador === 'A') || (!sideA && p.ganador === 'B');
+          const sf = sideA ? sA : sB, sc = sideA ? sB : sA;
+          const jf = sideA ? jA : jB, jc = sideA ? jB : jA;
+          const gPts = sideA ? ptsA : ptsB;
+          map[n].puntos += gPts;
+          map[n].pj += 1;
+          map[n].difSets += (sf - sc);
+          map[n].difJuegos += (jf - jc);
+          if (won) {
+            map[n].pg += 1;
+            if (sf === 2 && sc === 0) map[n].g20 += 1;
+            else map[n].g21 += 1;
+          } else {
+            map[n].pp += 1;
+            if (sf === 1 && sc === 2) map[n].p12 += 1;
+            else map[n].p02 += 1;
+          }
+          if (!wkStats[wk][n]) wkStats[wk][n] = { pts: 0, pg: 0, pp: 0 };
+          wkStats[wk][n].pts += gPts;
+          if (won) wkStats[wk][n].pg += 1;
+          else wkStats[wk][n].pp += 1;
+        });
+
+        p.acompanantes = acomp.join(', ');
+      });
+
+      Object.keys(wkStats).sort().reverse().forEach(wk => {
+        Object.keys(wkStats[wk]).sort().forEach(n => {
+          const v = wkStats[wk][n].pg + wkStats[wk][n].pp;
+          ctrl.push({
+            semana: wk,
+            jugador: n,
+            partidosValidos: v,
+            limite: 2,
+            estado: v >= 2 ? `LÍMITE (${v}/2)` : `OK (${v}/2)`
+          });
+        });
+      });
+
+      state.controlSemanal = ctrl;
+      state.jugadores = Object.values(map).sort(
+        (a, b) =>
+          b.puntos - a.puntos ||
+          ((b.pj ? b.pg / b.pj : 0) - (a.pj ? a.pg / a.pj : 0)) ||
+          b.pg - a.pg ||
+          b.difSets - a.difSets ||
+          b.difJuegos - a.difJuegos
+      );
     }
 
     function render() {
-      el("appTitle").textContent = BRAND_TITLE;
-      document.title = `${BRAND_TITLE} · v4.8`;
-
-      const sorted = [...state.jugadores].sort((a, b) => {
-        const vicA = a.pj > 0 ? a.pg / a.pj : 0;
-        const vicB = b.pj > 0 ? b.pg / b.pj : 0;
-        if (b.puntos !== a.puntos) return b.puntos - a.puntos;
-        if (vicB !== vicA) return vicB - vicA;
-        if (b.pg !== a.pg) return b.pg - a.pg;
-        if (b.difSets !== a.difSets) return b.difSets - a.difSets;
-        return b.difJuegos - a.difJuegos;
-      });
-
-      el("kpiPartidos").textContent = String(state.partidos.length);
-      el("kpiFuente").textContent = `Origen: ${state._source}`;
-
-      if (sorted.length > 0) {
-        const leader = sorted[0];
-        el("kpiLider").textContent = leader.nombre;
-        el("kpiLiderPts").textContent = `${leader.puntos} pts`;
-
-        const mostWins = [...sorted].sort((a, b) => b.pg - a.pg)[0];
-        el("kpiMasGanador").textContent = mostWins.nombre;
-        el("kpiMasGanadorVal").textContent = `${mostWins.pg} PG`;
-
-        const mostPj = [...sorted].sort((a, b) => b.pj - a.pj)[0];
-        el("kpiMasPj").textContent = mostPj.nombre;
-        el("kpiMasPjVal").textContent = `${mostPj.pj} PJ`;
-      } else {
-        el("kpiLider").textContent = "—";
-        el("kpiLiderPts").textContent = "0 pts";
-        el("kpiMasGanador").textContent = "—";
-        el("kpiMasGanadorVal").textContent = "0 PG";
-        el("kpiMasPj").textContent = "—";
-        el("kpiMasPjVal").textContent = "0 PJ";
+      document.getElementById('appTitle').textContent = state.reglas?.nombre || 'Ranking Sepultureros';
+      document.getElementById('kPart').textContent = (state.partidos || []).length;
+      const s = state.jugadores || [];
+      if (s.length) {
+        document.getElementById('kLead').textContent = s[0].nombre;
+        document.getElementById('kLeadPts').textContent = `${s[0].puntos} pts`;
+        const mw = [...s].sort((a, b) => b.pg - a.pg)[0];
+        document.getElementById('kWin').textContent = mw.nombre;
+        document.getElementById('kWinSub').textContent = `${mw.pg} PG`;
+        const mp = [...s].sort((a, b) => b.pj - a.pj)[0];
+        document.getElementById('kPj').textContent = mp.nombre;
+        document.getElementById('kPjSub').textContent = `${mp.pj} PJ`;
       }
 
-      el("rankingBody").innerHTML = sorted.length
-        ? sorted.map((j, idx) => {
-            const pct = j.pj > 0 ? ((j.pg / j.pj) * 100).toFixed(1) + "%" : "0.0%";
-            return `<tr>
-              <td>${idx + 1}</td>
-              <td><strong>${j.nombre}</strong></td>
-              <td>${j.puntos}</td>
-              <td>${j.pj}</td>
-              <td>${j.pg}</td>
-              <td>${j.pp}</td>
-              <td>${pct}</td>
-              <td>${j.difSets}</td>
-              <td>${j.difJuegos}</td>
-            </tr>`;
-          }).join("")
-        : `<tr><td colspan="9" class="muted">No hay jugadores cargados todavía.</td></tr>`;
+      document.getElementById('rankBody').innerHTML = s.map((j, i) => {
+        const r = i + 1;
+        const pc = r <= 3 ? `pos p${r}` : 'pos';
+        const pct = j.pj ? ((j.pg / j.pj) * 100).toFixed(1) + '%' : '0.0%';
+        return `<tr>
+          <td><span class="${pc}">${r}</span></td>
+          <td class="l"><strong>${j.nombre}</strong></td>
+          <td class="pts">${j.puntos}</td>
+          <td>${j.pj}</td><td>${j.pg}</td><td>${j.pp}</td><td>${pct}</td>
+          <td>${j.g20}</td><td>${j.g21}</td><td>${j.p12}</td><td>${j.p02}</td>
+          <td class="${j.difSets >= 0 ? 'plus' : 'minus'}">${j.difSets > 0 ? '+' + j.difSets : j.difSets}</td>
+          <td class="${j.difJuegos >= 0 ? 'plus' : 'minus'}">${j.difJuegos > 0 ? '+' + j.difJuegos : j.difJuegos}</td>
+        </tr>`;
+      }).join('');
 
-      el("partidosBody").innerHTML = state.partidos.length
-        ? state.partidos.map((p) => `<tr>
-            <td>${p.id || ""}</td>
-            <td>${p.fecha || ""}</td>
-            <td>${p.parejaA || ""}</td>
-            <td>${p.parejaB || ""}</td>
-            <td>${p.resultado || ""}</td>
-            <td>${p.juegos || ""}</td>
-            <td>${p.ganador || ""}</td>
-            <td>${p.sorpresa || "No"}</td>
-          </tr>`).join("")
-        : `<tr><td colspan="8" class="muted">No hay partidos registrados todavía.</td></tr>`;
-
-      el("semanalBody").innerHTML = state.controlSemanal.length
-        ? state.controlSemanal.map((s) => `<tr>
-            <td>${s.semana}</td>
-            <td>${s.jugador}</td>
-            <td>${s.partidosValidos}</td>
-            <td>${s.limite}</td>
-            <td>${s.estado}</td>
-          </tr>`).join("")
-        : `<tr><td colspan="5" class="muted">Sin registros de control semanal.</td></tr>`;
-
-      const { _source, ...exportable } = state;
-      el("jsonBox").value = JSON.stringify(exportable, null, 2);
+      fillSelects();
+      drawMatches();
+      fillWeeks();
+      drawWeek();
+      drawCtrl();
+      drawAwards();
     }
 
-    async function fetchOnceFromFirestore() {
-      try {
-        const snap = await getDoc(ligaDocRef);
-        if (snap.exists()) {
-          state = sanitizeState(snap.data(), "Firestore (sepultureros/liga_2026)");
-          recalcAll();
-          saveLocalCache();
-          render();
-          setStatus(
-            `Conectado a Firestore (${firebaseConfig.projectId}) · ${state.partidos.length} partidos y ${state.jugadores.length} jugadores cargados.`,
-            `Firestore conectado (${firebaseConfig.projectId})`
-          );
-        } else {
-          render();
-          setStatus(
-            `Conectado a ${firebaseConfig.projectId}, pero el documento sepultureros/liga_2026 aún no existe en Firestore. Importa tu JSON y pulsa "Subir Estado Actual a Firestore".`,
-            `Firestore conectado · Documento vacío`
-          );
-        }
-      } catch (err) {
-        render();
-        setStatus(
-          `No se pudo leer Firestore (${err.message}). Revisa las reglas de lectura pública en Firebase o carga tu JSON local.`,
-          `Error lectura Firestore`
-        );
-      }
+    window.drawMatches = () => {
+      const q = (document.getElementById('qMatch')?.value || '').toLowerCase();
+      const list = (state.partidos || []).filter(p =>
+        String(p.parejaA).toLowerCase().includes(q) ||
+        String(p.parejaB).toLowerCase().includes(q) ||
+        String(p.fecha).toLowerCase().includes(q) ||
+        String(p.id).toLowerCase().includes(q)
+      );
+      document.getElementById('matchList').innerHTML = list.map(p => {
+        const num = String(p.id).replace('part_', '#');
+        const sp = p.sorpresa === 'Sí' ? `<span class="tag-s">⚡ SORPRESA</span>` : '';
+        const ac = p.acompanantes ? `<div><span class="tag-a">Acompañante: ${p.acompanantes}</span></div>` : '';
+        return `<div class="match-card">
+          <div>
+            <div style="font-size:0.76rem; color:var(--muted);"><strong>${num}</strong> · ${p.fecha} ${sp}</div>
+            <div style="font-size:0.92rem; font-weight:700; margin-top:2px;">
+              <span class="${p.ganador === 'A' ? 'win' : ''}">${p.parejaA}</span> vs <span class="${p.ganador === 'B' ? 'win' : ''}">${p.parejaB}</span>
+            </div>
+            ${ac}
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:800;">${p.resultado}</div>
+            <div style="font-size:0.76rem; color:var(--muted);">Juegos: ${p.juegos}</div>
+          </div>
+        </div>`;
+      }).join('');
+    };
+
+    function fillWeeks() {
+      const wks = Object.keys(wkStats).sort().reverse();
+      const sel = document.getElementById('wkSel');
+      if (!sel) return;
+      const prev = sel.value;
+      sel.innerHTML = wks.map(w => `<option value="${w}">${w}</option>`).join('');
+      if (prev && wks.includes(prev)) sel.value = prev;
+      else if (wks[0]) sel.value = wks[0];
     }
 
-    // Escucha en tiempo real para que visitantes vean cambios al instante si las reglas permiten lectura
-    onSnapshot(
-      ligaDocRef,
-      (snap) => {
-        if (snap.exists()) {
-          state = sanitizeState(snap.data(), "Firestore en vivo");
-          recalcAll();
-          saveLocalCache();
-          render();
-          setStatus(
-            `Sincronizado con Firestore (${firebaseConfig.projectId}) · ${state.partidos.length} partidos activos para todos los visitantes.`,
-            `Firestore en vivo (${firebaseConfig.projectId})`
-          );
-        }
-      },
-      (err) => {
-        setStatus(
-          `Aviso Firestore: ${err.message} (mostrando ${state._source}).`,
-          `Firestore (${firebaseConfig.projectId})`
-        );
-      }
-    );
+    window.drawWeek = () => {
+      const wk = document.getElementById('wkSel')?.value;
+      const wm = wkStats[wk] || {};
+      const rows = Object.entries(wm).map(([n, st]) => {
+        const pl = state.jugadores.find(x => x.nombre === n) || { puntos: 100, pj: 0 };
+        return { n, pts: st.pts, pg: st.pg, pp: st.pp, acPts: pl.puntos, acPj: pl.pj };
+      }).sort((a, b) => b.pts - a.pts || b.pg - a.pg);
 
-    // Tabs
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-        document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        el(`tab-${btn.dataset.tab}`).classList.add("active");
+      const cnt = (state.partidos || []).filter(p => weekKey(p.fechaIso || String(p.fecha).split(' ')[0]) === wk).length;
+      document.getElementById('wkKpis').innerHTML = `
+        <div class="kpi"><div class="kpi-l">Semana</div><div class="kpi-v">${wk || '-'}</div></div>
+        <div class="kpi"><div class="kpi-l">Partidos</div><div class="kpi-v">${cnt}</div></div>
+        <div class="kpi"><div class="kpi-l">Destacado</div><div class="kpi-v" style="font-size:1rem;">${rows[0] ? rows[0].n : '-'}</div></div>
+      `;
+      document.getElementById('wkBody').innerHTML = rows.map((r, i) => `
+        <tr>
+          <td><span class="pos">${i + 1}</span></td>
+          <td class="l"><strong>${r.n}</strong></td>
+          <td class="pts">${r.pts}</td><td>${r.pg}</td><td>${r.pp}</td><td>${r.acPts}</td><td>${r.acPj}</td>
+        </tr>
+      `).join('');
+    };
+
+    window.drawCtrl = () => {
+      const q = (document.getElementById('qCtrl')?.value || '').toLowerCase();
+      const rows = (state.controlSemanal || []).filter(c =>
+        String(c.jugador).toLowerCase().includes(q) || String(c.semana).toLowerCase().includes(q)
+      );
+      document.getElementById('ctrlBody').innerHTML = rows.map(c => `
+        <tr><td><strong>${c.semana}</strong></td><td class="l">${c.jugador}</td><td>${c.partidosValidos}</td><td>${c.limite}</td><td>${c.estado}</td></tr>
+      `).join('');
+    };
+
+    function drawAwards() {
+      const s = state.jugadores || [];
+      const c1 = s[0], mp = [...s].sort((a, b) => b.pj - a.pj)[0], r20 = [...s].sort((a, b) => b.g20 - a.g20)[0], nr = [...s].sort((a, b) => b.p12 - a.p12)[0];
+      const items = [
+        ['👑 Campeón', c1?.nombre || '-', `${c1?.puntos || 0} pts`],
+        ['🎾 Más PJ', mp?.nombre || '-', `${mp?.pj || 0} PJ`],
+        ['⚡ Rey 2-0', r20?.nombre || '-', `${r20?.g20 || 0} 2-0`],
+        ['🔥 Nunca se Rindió', nr?.nombre || '-', `${nr?.p12 || 0} 1-2`],
+        ['🌟 Revelación', state.revelacion || 'Por definir', 'Manual']
+      ];
+      document.getElementById('awardsBox').innerHTML = items.map(([t, w, d]) => `
+        <div class="award">
+          <div style="font-size:0.8rem; color:var(--violet); font-weight:800;">${t}</div>
+          <div style="font-size:1.02rem; font-weight:800; margin-top:2px;">${w}</div>
+          <div style="font-size:0.76rem; color:var(--muted);">${d}</div>
+        </div>
+      `).join('');
+    }
+
+    window.saveRev = async () => {
+      if (!isAdmin) return alert('Solo Admins.');
+      state.revelacion = document.getElementById('revInp').value.trim();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      drawAwards();
+      await pushToCloud(true);
+    };
+
+    function fillSelects() {
+      const names = (state.jugadores || []).map(j => j.nombre).sort();
+      ['pA1', 'pA2', 'pB1', 'pB2'].forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const prev = el.value;
+        el.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join('');
+        if (prev && names.includes(prev)) el.value = prev;
+        else if (names[idx]) el.value = names[idx];
       });
-    });
+    }
 
-    // Tema
-    el("themeBtn").addEventListener("click", () => {
-      document.body.classList.toggle("light-theme");
-    });
-
-    // Rol Admin
-    el("adminSelect").addEventListener("change", (e) => {
-      currentAdmin = e.target.value;
-      const isAdmin = Boolean(currentAdmin);
-      el("roleBadge").textContent = isAdmin ? `🛡️ ADMIN: ${currentAdmin}` : "👁️ ESPECTADOR";
-      el("adminGuardNote").textContent = isAdmin
-        ? `Sesión activa como ${currentAdmin}. Puedes registrar partidos y subir a Firestore.`
-        : "Selecciona Césario o Mauricio Hernández arriba para habilitar registro y subida a Firestore.";
-    });
-
-    // Botón Leer Firestore
-    el("syncNowBtn").addEventListener("click", fetchOnceFromFirestore);
-
-    // Subir a Firestore
-    el("uploadFirestoreBtn").addEventListener("click", async () => {
-      if (!currentAdmin) {
-        setStatus("Selecciona primero un Admin (Césario o Mauricio Hernández) para subir cambios a Firestore.");
-        return;
-      }
-      try {
-        recalcAll();
-        const { _source, ...payload } = state;
-        await setDoc(ligaDocRef, payload);
-        saveLocalCache();
-        render();
-        setStatus(`Subido correctamente a Firestore en sepultureros/liga_2026 por ${currentAdmin}.`);
-      } catch (err) {
-        setStatus(`Error al subir a Firestore: ${err.message}`);
-      }
-    });
-
-    // Aplicar JSON desde textarea
-    el("applyJsonBtn").addEventListener("click", () => {
-      try {
-        const parsed = JSON.parse(el("jsonBox").value);
-        state = sanitizeState(parsed, "JSON manual");
-        recalcAll();
-        saveLocalCache();
-        render();
-        setStatus(`JSON aplicado (${state.partidos.length} partidos, ${state.jugadores.length} jugadores). Usa "Subir Estado Actual a Firestore" para publicarlo.`);
-      } catch (err) {
-        setStatus(`JSON inválido: ${err.message}`);
-      }
-    });
-
-    // Importar archivo .json
-    el("importFileInput").addEventListener("change", async (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      try {
-        const txt = await file.text();
-        const parsed = JSON.parse(txt);
-        state = sanitizeState(parsed, `Archivo ${file.name}`);
-        recalcAll();
-        saveLocalCache();
-        render();
-        setStatus(`Archivo "${file.name}" cargado (${state.partidos.length} partidos, ${state.jugadores.length} jugadores). Pulsa "Subir Estado Actual a Firestore" para que lo vea todo el mundo.`);
-      } catch (err) {
-        setStatus(`No se pudo leer el archivo JSON: ${err.message}`);
-      }
-    });
-
-    // Nuevo partido
-    el("matchForm").addEventListener("submit", (e) => {
+    window.addMatch = async (e) => {
       e.preventDefault();
-      if (!currentAdmin) {
-        setStatus("Solo un Admin (Césario o Mauricio Hernández) puede registrar partidos.");
-        return;
-      }
-      const nextNum = state.partidos.reduce((max, p) => {
-        const n = parseInt(String(p.id || "").replace(/\D+/g, ""), 10) || 0;
-        return Math.max(max, n);
-      }, 0) + 1;
-
-      const nuevo = {
-        id: `part_${nextNum}`,
-        fecha: el("mFecha").value.trim(),
-        parejaA: `${el("mA1").value.trim()} / ${el("mA2").value.trim()}`,
-        parejaB: `${el("mB1").value.trim()} / ${el("mB2").value.trim()}`,
-        resultado: el("mSets").value.trim(),
-        juegos: el("mJuegos").value.trim(),
-        ganador: el("mGanador").value,
-        sorpresa: el("mSorpresa").value,
-        wo: el("mWo").value,
-        acompanantes: ""
-      };
-
-      state.partidos.unshift(nuevo);
-      state._source = "edición local";
-      recalcAll();
-      saveLocalCache();
+      if (!isAdmin) return alert('Solo Admins.');
+      const a1 = pA1.value, a2 = pA2.value, b1 = pB1.value, b2 = pB2.value;
+      if (new Set([a1, a2, b1, b2]).size < 4) return alert('4 jugadores distintos.');
+      const [y, m, d] = fDate.value.split('-');
+      const setsA = parseInt(sA.value), setsB = parseInt(sB.value);
+      const maxId = Math.max(0, ...(state.partidos || []).map(p => parseInt(String(p.id).replace('part_', '')) || 0));
+      const nextN = maxId + 1;
+      state.partidos.unshift({
+        id: `part_${nextN}`,
+        fecha: `${y}-${m}-${d} (${fSets.value.trim()})`,
+        fechaIso: `${y}-${m}-${d}`,
+        parejaA: `${a1} / ${a2}`,
+        parejaB: `${b1} / ${b2}`,
+        resultado: `${setsA} - ${setsB}`,
+        juegos: `${jA.value} - ${jB.value}`,
+        ganador: setsA > setsB ? 'A' : 'B',
+        sorpresa: 'No',
+        wo: woSel.value,
+        acompanantes: ''
+      });
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
-      e.target.reset();
-      el("mSets").value = "2 - 0";
-      el("mJuegos").value = "12 - 5";
-      setStatus(`Partido ${nuevo.id} agregado localmente. Pulsa "Subir Estado Actual a Firestore" para guardarlo en la nube.`);
-    });
+      await pushToCloud(true);
+      alert(`Partido #${nextN} guardado.`);
+    };
 
-    loadLocalCache();
+    window.saveFbConfig = async () => {
+      try {
+        const cfg = JSON.parse(document.getElementById('fbConfigArea').value);
+        localStorage.setItem(FB_KEY, JSON.stringify(cfg));
+        await initFirebase(cfg);
+        alert('Conectado a Firebase.');
+      } catch (err) {
+        alert('JSON de Firebase inválido: ' + err.message);
+      }
+    };
+
+    window.pullFromCloud = async () => {
+      if (!fsDb) return alert('Conecta primero Firebase.');
+      const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
+      if (snap.exists()) {
+        state = { ...state, ...snap.data() };
+        recalc();
+        localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+        render();
+        document.getElementById('dbStatus').textContent = 'Datos cargados desde Firestore (sepultureros/liga_2026)';
+        alert('Datos cargados desde Firestore.');
+      } else {
+        document.getElementById('dbStatus').textContent = 'Conectado a padelrank-6jrs4 · Documento sepultureros/liga_2026 aún no creado (mostrando base Excel)';
+        alert('Documento sepultureros/liga_2026 aún no existe en Firestore. Puedes subir la base con "Subir a Firestore".');
+      }
+    };
+
+    window.pushToCloud = async (silent = false) => {
+      if (!fsDb) return silent ? null : alert('Configura primero Firebase.');
+      await setDoc(doc(fsDb, 'sepultureros', 'liga_2026'), {
+        jugadores: state.jugadores,
+        partidos: state.partidos,
+        controlSemanal: state.controlSemanal,
+        revelacion: state.revelacion,
+        reglas: state.reglas
+      });
+      document.getElementById('dbStatus').textContent = 'Sincronizado con Firestore (padelrank-6jrs4 · sepultureros/liga_2026)';
+      if (!silent) alert('Subido a Firestore.');
+    };
+
+    window.exportJson = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = u;
+      a.download = 'ranking_sepultureros_2026.json';
+      a.click();
+      URL.revokeObjectURL(u);
+    };
+
+    window.triggerImport = () => {
+      if (!isAdmin) return alert('Solo Admins.');
+      fileImport.click();
+    };
+
+    window.importJson = async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = async (ev) => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          state = { ...state, ...parsed };
+          recalc();
+          localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+          render();
+          await pushToCloud(true);
+          alert('JSON importado y recalculado.');
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+      r.readAsText(f);
+    };
+
+    async function initFirebase(cfg) {
+      if (!cfg || !cfg.projectId) return;
+      try {
+        const app = initializeApp(cfg, 'sepultureros_liga_app');
+        fsDb = getFirestore(app);
+        const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
+        if (snap.exists()) {
+          state = { ...state, ...snap.data() };
+          recalc();
+          localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+          render();
+          document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId} · sepultureros/liga_2026)`;
+        } else {
+          recalc();
+          render();
+          document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId}) · Base Excel lista para subir`;
+        }
+      } catch (err) {
+        recalc();
+        render();
+        document.getElementById('dbStatus').textContent = `Base local cargada (revisar conexión/reglas Firestore: ${err.message})`;
+      }
+    }
+
+    loadTheme();
+    applyRole();
+    fDate.valueAsDate = new Date();
+
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        state = { ...state, ...JSON.parse(cached) };
+      } catch (_) {}
+    }
+    recalc();
     render();
-    fetchOnceFromFirestore();
+
+    const savedCfgRaw = localStorage.getItem(FB_KEY);
+    let activeCfg = DEFAULT_FB_CONFIG;
+    if (savedCfgRaw) {
+      try {
+        activeCfg = JSON.parse(savedCfgRaw);
+      } catch (_) {}
+    }
+    document.getElementById('fbConfigArea').value = JSON.stringify(activeCfg, null, 2);
+    await initFirebase(activeCfg);
   </script>
 </body>
 </html>

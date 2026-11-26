@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ranking Sepultureros · Padre Hurtado</title>
+  <title>Ranking Sepultureros · V7.1</title>
   <style>
     :root[data-theme="dark"] {
       --bg: #050914;
@@ -154,6 +154,27 @@
     th, td { padding: 9px 7px; border-bottom: 1px solid var(--border); text-align: center; }
     th { background: var(--surface-2); color: var(--muted); font-size: 0.74rem; text-transform: uppercase; }
     td.l, th.l { text-align: left; }
+    .row-limite { background: rgba(245, 158, 11, 0.14); }
+    .badge-limite {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      background: rgba(245, 158, 11, 0.25);
+      color: #fbbf24;
+      border: 1px solid #f59e0b;
+    }
+    .badge-ok {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.14);
+      color: var(--ok);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
     .pos {
       display: inline-flex;
       width: 25px;
@@ -263,13 +284,13 @@
 
   <div id="loginModal" class="modal-bg hidden">
     <div class="modal-box">
-      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros</h3>
-      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Espectador solo ve Ranking y Partidos; Administradores acceden a todo.</p>
+      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros · V7.1</h3>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Espectador ve Ranking, Partidos y Control Semanal; Administradores acceden a todo.</p>
       <form onsubmit="doLogin(event)">
         <div style="margin-bottom:10px;">
           <label>Modo de acceso</label>
           <select id="uMode" onchange="togglePassField()">
-            <option value="Espectador">Espectador (Ranking y Partidos)</option>
+            <option value="Espectador">Espectador (Ranking, Partidos y Control Semanal)</option>
             <option value="Administrador">Administrador</option>
           </select>
         </div>
@@ -297,9 +318,9 @@
       <div class="brand-row">
         <img src="./logo.png" alt="Logo Ranking Sepultureros" class="brand-thumb" onerror="this.style.display='none'" />
         <div>
-          <span class="chip">Padre Hurtado · Firebase</span>
+          <span class="chip" id="versionChip">V7.1</span>
           <h1 id="appTitle">Ranking Sepultureros</h1>
-          <p class="sub" id="dbStatus">Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
+          <p class="sub" id="dbStatus">V7.1 · Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
         </div>
       </div>
       <div class="controls-top">
@@ -320,11 +341,12 @@
     <div class="tabs">
       <button class="tab active" data-tab="rank" data-role="public" onclick="goTab('rank', this)">🏆 Ranking</button>
       <button class="tab" data-tab="matches" data-role="public" onclick="goTab('matches', this)">🎾 Partidos</button>
+      <button class="tab" data-tab="ctrl" data-role="public" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
       <button class="tab hidden" data-tab="week" data-role="admin" onclick="goTab('week', this)">📅 Resumen Semanal</button>
-      <button class="tab hidden" data-tab="ctrl" data-role="admin" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
       <button class="tab hidden" data-tab="awards" data-role="admin" onclick="goTab('awards', this)">🎖️ Premios</button>
       <button class="tab hidden" data-tab="add" data-role="admin" onclick="goTab('add', this)">➕ Nuevo Partido</button>
       <button class="tab hidden" data-tab="users" data-role="admin" onclick="goTab('users', this)">👥 Usuarios</button>
+      <button class="tab hidden" data-tab="pts" data-role="admin" onclick="goTab('pts', this)">⚙️ Puntos</button>
       <button class="tab hidden" data-tab="cloud" data-role="admin" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
     </div>
 
@@ -349,6 +371,22 @@
       <div id="matchList"></div>
     </div>
 
+    <div id="tab-ctrl" class="card hidden">
+      <h2>
+        <span>📋 Control Semanal (Solo jugadores que jugaron en la semana)</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <select id="qCtrlWeek" style="width:auto;" onchange="drawCtrl()"></select>
+          <input type="text" id="qCtrl" placeholder="Filtrar jugador..." style="max-width:190px;" oninput="drawCtrl()" />
+        </div>
+      </h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Partidos Sem.</th><th>Límite</th><th>Estado</th></tr></thead>
+          <tbody id="ctrlBody"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div id="tab-week" class="card hidden">
       <h2><span>📅 Resumen Semanal</span><select id="wkSel" style="width:auto;" onchange="drawWeek()"></select></h2>
       <div id="wkKpis" class="kpis"></div>
@@ -356,16 +394,6 @@
         <table>
           <thead><tr><th>Pos</th><th class="l">Jugador</th><th>Pts Sem</th><th>PG Sem</th><th>PP Sem</th><th>Pts Acum</th><th>PJ Acum</th></tr></thead>
           <tbody id="wkBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="tab-ctrl" class="card hidden">
-      <h2><span>📋 Control Semanal (Tope 2 Válidos)</span><input type="text" id="qCtrl" placeholder="Filtrar..." style="max-width:220px;" oninput="drawCtrl()" /></h2>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Válidos</th><th>Límite</th><th>Estado</th></tr></thead>
-          <tbody id="ctrlBody"></tbody>
         </table>
       </div>
     </div>
@@ -432,17 +460,49 @@
       </div>
     </div>
 
+    <div id="tab-pts" class="card hidden">
+      <h2>⚙️ Mantenedor de Puntos y Reglas (Solo Admins)</h2>
+      <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
+        Ajusta los puntos base y el tope semanal. Al guardar, se recalculan todos los partidos y se sincroniza con Firestore.
+      </p>
+      <form onsubmit="savePointsRules(event)" class="grid-f">
+        <div>
+          <label>Nombre de Liga</label>
+          <input type="text" id="rLigaName" required />
+        </div>
+        <div>
+          <label>Victoria Base (2-0 / WO)</label>
+          <input type="number" id="rWinBase" min="0" required />
+        </div>
+        <div>
+          <label>Derrota Base (0-2)</label>
+          <input type="number" id="rLossBase" min="0" required />
+        </div>
+        <div>
+          <label>Bonus / Penalización Sorpresa</label>
+          <input type="number" id="rSorpresaPts" min="0" required />
+        </div>
+        <div>
+          <label>Límite Semanal Válidos</label>
+          <input type="number" id="rLimiteSem" min="1" required />
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+          <button type="submit" class="btn btn-ok" id="btnSaveRules" style="width:100%;">💾 Guardar y Recalcular</button>
+        </div>
+      </form>
+    </div>
+
     <div id="tab-cloud" class="card hidden">
       <h2>☁️ Firebase (padelrank-6jrs4) y Respaldo JSON</h2>
       <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
-        Lee desde Firestore (<code>sepultureros/liga_2026</code>) y permite respaldar o importar tu archivo <code>.json</code> sin datos inventados.
+        Guarda y lee desde Firestore (<code>sepultureros/liga_2026</code>) y permite respaldar o importar tu archivo <code>.json</code> sin datos inventados.
       </p>
       <div style="margin-bottom:12px;">
         <label>Firebase Config JSON</label>
         <textarea id="fbConfigArea" rows="6"></textarea>
         <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
           <button type="button" class="btn btn-neon" onclick="saveFbConfig()">Conectar Firebase</button>
-          <button type="button" class="btn btn-ok" onclick="pushToCloud()">☁️ Subir a Firestore</button>
+          <button type="button" class="btn btn-ok" onclick="pushToCloud(false)">☁️ Guardar ahora en Firebase</button>
           <button type="button" class="btn" onclick="pullFromCloud()">🔄 Leer de Firestore</button>
           <button type="button" class="btn" onclick="exportJson()">⬇️ Exportar .json</button>
           <button type="button" class="btn" onclick="triggerImport()">⬆️ Importar .json</button>
@@ -455,6 +515,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    const APP_VERSION = "V7.1";
 
     const DEFAULT_FB_CONFIG = {
       apiKey: "AIzaSyAFoimQyKdFdiNwAvptItveCUGm7HKC4oI",
@@ -470,8 +532,8 @@
       "mauro": "1234"
     };
 
-    const ADMIN_ONLY_TABS = ['week', 'ctrl', 'awards', 'add', 'users', 'cloud'];
-    const PUBLIC_TABS = ['rank', 'matches'];
+    const ADMIN_ONLY_TABS = ['week', 'awards', 'add', 'users', 'pts', 'cloud'];
+    const PUBLIC_TABS = ['rank', 'matches', 'ctrl'];
 
     const EMPTY_DATA = {
       jugadores: [],
@@ -498,6 +560,7 @@
     let activeUser = 'Espectador';
     let currentTab = 'rank';
     let fsDb = null;
+    let activeCfg = structuredClone(DEFAULT_FB_CONFIG);
 
     function loadTheme() {
       document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
@@ -543,6 +606,7 @@
       document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
       document.getElementById('btnSaveMatch').disabled = !isAdmin;
       document.getElementById('btnSavePlayer').disabled = !isAdmin;
+      document.getElementById('btnSaveRules').disabled = !isAdmin;
       syncTabsByRole();
       drawUsers();
     }
@@ -583,7 +647,7 @@
       applyRole();
     };
 
-    window.goTab = (id, btn) => {
+    window.goTab = (id) => {
       if (!isAdmin && ADMIN_ONLY_TABS.includes(id)) {
         id = 'rank';
       }
@@ -594,6 +658,32 @@
       document.querySelectorAll('.tab').forEach(b =>
         b.classList.toggle('active', b.getAttribute('data-tab') === id)
       );
+    };
+
+    function fillPointsForm() {
+      const r = state.reglas || EMPTY_DATA.reglas;
+      document.getElementById('rLigaName').value = r.nombre ?? 'Ranking Sepultureros';
+      document.getElementById('rWinBase').value = r.winBase ?? 100;
+      document.getElementById('rLossBase').value = r.lossBase ?? 20;
+      document.getElementById('rSorpresaPts').value = r.sorpresaPts ?? 30;
+      document.getElementById('rLimiteSem').value = r.limiteSemanal ?? 2;
+    }
+
+    window.savePointsRules = async (e) => {
+      e.preventDefault();
+      if (!isAdmin) return alert('Solo Admins.');
+      state.reglas = {
+        nombre: String(document.getElementById('rLigaName').value || 'Ranking Sepultureros').trim() || 'Ranking Sepultureros',
+        winBase: Number(document.getElementById('rWinBase').value),
+        lossBase: Number(document.getElementById('rLossBase').value),
+        sorpresaPts: Number(document.getElementById('rSorpresaPts').value),
+        limiteSemanal: Math.max(1, Number(document.getElementById('rLimiteSem').value))
+      };
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      render();
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? 'Puntos y reglas guardados y recalculados en Firebase.' : 'Puntos y reglas guardados y recalculados localmente.');
     };
 
     function weekKey(dStr) {
@@ -614,7 +704,7 @@
       const winBase = Number(state.reglas?.winBase ?? 100);
       const lossBase = Number(state.reglas?.lossBase ?? 20);
       const sorpresaPts = Number(state.reglas?.sorpresaPts ?? 30);
-      const limiteSemanal = Number(state.reglas?.limiteSemanal ?? 2);
+      const limiteSemanal = Math.max(1, Number(state.reglas?.limiteSemanal ?? 2));
 
       const map = {};
       (state.jugadores || []).forEach(j => {
@@ -640,7 +730,8 @@
         (a, b) => (parseInt(String(a.id).replace('part_', '')) || 0) - (parseInt(String(b.id).replace('part_', '')) || 0)
       );
 
-      const wkCnt = {};
+      const wkPlayedCnt = {};
+      const wkValidCnt = {};
       wkStats = {};
       const ctrl = [];
 
@@ -674,10 +765,12 @@
 
         const all = [a1, a2, b1, b2];
         const valid = all.map(n => {
+          if (!n) return false;
           const k = wk + '_' + n;
-          const c = wkCnt[k] || 0;
+          wkPlayedCnt[k] = (wkPlayedCnt[k] || 0) + 1;
+          const c = wkValidCnt[k] || 0;
           if (c < limiteSemanal) {
-            wkCnt[k] = c + 1;
+            wkValidCnt[k] = c + 1;
             return true;
           }
           return false;
@@ -748,17 +841,27 @@
         p.acompanantes = acomp.join(', ');
       });
 
-      Object.keys(wkStats).sort().reverse().forEach(wk => {
-        Object.keys(wkStats[wk]).sort().forEach(n => {
-          const v = wkStats[wk][n].pg + wkStats[wk][n].pp;
-          ctrl.push({
+      const semanasOrdenadas = Object.keys(wkPlayedCnt).reduce((acc, key) => {
+        const [wk, jugador] = key.split('_');
+        const pjSem = wkPlayedCnt[key] || 0;
+        if (pjSem > 0) {
+          if (!acc[wk]) acc[wk] = [];
+          acc[wk].push({
             semana: wk,
-            jugador: n,
-            partidosValidos: v,
+            jugador,
+            partidosJugados: pjSem,
             limite: limiteSemanal,
-            estado: v >= limiteSemanal ? `LÍMITE (${v}/${limiteSemanal})` : `OK (${v}/${limiteSemanal})`
+            esLimite: pjSem >= limiteSemanal,
+            estado: pjSem >= limiteSemanal ? 'LIMITE' : 'OK'
           });
-        });
+        }
+        return acc;
+      }, {});
+
+      Object.keys(semanasOrdenadas).sort().reverse().forEach(wk => {
+        semanasOrdenadas[wk]
+          .sort((a, b) => b.partidosJugados - a.partidosJugados || a.jugador.localeCompare(b.jugador, 'es'))
+          .forEach(item => ctrl.push(item));
       });
 
       state.controlSemanal = ctrl;
@@ -773,6 +876,7 @@
     }
 
     function render() {
+      document.getElementById('versionChip').textContent = APP_VERSION;
       document.getElementById('appTitle').textContent = state.reglas?.nombre || 'Ranking Sepultureros';
       document.getElementById('kPart').textContent = (state.partidos || []).length;
       const s = state.jugadores || [];
@@ -810,12 +914,24 @@
       }).join('');
 
       fillSelects();
+      fillPointsForm();
       drawMatches();
       fillWeeks();
       drawWeek();
+      fillCtrlWeeks();
       drawCtrl();
       drawAwards();
       drawUsers();
+    }
+
+    function fillCtrlWeeks() {
+      const wks = [...new Set((state.controlSemanal || []).map(c => c.semana))].sort().reverse();
+      const sel = document.getElementById('qCtrlWeek');
+      if (!sel) return;
+      const prev = sel.value;
+      sel.innerHTML = `<option value="">Todas las semanas</option>` + wks.map(w => `<option value="${w}">${w}</option>`).join('');
+      if (prev && wks.includes(prev)) sel.value = prev;
+      else if (wks[0]) sel.value = wks[0];
     }
 
     window.drawUsers = () => {
@@ -890,8 +1006,8 @@
       recalc();
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
-      await pushToCloud(true);
-      alert(`Jugador renombrado a "${clean}".`);
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? `Jugador renombrado a "${clean}" y guardado en Firebase.` : `Jugador renombrado a "${clean}" localmente.`);
     };
 
     window.deletePlayer = async (name) => {
@@ -901,8 +1017,8 @@
       recalc();
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
-      await pushToCloud(true);
-      alert(`Jugador "${name}" eliminado.`);
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? `Jugador "${name}" eliminado y actualizado en Firebase.` : `Jugador "${name}" eliminado localmente.`);
     };
 
     window.drawMatches = () => {
@@ -967,13 +1083,32 @@
     };
 
     window.drawCtrl = () => {
+      const wkFilter = document.getElementById('qCtrlWeek')?.value || '';
       const q = (document.getElementById('qCtrl')?.value || '').toLowerCase();
-      const rows = (state.controlSemanal || []).filter(c =>
-        String(c.jugador).toLowerCase().includes(q) || String(c.semana).toLowerCase().includes(q)
-      );
-      document.getElementById('ctrlBody').innerHTML = rows.map(c => `
-        <tr><td><strong>${c.semana}</strong></td><td class="l">${c.jugador}</td><td>${c.partidosValidos}</td><td>${c.limite}</td><td>${c.estado}</td></tr>
-      `).join('');
+      const rows = (state.controlSemanal || [])
+        .filter(c => Number(c.partidosJugados || 0) > 0)
+        .filter(c => !wkFilter || c.semana === wkFilter)
+        .filter(c =>
+          String(c.jugador).toLowerCase().includes(q) ||
+          String(c.semana).toLowerCase().includes(q) ||
+          String(c.estado).toLowerCase().includes(q)
+        )
+        .sort((a, b) =>
+          b.semana.localeCompare(a.semana) ||
+          b.partidosJugados - a.partidosJugados ||
+          a.jugador.localeCompare(b.jugador, 'es')
+        );
+
+      document.getElementById('ctrlBody').innerHTML = rows.map(c => {
+        const isLim = c.partidosJugados >= c.limite;
+        return `<tr class="${isLim ? 'row-limite' : ''}">
+          <td><strong>${c.semana}</strong></td>
+          <td class="l"><strong>${c.jugador}</strong></td>
+          <td><strong>${c.partidosJugados}</strong></td>
+          <td>${c.limite}</td>
+          <td><span class="${isLim ? 'badge-limite' : 'badge-ok'}">${isLim ? 'LIMITE' : 'OK'}</span></td>
+        </tr>`;
+      }).join('');
     };
 
     function drawAwards() {
@@ -1000,7 +1135,8 @@
       state.revelacion = document.getElementById('revInp').value.trim();
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       drawAwards();
-      await pushToCloud(true);
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? 'Revelación guardada en Firebase.' : 'Revelación guardada localmente.');
     };
 
     function fillSelects() {
@@ -1047,6 +1183,7 @@
     window.saveFbConfig = async () => {
       try {
         const cfg = JSON.parse(document.getElementById('fbConfigArea').value);
+        activeCfg = cfg;
         localStorage.setItem(FB_KEY, JSON.stringify(cfg));
         await initFirebase(cfg);
         alert('Conectado a Firebase.');
@@ -1056,6 +1193,7 @@
     };
 
     window.pullFromCloud = async () => {
+      if (!fsDb) await initFirebase(activeCfg);
       if (!fsDb) return alert('Conecta primero Firebase.');
       try {
         const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
@@ -1064,12 +1202,12 @@
           recalc();
           localStorage.setItem(CACHE_KEY, JSON.stringify(state));
           render();
-          document.getElementById('dbStatus').textContent = `Firestore activo (${(state.partidos || []).length} partidos · sepultureros/liga_2026)`;
+          document.getElementById('dbStatus').textContent = `${APP_VERSION} · Firestore activo (${(state.partidos || []).length} partidos · sepultureros/liga_2026)`;
           alert('Datos cargados desde Firestore.');
         } else {
           recalc();
           render();
-          document.getElementById('dbStatus').textContent = `Firestore conectado · Documento sepultureros/liga_2026 vacío`;
+          document.getElementById('dbStatus').textContent = `${APP_VERSION} · Firestore conectado · sepultureros/liga_2026 vacío`;
           alert('Documento sepultureros/liga_2026 aún no existe en Firestore.');
         }
       } catch (err) {
@@ -1078,6 +1216,7 @@
     };
 
     window.pushToCloud = async (silent = false) => {
+      if (!fsDb) await initFirebase(activeCfg);
       if (!fsDb) {
         if (!silent) alert('Configura primero Firebase.');
         return false;
@@ -1094,12 +1233,13 @@
           revelacion: state.revelacion,
           reglas: state.reglas
         });
-        document.getElementById('dbStatus').textContent = `Sincronizado con Firestore (${(state.partidos || []).length} partidos · sepultureros/liga_2026)`;
-        if (!silent) alert('Subido a Firestore.');
+        const hora = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('dbStatus').textContent = `${APP_VERSION} · Guardado en Firestore (${(state.partidos || []).length} partidos · ${(state.jugadores || []).length} jug · ${hora})`;
+        if (!silent) alert('Datos guardados en Firestore (sepultureros/liga_2026).');
         return true;
       } catch (err) {
         console.error('Error subiendo a Firestore:', err);
-        document.getElementById('dbStatus').textContent = `Guardado local · Error Firestore: ${err.message}`;
+        document.getElementById('dbStatus').textContent = `${APP_VERSION} · Guardado local · Error Firestore: ${err.message}`;
         if (!silent) alert('No se pudo guardar en Firestore: ' + err.message);
         return false;
       }
@@ -1110,7 +1250,7 @@
       const u = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = u;
-      a.download = 'ranking_sepultureros_2026.json';
+      a.download = 'ranking_sepultureros_2026_v7_1.json';
       a.click();
       URL.revokeObjectURL(u);
     };
@@ -1132,7 +1272,7 @@
           localStorage.setItem(CACHE_KEY, JSON.stringify(state));
           render();
           const okCloud = await pushToCloud(true);
-          alert(okCloud ? 'JSON importado, recalculado y subido a Firebase.' : 'JSON importado y recalculado localmente.');
+          alert(okCloud ? 'JSON importado, recalculado y guardado en Firebase.' : 'JSON importado y recalculado localmente.');
         } catch (err) {
           alert(err.message);
         }
@@ -1151,16 +1291,16 @@
           recalc();
           localStorage.setItem(CACHE_KEY, JSON.stringify(state));
           render();
-          document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId} · ${(state.partidos || []).length} partidos)`;
+          document.getElementById('dbStatus').textContent = `${APP_VERSION} · Firestore activo (${cfg.projectId} · ${(state.partidos || []).length} partidos)`;
         } else {
           recalc();
           render();
-          document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId} · sepultureros/liga_2026 sin datos aún)`;
+          document.getElementById('dbStatus').textContent = `${APP_VERSION} · Firestore conectado (${cfg.projectId} · sepultureros/liga_2026 sin datos aún)`;
         }
       } catch (err) {
         recalc();
         render();
-        document.getElementById('dbStatus').textContent = `Firestore (${cfg.projectId}) · Revisar conexión o reglas: ${err.message}`;
+        document.getElementById('dbStatus').textContent = `${APP_VERSION} · Firestore (${cfg.projectId}) · Revisar conexión o reglas: ${err.message}`;
       }
     }
 
@@ -1178,7 +1318,6 @@
     render();
 
     const savedCfgRaw = localStorage.getItem(FB_KEY);
-    let activeCfg = DEFAULT_FB_CONFIG;
     if (savedCfgRaw) {
       try {
         activeCfg = JSON.parse(savedCfgRaw);

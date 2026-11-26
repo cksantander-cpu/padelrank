@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ranking Sepultureros · V7.1</title>
+  <title>Ranking Sepultureros · V7.2</title>
   <style>
     :root[data-theme="dark"] {
       --bg: #050914;
@@ -154,7 +154,7 @@
     th, td { padding: 9px 7px; border-bottom: 1px solid var(--border); text-align: center; }
     th { background: var(--surface-2); color: var(--muted); font-size: 0.74rem; text-transform: uppercase; }
     td.l, th.l { text-align: left; }
-    .row-limite { background: rgba(245, 158, 11, 0.14); }
+    .row-limite { background: rgba(245, 158, 11, 0.16); }
     .badge-limite {
       display: inline-block;
       padding: 2px 8px;
@@ -284,7 +284,7 @@
 
   <div id="loginModal" class="modal-bg hidden">
     <div class="modal-box">
-      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros · V7.1</h3>
+      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros · V7.2</h3>
       <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Espectador ve Ranking, Partidos y Control Semanal; Administradores acceden a todo.</p>
       <form onsubmit="doLogin(event)">
         <div style="margin-bottom:10px;">
@@ -318,9 +318,9 @@
       <div class="brand-row">
         <img src="./logo.png" alt="Logo Ranking Sepultureros" class="brand-thumb" onerror="this.style.display='none'" />
         <div>
-          <span class="chip" id="versionChip">V7.1</span>
+          <span class="chip" id="versionChip">V7.2</span>
           <h1 id="appTitle">Ranking Sepultureros</h1>
-          <p class="sub" id="dbStatus">V7.1 · Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
+          <p class="sub" id="dbStatus">V7.2 · Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
         </div>
       </div>
       <div class="controls-top">
@@ -346,7 +346,6 @@
       <button class="tab hidden" data-tab="awards" data-role="admin" onclick="goTab('awards', this)">🎖️ Premios</button>
       <button class="tab hidden" data-tab="add" data-role="admin" onclick="goTab('add', this)">➕ Nuevo Partido</button>
       <button class="tab hidden" data-tab="users" data-role="admin" onclick="goTab('users', this)">👥 Usuarios</button>
-      <button class="tab hidden" data-tab="pts" data-role="admin" onclick="goTab('pts', this)">⚙️ Puntos</button>
       <button class="tab hidden" data-tab="cloud" data-role="admin" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
     </div>
 
@@ -373,7 +372,7 @@
 
     <div id="tab-ctrl" class="card hidden">
       <h2>
-        <span>📋 Control Semanal (Solo jugadores que jugaron en la semana)</span>
+        <span>📋 Control Semanal (Marca en 3 partidos semanales)</span>
         <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           <select id="qCtrlWeek" style="width:auto;" onchange="drawCtrl()"></select>
           <input type="text" id="qCtrl" placeholder="Filtrar jugador..." style="max-width:190px;" oninput="drawCtrl()" />
@@ -381,7 +380,7 @@
       </h2>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Partidos Sem.</th><th>Límite</th><th>Estado</th></tr></thead>
+          <thead><tr><th>Semana</th><th class="l">Jugador</th><th>Partidos Sem.</th><th>Marca</th><th>Estado</th></tr></thead>
           <tbody id="ctrlBody"></tbody>
         </table>
       </div>
@@ -460,38 +459,6 @@
       </div>
     </div>
 
-    <div id="tab-pts" class="card hidden">
-      <h2>⚙️ Mantenedor de Puntos y Reglas (Solo Admins)</h2>
-      <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
-        Ajusta los puntos base y el tope semanal. Al guardar, se recalculan todos los partidos y se sincroniza con Firestore.
-      </p>
-      <form onsubmit="savePointsRules(event)" class="grid-f">
-        <div>
-          <label>Nombre de Liga</label>
-          <input type="text" id="rLigaName" required />
-        </div>
-        <div>
-          <label>Victoria Base (2-0 / WO)</label>
-          <input type="number" id="rWinBase" min="0" required />
-        </div>
-        <div>
-          <label>Derrota Base (0-2)</label>
-          <input type="number" id="rLossBase" min="0" required />
-        </div>
-        <div>
-          <label>Bonus / Penalización Sorpresa</label>
-          <input type="number" id="rSorpresaPts" min="0" required />
-        </div>
-        <div>
-          <label>Límite Semanal Válidos</label>
-          <input type="number" id="rLimiteSem" min="1" required />
-        </div>
-        <div style="display:flex; align-items:flex-end;">
-          <button type="submit" class="btn btn-ok" id="btnSaveRules" style="width:100%;">💾 Guardar y Recalcular</button>
-        </div>
-      </form>
-    </div>
-
     <div id="tab-cloud" class="card hidden">
       <h2>☁️ Firebase (padelrank-6jrs4) y Respaldo JSON</h2>
       <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
@@ -516,7 +483,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-    const APP_VERSION = "V7.1";
+    const APP_VERSION = "V7.2";
+    const MARCA_SEMANAL = 3;
 
     const DEFAULT_FB_CONFIG = {
       apiKey: "AIzaSyAFoimQyKdFdiNwAvptItveCUGm7HKC4oI",
@@ -532,7 +500,7 @@
       "mauro": "1234"
     };
 
-    const ADMIN_ONLY_TABS = ['week', 'awards', 'add', 'users', 'pts', 'cloud'];
+    const ADMIN_ONLY_TABS = ['week', 'awards', 'add', 'users', 'cloud'];
     const PUBLIC_TABS = ['rank', 'matches', 'ctrl'];
 
     const EMPTY_DATA = {
@@ -606,7 +574,6 @@
       document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
       document.getElementById('btnSaveMatch').disabled = !isAdmin;
       document.getElementById('btnSavePlayer').disabled = !isAdmin;
-      document.getElementById('btnSaveRules').disabled = !isAdmin;
       syncTabsByRole();
       drawUsers();
     }
@@ -658,32 +625,6 @@
       document.querySelectorAll('.tab').forEach(b =>
         b.classList.toggle('active', b.getAttribute('data-tab') === id)
       );
-    };
-
-    function fillPointsForm() {
-      const r = state.reglas || EMPTY_DATA.reglas;
-      document.getElementById('rLigaName').value = r.nombre ?? 'Ranking Sepultureros';
-      document.getElementById('rWinBase').value = r.winBase ?? 100;
-      document.getElementById('rLossBase').value = r.lossBase ?? 20;
-      document.getElementById('rSorpresaPts').value = r.sorpresaPts ?? 30;
-      document.getElementById('rLimiteSem').value = r.limiteSemanal ?? 2;
-    }
-
-    window.savePointsRules = async (e) => {
-      e.preventDefault();
-      if (!isAdmin) return alert('Solo Admins.');
-      state.reglas = {
-        nombre: String(document.getElementById('rLigaName').value || 'Ranking Sepultureros').trim() || 'Ranking Sepultureros',
-        winBase: Number(document.getElementById('rWinBase').value),
-        lossBase: Number(document.getElementById('rLossBase').value),
-        sorpresaPts: Number(document.getElementById('rSorpresaPts').value),
-        limiteSemanal: Math.max(1, Number(document.getElementById('rLimiteSem').value))
-      };
-      recalc();
-      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
-      render();
-      const okCloud = await pushToCloud(true);
-      alert(okCloud ? 'Puntos y reglas guardados y recalculados en Firebase.' : 'Puntos y reglas guardados y recalculados localmente.');
     };
 
     function weekKey(dStr) {
@@ -850,9 +791,9 @@
             semana: wk,
             jugador,
             partidosJugados: pjSem,
-            limite: limiteSemanal,
-            esLimite: pjSem >= limiteSemanal,
-            estado: pjSem >= limiteSemanal ? 'LIMITE' : 'OK'
+            marca: MARCA_SEMANAL,
+            marcadoTres: pjSem >= MARCA_SEMANAL,
+            estado: pjSem >= MARCA_SEMANAL ? 'MARCADO (3+)' : 'OK'
           });
         }
         return acc;
@@ -914,7 +855,6 @@
       }).join('');
 
       fillSelects();
-      fillPointsForm();
       drawMatches();
       fillWeeks();
       drawWeek();
@@ -1100,13 +1040,13 @@
         );
 
       document.getElementById('ctrlBody').innerHTML = rows.map(c => {
-        const isLim = c.partidosJugados >= c.limite;
-        return `<tr class="${isLim ? 'row-limite' : ''}">
+        const marcado3 = c.partidosJugados >= MARCA_SEMANAL;
+        return `<tr class="${marcado3 ? 'row-limite' : ''}">
           <td><strong>${c.semana}</strong></td>
           <td class="l"><strong>${c.jugador}</strong></td>
           <td><strong>${c.partidosJugados}</strong></td>
-          <td>${c.limite}</td>
-          <td><span class="${isLim ? 'badge-limite' : 'badge-ok'}">${isLim ? 'LIMITE' : 'OK'}</span></td>
+          <td>${MARCA_SEMANAL}</td>
+          <td><span class="${marcado3 ? 'badge-limite' : 'badge-ok'}">${marcado3 ? 'MARCADO (3+)' : 'OK'}</span></td>
         </tr>`;
       }).join('');
     };
@@ -1250,7 +1190,7 @@
       const u = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = u;
-      a.download = 'ranking_sepultureros_2026_v7_1.json';
+      a.download = 'ranking_sepultureros_2026_v7_2.json';
       a.click();
       URL.revokeObjectURL(u);
     };

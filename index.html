@@ -264,12 +264,12 @@
   <div id="loginModal" class="modal-bg hidden">
     <div class="modal-box">
       <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros</h3>
-      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Ingresa con tu usuario y clave para administrar.</p>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Espectador solo ve Ranking y Partidos; Administradores acceden a todo.</p>
       <form onsubmit="doLogin(event)">
         <div style="margin-bottom:10px;">
           <label>Modo de acceso</label>
           <select id="uMode" onchange="togglePassField()">
-            <option value="Espectador">Espectador (Solo lectura)</option>
+            <option value="Espectador">Espectador (Ranking y Partidos)</option>
             <option value="Administrador">Administrador</option>
           </select>
         </div>
@@ -318,14 +318,14 @@
     </div>
 
     <div class="tabs">
-      <button class="tab active" onclick="goTab('rank', this)">🏆 Ranking</button>
-      <button class="tab" onclick="goTab('matches', this)">🎾 Partidos</button>
-      <button class="tab" onclick="goTab('week', this)">📅 Resumen Semanal</button>
-      <button class="tab" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
-      <button class="tab" onclick="goTab('awards', this)">🎖️ Premios</button>
-      <button class="tab" onclick="goTab('add', this)">➕ Nuevo Partido</button>
-      <button class="tab" onclick="goTab('users', this)">👥 Usuarios</button>
-      <button class="tab" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
+      <button class="tab active" data-tab="rank" data-role="public" onclick="goTab('rank', this)">🏆 Ranking</button>
+      <button class="tab" data-tab="matches" data-role="public" onclick="goTab('matches', this)">🎾 Partidos</button>
+      <button class="tab hidden" data-tab="week" data-role="admin" onclick="goTab('week', this)">📅 Resumen Semanal</button>
+      <button class="tab hidden" data-tab="ctrl" data-role="admin" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
+      <button class="tab hidden" data-tab="awards" data-role="admin" onclick="goTab('awards', this)">🎖️ Premios</button>
+      <button class="tab hidden" data-tab="add" data-role="admin" onclick="goTab('add', this)">➕ Nuevo Partido</button>
+      <button class="tab hidden" data-tab="users" data-role="admin" onclick="goTab('users', this)">👥 Usuarios</button>
+      <button class="tab hidden" data-tab="cloud" data-role="admin" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
     </div>
 
     <div id="tab-rank" class="card">
@@ -384,7 +384,6 @@
 
     <div id="tab-add" class="card hidden">
       <h2>➕ Nuevo Partido (Solo Admins)</h2>
-      <p id="admWarnAdd" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Administrador con clave para guardar en Firebase.</p>
       <form onsubmit="addMatch(event)">
         <div class="grid-f">
           <div><label>Fecha</label><input type="date" id="fDate" required /></div>
@@ -405,7 +404,6 @@
 
     <div id="tab-users" class="card hidden">
       <h2>👥 Mantenedor de Jugadores / Usuarios (Solo Admins)</h2>
-      <p id="admWarnUsers" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Administrador para agregar, editar o eliminar jugadores.</p>
       <form onsubmit="addOrUpdatePlayer(event)" class="grid-f">
         <div>
           <label>Nombre Jugador</label>
@@ -472,6 +470,9 @@
       "mauro": "1234"
     };
 
+    const ADMIN_ONLY_TABS = ['week', 'ctrl', 'awards', 'add', 'users', 'cloud'];
+    const PUBLIC_TABS = ['rank', 'matches'];
+
     const EMPTY_DATA = {
       jugadores: [],
       partidos: [],
@@ -495,6 +496,7 @@
     let wkStats = {};
     let isAdmin = false;
     let activeUser = 'Espectador';
+    let currentTab = 'rank';
     let fsDb = null;
 
     function loadTheme() {
@@ -513,6 +515,20 @@
       document.getElementById('loginErr').textContent = '';
     };
 
+    function syncTabsByRole() {
+      document.querySelectorAll('.tab').forEach(btn => {
+        const role = btn.getAttribute('data-role');
+        if (role === 'admin') {
+          btn.classList.toggle('hidden', !isAdmin);
+        }
+      });
+      if (!isAdmin && ADMIN_ONLY_TABS.includes(currentTab)) {
+        goTab('rank');
+      } else {
+        goTab(currentTab);
+      }
+    }
+
     function applyRole() {
       const saved = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
       if (saved && saved.role === 'Administrador' && saved.user && ADMIN_CREDENTIALS[saved.user]) {
@@ -525,10 +541,9 @@
       document.getElementById('sessionChip').textContent = isAdmin ? `🛡️ Admin (${activeUser})` : '👁️ Espectador';
       document.getElementById('btnLogin').classList.toggle('hidden', isAdmin);
       document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
-      document.getElementById('admWarnAdd').style.display = isAdmin ? 'none' : 'block';
-      document.getElementById('admWarnUsers').style.display = isAdmin ? 'none' : 'block';
       document.getElementById('btnSaveMatch').disabled = !isAdmin;
       document.getElementById('btnSavePlayer').disabled = !isAdmin;
+      syncTabsByRole();
       drawUsers();
     }
 
@@ -569,12 +584,16 @@
     };
 
     window.goTab = (id, btn) => {
-      ['rank', 'matches', 'week', 'ctrl', 'awards', 'add', 'users', 'cloud'].forEach(t =>
-        document.getElementById('tab-' + t).classList.add('hidden')
+      if (!isAdmin && ADMIN_ONLY_TABS.includes(id)) {
+        id = 'rank';
+      }
+      currentTab = id;
+      [...PUBLIC_TABS, ...ADMIN_ONLY_TABS].forEach(t =>
+        document.getElementById('tab-' + t).classList.toggle('hidden', t !== id)
       );
-      document.getElementById('tab-' + id).classList.remove('hidden');
-      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.tab').forEach(b =>
+        b.classList.toggle('active', b.getAttribute('data-tab') === id)
+      );
     };
 
     function weekKey(dStr) {

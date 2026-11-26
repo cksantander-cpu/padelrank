@@ -246,6 +246,13 @@
       padding: 20px;
       width: 100%;
       max-width: 380px;
+      position: relative;
+      z-index: 60;
+    }
+    #loginModal input, #loginModal select {
+      position: relative;
+      z-index: 70;
+      pointer-events: auto;
     }
     .err-msg { color: var(--bad); font-size: 0.8rem; margin-top: 6px; min-height: 18px; }
     .hidden { display: none !important; }
@@ -430,7 +437,7 @@
     <div id="tab-cloud" class="card hidden">
       <h2>☁️ Firebase (padelrank-6jrs4) y Respaldo JSON</h2>
       <p style="font-size:0.84rem; color:var(--muted); margin-bottom:10px;">
-        Lee automáticamente desde Firestore (<code>sepultureros/liga_2026</code>) para cualquier visitante y permite respaldar/restaurar <code>.json</code>.
+        Lee desde Firestore (<code>sepultureros/liga_2026</code>) y permite respaldar o importar tu archivo <code>.json</code> sin datos inventados.
       </p>
       <div style="margin-bottom:12px;">
         <label>Firebase Config JSON</label>
@@ -465,107 +472,17 @@
       "mauro": "1234"
     };
 
-    const EXCEL_SEED_DATA = {
-      "jugadores": [
-        {"id": "jug_1", "nombre": "Mauricio Hernández", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_2", "nombre": "Mario Espinoza", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_3", "nombre": "Italo Olivos", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_4", "nombre": "Job Cortes", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_5", "nombre": "Andres Sandoval", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_6", "nombre": "Pablo Lamilla", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_7", "nombre": "Miguel Ramirez", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_8", "nombre": "Angelo Espinaza", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_9", "nombre": "Abel Castillo", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_10", "nombre": "Luis Gamboa", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_11", "nombre": "Juan Alfaro", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_12", "nombre": "Sebastian Garcia", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_13", "nombre": "Erick Flores", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_14", "nombre": "Joshua Flores", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_15", "nombre": "Franco Araos", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_16", "nombre": "Benjamin Maldonado", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_17", "nombre": "César Torres", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_18", "nombre": "Ruben Ibarra", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_19", "nombre": "Ignacio Pardo", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_20", "nombre": "Rodrigo Bustos", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_21", "nombre": "Raúl Salas", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_22", "nombre": "Marco Zurita", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_23", "nombre": "Rafael Salazar", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_24", "nombre": "Arturo Silva", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_25", "nombre": "Guido Gonzalez", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_26", "nombre": "Invitado", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_27", "nombre": "Patricio Cerda", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_28", "nombre": "Patricio Torres", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_29", "nombre": "Don Daniel", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_30", "nombre": "Jose Vistoso", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_31", "nombre": "Braulio", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_32", "nombre": "Julio Puentes", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_33", "nombre": "Jose Araya", "categoria": "5ta", "activo": "Sí"},
-        {"id": "jug_34", "nombre": "David Polanco", "categoria": "5ta", "activo": "Sí"}
-      ],
-      "partidos": [
-        {"id": "part_54", "fecha": "2026-11-24 (6-4/7-5)", "fechaIso": "2026-11-24", "parejaA": "Don Daniel / Invitado", "parejaB": "Erick Flores / Joshua Flores", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_53", "fecha": "2026-11-24 (6-3/4-6/6-2)", "fechaIso": "2026-11-24", "parejaA": "Ruben Ibarra / Italo Olivos", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "16 - 11", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_52", "fecha": "2026-11-24 (3-6/6-1/6-4)", "fechaIso": "2026-11-24", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 1", "juegos": "15 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_51", "fecha": "2026-11-20 (4-6/6-3/6-4)", "fechaIso": "2026-11-20", "parejaA": "Erick Flores / Abel Castillo", "parejaB": "Joshua Flores / Benjamin Maldonado", "resultado": "2 - 1", "juegos": "16 - 13", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Abel Castillo, Benjamin Maldonado"},
-        {"id": "part_50", "fecha": "2026-11-20 (4-6/4-6)", "fechaIso": "2026-11-20", "parejaA": "Job Cortes / Mauricio Hernández", "parejaB": "Benjamin Maldonado / Joshua Flores", "resultado": "0 - 2", "juegos": "8 - 12", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": "Job Cortes, Mauricio Hernández, Benjamin Maldonado"},
-        {"id": "part_49", "fecha": "2026-11-20 (6-4/6-4)", "fechaIso": "2026-11-20", "parejaA": "David Polanco / Guido Gonzalez", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 0", "juegos": "12 - 8", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Guido Gonzalez, Mauricio Hernández, Mario Espinoza"},
-        {"id": "part_48", "fecha": "2026-11-23 (6-2/4-6/6-4)", "fechaIso": "2026-11-23", "parejaA": "Ignacio Pardo / Jose Araya", "parejaB": "Marco Zurita / César Torres", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_47", "fecha": "2026-11-20 (6-1/7-6)", "fechaIso": "2026-11-20", "parejaA": "Julio Puentes / Franco Araos", "parejaB": "Don Daniel / César Torres", "resultado": "2 - 0", "juegos": "13 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Franco Araos"},
-        {"id": "part_46", "fecha": "2026-11-20 (7-5/6-4)", "fechaIso": "2026-11-20", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Marco Zurita / Benjamin Maldonado", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes, Marco Zurita, Benjamin Maldonado"},
-        {"id": "part_45", "fecha": "2026-11-19 (6-376-1)", "fechaIso": "2026-11-19", "parejaA": "Mario Espinoza / Mauricio Hernández", "parejaB": "Guido Gonzalez / Italo Olivos", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Mario Espinoza, Guido Gonzalez, Italo Olivos"},
-        {"id": "part_44", "fecha": "2026-11-18 (6-4/6-3)", "fechaIso": "2026-11-18", "parejaA": "Mario Espinoza / Ignacio Pardo", "parejaB": "Job Cortes / Abel Castillo", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Ignacio Pardo, Job Cortes"},
-        {"id": "part_43", "fecha": "2026-11-17 (4-6/5-7)", "fechaIso": "2026-11-17", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Jose Vistoso / Pablo Lamilla", "resultado": "0 - 2", "juegos": "13 - 9", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": "Franco Araos"},
-        {"id": "part_42", "fecha": "2026-11-17 (2-6/6-3/6-2)", "fechaIso": "2026-11-17", "parejaA": "Guido Gonzalez / Job Cortes", "parejaB": "Benjamin Maldonado / Marco Zurita", "resultado": "2 - 1", "juegos": "14 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
-        {"id": "part_41", "fecha": "2026-11-16 (6-3/6-1)", "fechaIso": "2026-11-16", "parejaA": "Arturo Silva / Braulio", "parejaB": "Patricio Cerda / Patricio Torres", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_40", "fecha": "2026-11-16 (6-3/6-2)", "fechaIso": "2026-11-16", "parejaA": "Job Cortes / César Torres", "parejaB": "Franco Araos / Rafael Salazar", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Franco Araos"},
-        {"id": "part_39", "fecha": "2026-11-16 (2-6/6-4/7-5)", "fechaIso": "2026-11-16", "parejaA": "Benjamin Maldonado / Marco Zurita", "parejaB": "Rodrigo Bustos / Raúl Salas", "resultado": "2 - 1", "juegos": "15 - 15", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_38", "fecha": "2026-11-16 (2-6/7-5/7-5)", "fechaIso": "2026-11-16", "parejaA": "Job Cortes / Mario Espinoza", "parejaB": "Guido Gonzalez / Franco Araos", "resultado": "2 - 1", "juegos": "16 - 16", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_37", "fecha": "2026-11-16 (4-6/6-4/6-2)", "fechaIso": "2026-11-16", "parejaA": "Mauricio Hernández / Ignacio Pardo", "parejaB": "Italo Olivos / Ruben Ibarra", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_36", "fecha": "2026-11-16 (7-5/6-4)", "fechaIso": "2026-11-16", "parejaA": "Ignacio Pardo / Italo Olivos", "parejaB": "Franco Araos / Don Daniel", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_35", "fecha": "2026-11-13 (6-1/7-6)", "fechaIso": "2026-11-13", "parejaA": "Job Cortes / Benjamin Maldonado", "parejaB": "Arturo Silva / Rafael Salazar", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
-        {"id": "part_34", "fecha": "2026-11-13 (6-4/6-1)", "fechaIso": "2026-11-13", "parejaA": "Miguel Ramirez / Andres Sandoval", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Mauricio Hernández"},
-        {"id": "part_33", "fecha": "2026-11-10 (6-3/3-6/6-3)", "fechaIso": "2026-11-10", "parejaA": "Miguel Ramirez / Invitado", "parejaB": "Pablo Lamilla / Jose Vistoso", "resultado": "2 - 1", "juegos": "15 - 12", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_32", "fecha": "2026-11-11 (3-6/7-5/6-4)", "fechaIso": "2026-11-11", "parejaA": "Italo Olivos / Franco Araos", "parejaB": "Don Daniel / Andres Sandoval", "resultado": "2 - 1", "juegos": "16 - 15", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_31", "fecha": "2026-11-11 (6-3/6-1)", "fechaIso": "2026-11-11", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Ruben Ibarra / Abel Castillo", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_30", "fecha": "2026-11-10 (7-5/2-6/6-0)", "fechaIso": "2026-11-10", "parejaA": "Patricio Cerda / Patricio Torres", "parejaB": "Arturo Silva / Invitado", "resultado": "2 - 1", "juegos": "15 - 11", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_29", "fecha": "2026-11-10 (7-6/6-7/6-3)", "fechaIso": "2026-11-10", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 1", "juegos": "19 - 16", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_28", "fecha": "2026-11-07 (6-0/6-4)", "fechaIso": "2026-11-07", "parejaA": "Job Cortes / Abel Castillo", "parejaB": "Benjamin Maldonado / Joshua Flores", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_27", "fecha": "2026-11-05 (6-1/6-4)", "fechaIso": "2026-11-05", "parejaA": "Marco Zurita / Benjamin Maldonado", "parejaB": "Arturo Silva / Invitado", "resultado": "2 - 0", "juegos": "12 - 4", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_26", "fecha": "2026-11-05 (0-6/7-5/6-2)", "fechaIso": "2026-11-05", "parejaA": "Raúl Salas / Rafael Salazar", "parejaB": "Arturo Silva / Erick Flores", "resultado": "2 - 1", "juegos": "13 - 13", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_25", "fecha": "2026-11-04 (6-7/6-4/6-0)", "fechaIso": "2026-11-04", "parejaA": "Ruben Ibarra / Italo Olivos", "parejaB": "Job Cortes / Franco Araos", "resultado": "2 - 1", "juegos": "18 - 11", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_24", "fecha": "2026-11-03 (4-6/6-3/6-3)", "fechaIso": "2026-11-03", "parejaA": "Raúl Salas / Rafael Salazar", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_23", "fecha": "2026-10-30 (2-6/6-2/6-3)", "fechaIso": "2026-10-30", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "14 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
-        {"id": "part_22", "fecha": "2026-10-29 (6-1/6-4)", "fechaIso": "2026-10-29", "parejaA": "Arturo Silva / Italo Olivos", "parejaB": "Guido Gonzalez / Luis Gamboa", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_21", "fecha": "2026-10-29 (6-3/7-6)", "fechaIso": "2026-10-29", "parejaA": "Mauricio Hernández / Mario Espinoza", "parejaB": "Abel Castillo / Miguel Ramirez", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_20", "fecha": "2026-10-29 (6-7/7-6/2-6)", "fechaIso": "2026-10-29", "parejaA": "Franco Araos / Job Cortes", "parejaB": "Joshua Flores / Erick Flores", "resultado": "1 - 2", "juegos": "15 - 19", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_19", "fecha": "2026-10-26 (6-4/6-3)", "fechaIso": "2026-10-26", "parejaA": "Job Cortes / César Torres", "parejaB": "Abel Castillo / Ignacio Pardo", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_18", "fecha": "2026-10-23 (6-2/1-6/7-6)", "fechaIso": "2026-10-23", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Job Cortes / Andres Sandoval", "resultado": "2 - 1", "juegos": "14 - 14", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Franco Araos, Rodrigo Bustos, Job Cortes"},
-        {"id": "part_17", "fecha": "2026-10-23 (7-6/6-2)", "fechaIso": "2026-10-23", "parejaA": "Mauricio Hernández / Mario Espinoza", "parejaB": "Luis Gamboa / Marco Zurita", "resultado": "0 - 2", "juegos": "8 - 13", "ganador": "B", "sorpresa": "Sí", "wo": "No", "acompanantes": "Mauricio Hernández"},
-        {"id": "part_16", "fecha": "2026-10-23 (7-5/4-6/6-4)", "fechaIso": "2026-10-23", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Miguel Ramirez / Abel Castillo", "resultado": "2 - 1", "juegos": "17 - 15", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": "Job Cortes"},
-        {"id": "part_15", "fecha": "2026-10-22 (7-5/6-4)", "fechaIso": "2026-10-22", "parejaA": "Angelo Espinaza / Ignacio Pardo", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 0", "juegos": "13 - 9", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": "Franco Araos"},
-        {"id": "part_14", "fecha": "2026-10-22 (2-6/6-2/8-6)", "fechaIso": "2026-10-22", "parejaA": "Mauricio Hernández / Job Cortes", "parejaB": "Franco Araos / Rodrigo Bustos", "resultado": "2 - 1", "juegos": "16 - 14", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_13", "fecha": "2026-10-19 (6-1/1-6/6-3)", "fechaIso": "2026-10-19", "parejaA": "Marco Zurita / Benjamin Maldonado", "parejaB": "Ruben Ibarra / Italo Olivos", "resultado": "2 - 1", "juegos": "13 - 10", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_12", "fecha": "2026-10-19 (1-6/6-3/6-2)", "fechaIso": "2026-10-19", "parejaA": "Job Cortes / Franco Araos", "parejaB": "Rafael Salazar / Ignacio Pardo", "resultado": "2 - 1", "juegos": "13 - 11", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_11", "fecha": "2026-10-15 (4-6/6-3/6-3)", "fechaIso": "2026-10-15", "parejaA": "Mauricio Hernández / Mario Espinoza", "parejaB": "Andres Sandoval / Pablo Lamilla", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_10", "fecha": "2026-10-12 (6-3/5-7/6-3)", "fechaIso": "2026-10-12", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Italo Olivos / Job Cortes", "resultado": "2 - 1", "juegos": "17 - 13", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_9", "fecha": "2026-10-12 (7-6/3-6/6-3)", "fechaIso": "2026-10-12", "parejaA": "Ignacio Pardo / Italo Olivos", "parejaB": "Job Cortes / Franco Araos", "resultado": "2 - 1", "juegos": "16 - 15", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_8", "fecha": "2026-10-12 (6-2/3-6/6-0)", "fechaIso": "2026-10-12", "parejaA": "Pablo Lamilla / Andres Sandoval", "parejaB": "Mauricio Hernández / Mario Espinoza", "resultado": "2 - 1", "juegos": "15 - 8", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_7", "fecha": "2026-10-06 (5-7/6-3/6-3)", "fechaIso": "2026-10-06", "parejaA": "Mario Espinoza / Mauricio Hernández", "parejaB": "Miguel Ramirez / Andres Sandoval", "resultado": "2 - 1", "juegos": "17 - 14", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_6", "fecha": "2026-09-06 (6-4/4-6/6-2)", "fechaIso": "2026-09-06", "parejaA": "Rafael Salazar / Raúl Salas", "parejaB": "Franco Araos / Marco Zurita", "resultado": "2 - 1", "juegos": "16 - 12", "ganador": "A", "sorpresa": "Sí", "wo": "No", "acompanantes": ""},
-        {"id": "part_5", "fecha": "2026-10-06 (4-6/6-4/7-6)", "fechaIso": "2026-10-06", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Italo Olivos / Job Cortes", "resultado": "2 - 1", "juegos": "17 - 16", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_4", "fecha": "2026-10-06 (6-2/6-3)", "fechaIso": "2026-10-06", "parejaA": "Rodrigo Bustos / Franco Araos", "parejaB": "Italo Olivos / Rafael Salazar", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_3", "fecha": "2026-09-29 (6-3/6.2)", "fechaIso": "2026-09-29", "parejaA": "Franco Araos / Job Cortes", "parejaB": "Pablo Lamilla / Andres Sandoval", "resultado": "2 - 0", "juegos": "12 - 5", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_2", "fecha": "2026-09-28 (6-3/4-6/6-0)", "fechaIso": "2026-09-28", "parejaA": "Miguel Ramirez / Andres Sandoval", "parejaB": "Benjamin Maldonado / Marco Zurita", "resultado": "2 - 1", "juegos": "16 - 9", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""},
-        {"id": "part_1", "fecha": "2026-09-28 (6-4/6-3)", "fechaIso": "2026-09-28", "parejaA": "Franco Araos / Rodrigo Bustos", "parejaB": "Juan Alfaro / Sebastian Garcia", "resultado": "2 - 0", "juegos": "12 - 7", "ganador": "A", "sorpresa": "No", "wo": "No", "acompanantes": ""}
-      ],
-      "controlSemanal": [],
-      "revelacion": "",
-      "reglas": {
-        "nombre": "Ranking Sepultureros",
-        "winBase": 100,
-        "lossBase": 20,
-        "sorpresaPts": 30,
-        "limiteSemanal": 2
+    const EMPTY_DATA = {
+      jugadores: [],
+      partidos: [],
+      controlSemanal: [],
+      revelacion: "",
+      reglas: {
+        nombre: "Ranking Sepultureros",
+        winBase: 100,
+        lossBase: 20,
+        sorpresaPts: 30,
+        limiteSemanal: 2
       }
     };
 
@@ -574,7 +491,7 @@
     const THEME_KEY = 'sepultureros_theme_v1';
     const AUTH_KEY = 'sepultureros_auth_v1';
 
-    let state = structuredClone(EXCEL_SEED_DATA);
+    let state = structuredClone(EMPTY_DATA);
     let wkStats = {};
     let isAdmin = false;
     let activeUser = 'Espectador';
@@ -675,6 +592,11 @@
     }
 
     function recalc() {
+      const winBase = Number(state.reglas?.winBase ?? 100);
+      const lossBase = Number(state.reglas?.lossBase ?? 20);
+      const sorpresaPts = Number(state.reglas?.sorpresaPts ?? 30);
+      const limiteSemanal = Number(state.reglas?.limiteSemanal ?? 2);
+
       const map = {};
       (state.jugadores || []).forEach(j => {
         map[j.nombre] = {
@@ -735,7 +657,7 @@
         const valid = all.map(n => {
           const k = wk + '_' + n;
           const c = wkCnt[k] || 0;
-          if (c < 2) {
+          if (c < limiteSemanal) {
             wkCnt[k] = c + 1;
             return true;
           }
@@ -750,14 +672,14 @@
 
         let bA = 0, bB = 0;
         if (wo) {
-          bA = p.ganador === 'A' ? 100 : 0;
-          bB = p.ganador === 'B' ? 100 : 0;
+          bA = p.ganador === 'A' ? winBase : 0;
+          bB = p.ganador === 'B' ? winBase : 0;
         } else if (p.ganador === 'A') {
-          bA = (sA === 2 && sB === 0) ? 100 : 80;
-          bB = (sA === 2 && sB === 0) ? 20 : 40;
+          bA = (sA === 2 && sB === 0) ? winBase : 80;
+          bB = (sA === 2 && sB === 0) ? lossBase : 40;
         } else {
-          bA = (sA === 0 && sB === 2) ? 20 : 40;
-          bB = (sA === 0 && sB === 2) ? 100 : 80;
+          bA = (sA === 0 && sB === 2) ? lossBase : 40;
+          bB = (sA === 0 && sB === 2) ? winBase : 80;
         }
 
         let ptsA = bA, ptsB = bB;
@@ -765,11 +687,11 @@
         p.sorpresa = isSorp ? 'Sí' : 'No';
         if (isSorp) {
           if (p.ganador === 'A') {
-            ptsA = bA + 30;
-            ptsB = -30;
+            ptsA = bA + sorpresaPts;
+            ptsB = -sorpresaPts;
           } else {
-            ptsA = -30;
-            ptsB = bB + 30;
+            ptsA = -sorpresaPts;
+            ptsB = bB + sorpresaPts;
           }
         }
 
@@ -814,8 +736,8 @@
             semana: wk,
             jugador: n,
             partidosValidos: v,
-            limite: 2,
-            estado: v >= 2 ? `LÍMITE (${v}/2)` : `OK (${v}/2)`
+            limite: limiteSemanal,
+            estado: v >= limiteSemanal ? `LÍMITE (${v}/${limiteSemanal})` : `OK (${v}/${limiteSemanal})`
           });
         });
       });
@@ -844,6 +766,13 @@
         const mp = [...s].sort((a, b) => b.pj - a.pj)[0];
         document.getElementById('kPj').textContent = mp.nombre;
         document.getElementById('kPjSub').textContent = `${mp.pj} PJ`;
+      } else {
+        document.getElementById('kLead').textContent = '-';
+        document.getElementById('kLeadPts').textContent = '0 pts';
+        document.getElementById('kWin').textContent = '-';
+        document.getElementById('kWinSub').textContent = '0 PG';
+        document.getElementById('kPj').textContent = '-';
+        document.getElementById('kPjSub').textContent = '0 PJ';
       }
 
       document.getElementById('rankBody').innerHTML = s.map((j, i) => {
@@ -887,30 +816,44 @@
     };
 
     window.addOrUpdatePlayer = async (e) => {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (!isAdmin) return alert('Solo Admins.');
-      const nombre = String(document.getElementById('uPlayerName').value || '').trim();
-      const categoria = String(document.getElementById('uPlayerCat').value || '5ta').trim();
-      const activo = document.getElementById('uPlayerActive').value;
-      if (!nombre) return;
-      const idx = state.jugadores.findIndex(x => x.nombre.toLowerCase() === nombre.toLowerCase());
-      if (idx >= 0) {
+      const inpName = document.getElementById('uPlayerName');
+      const inpCat = document.getElementById('uPlayerCat');
+      const inpAct = document.getElementById('uPlayerActive');
+      const nombre = String(inpName.value || '').trim();
+      const categoria = String(inpCat.value || '5ta').trim() || '5ta';
+      const activo = inpAct.value || 'Sí';
+      if (!nombre) return alert('Escribe el nombre del jugador.');
+
+      if (!Array.isArray(state.jugadores)) state.jugadores = [];
+      const idx = state.jugadores.findIndex(x => String(x.nombre).toLowerCase() === nombre.toLowerCase());
+      const esEdicion = idx >= 0;
+
+      if (esEdicion) {
         state.jugadores[idx].nombre = nombre;
         state.jugadores[idx].categoria = categoria;
         state.jugadores[idx].activo = activo;
       } else {
         state.jugadores.push({
-          id: 'jug_' + (state.jugadores.length + 1),
+          id: 'jug_' + Date.now(),
           nombre,
           categoria,
           activo
         });
       }
-      document.getElementById('uPlayerName').value = '';
+
+      inpName.value = '';
       recalc();
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
-      await pushToCloud(true);
+
+      const okCloud = await pushToCloud(true);
+      if (okCloud) {
+        alert(esEdicion ? `Jugador "${nombre}" actualizado y guardado en Firebase.` : `Jugador "${nombre}" agregado y guardado en Firebase.`);
+      } else {
+        alert(esEdicion ? `Jugador "${nombre}" actualizado localmente (revisa reglas de escritura en Firestore).` : `Jugador "${nombre}" agregado localmente (revisa reglas de escritura en Firestore).`);
+      }
     };
 
     window.editPlayerPrompt = async (oldName) => {
@@ -920,7 +863,7 @@
       const nxt = prompt('Nuevo nombre para el jugador:', item.nombre);
       if (!nxt || !nxt.trim()) return;
       const clean = nxt.trim();
-      state.partidos.forEach(p => {
+      (state.partidos || []).forEach(p => {
         p.parejaA = p.parejaA.split('/').map(s => s.trim() === oldName ? clean : s.trim()).join(' / ');
         p.parejaB = p.parejaB.split('/').map(s => s.trim() === oldName ? clean : s.trim()).join(' / ');
       });
@@ -929,6 +872,7 @@
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
       await pushToCloud(true);
+      alert(`Jugador renombrado a "${clean}".`);
     };
 
     window.deletePlayer = async (name) => {
@@ -939,6 +883,7 @@
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
       await pushToCloud(true);
+      alert(`Jugador "${name}" eliminado.`);
     };
 
     window.drawMatches = () => {
@@ -1076,8 +1021,8 @@
       recalc();
       localStorage.setItem(CACHE_KEY, JSON.stringify(state));
       render();
-      await pushToCloud(true);
-      alert(`Partido #${nextN} guardado.`);
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? `Partido #${nextN} guardado en Firebase.` : `Partido #${nextN} guardado localmente (revisa reglas Firestore).`);
     };
 
     window.saveFbConfig = async () => {
@@ -1093,34 +1038,52 @@
 
     window.pullFromCloud = async () => {
       if (!fsDb) return alert('Conecta primero Firebase.');
-      const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
-      if (snap.exists() && Array.isArray(snap.data().partidos) && snap.data().partidos.length > 0) {
-        state = { ...state, ...snap.data() };
-        recalc();
-        localStorage.setItem(CACHE_KEY, JSON.stringify(state));
-        render();
-        document.getElementById('dbStatus').textContent = `Firestore activo (${state.partidos.length} partidos · sepultureros/liga_2026)`;
-        alert('Datos cargados desde Firestore.');
-      } else {
-        recalc();
-        render();
-        document.getElementById('dbStatus').textContent = `Firestore conectado · Documento vacío (mostrando ${state.partidos.length} partidos del Excel)`;
-        alert('Documento sepultureros/liga_2026 vacío o no creado aún. Se mantienen los 54 partidos del Excel; usa "Subir a Firestore" para guardarlos en la nube.');
+      try {
+        const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
+        if (snap.exists()) {
+          state = { ...structuredClone(EMPTY_DATA), ...snap.data() };
+          recalc();
+          localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+          render();
+          document.getElementById('dbStatus').textContent = `Firestore activo (${(state.partidos || []).length} partidos · sepultureros/liga_2026)`;
+          alert('Datos cargados desde Firestore.');
+        } else {
+          recalc();
+          render();
+          document.getElementById('dbStatus').textContent = `Firestore conectado · Documento sepultureros/liga_2026 vacío`;
+          alert('Documento sepultureros/liga_2026 aún no existe en Firestore.');
+        }
+      } catch (err) {
+        alert('Error leyendo Firestore: ' + err.message);
       }
     };
 
     window.pushToCloud = async (silent = false) => {
-      if (!fsDb) return silent ? null : alert('Configura primero Firebase.');
-      if (!isAdmin) return silent ? null : alert('Solo Admins pueden subir a Firestore.');
-      await setDoc(doc(fsDb, 'sepultureros', 'liga_2026'), {
-        jugadores: state.jugadores,
-        partidos: state.partidos,
-        controlSemanal: state.controlSemanal,
-        revelacion: state.revelacion,
-        reglas: state.reglas
-      });
-      document.getElementById('dbStatus').textContent = `Sincronizado con Firestore (${state.partidos.length} partidos · sepultureros/liga_2026)`;
-      if (!silent) alert('Subido a Firestore.');
+      if (!fsDb) {
+        if (!silent) alert('Configura primero Firebase.');
+        return false;
+      }
+      if (!isAdmin) {
+        if (!silent) alert('Solo Admins pueden subir a Firestore.');
+        return false;
+      }
+      try {
+        await setDoc(doc(fsDb, 'sepultureros', 'liga_2026'), {
+          jugadores: state.jugadores,
+          partidos: state.partidos,
+          controlSemanal: state.controlSemanal,
+          revelacion: state.revelacion,
+          reglas: state.reglas
+        });
+        document.getElementById('dbStatus').textContent = `Sincronizado con Firestore (${(state.partidos || []).length} partidos · sepultureros/liga_2026)`;
+        if (!silent) alert('Subido a Firestore.');
+        return true;
+      } catch (err) {
+        console.error('Error subiendo a Firestore:', err);
+        document.getElementById('dbStatus').textContent = `Guardado local · Error Firestore: ${err.message}`;
+        if (!silent) alert('No se pudo guardar en Firestore: ' + err.message);
+        return false;
+      }
     };
 
     window.exportJson = () => {
@@ -1145,12 +1108,12 @@
       r.onload = async (ev) => {
         try {
           const parsed = JSON.parse(ev.target.result);
-          state = { ...state, ...parsed };
+          state = { ...structuredClone(EMPTY_DATA), ...parsed };
           recalc();
           localStorage.setItem(CACHE_KEY, JSON.stringify(state));
           render();
-          await pushToCloud(true);
-          alert('JSON importado y recalculado.');
+          const okCloud = await pushToCloud(true);
+          alert(okCloud ? 'JSON importado, recalculado y subido a Firebase.' : 'JSON importado y recalculado localmente.');
         } catch (err) {
           alert(err.message);
         }
@@ -1164,21 +1127,21 @@
         const app = initializeApp(cfg, 'sepultureros_liga_app_' + Date.now());
         fsDb = getFirestore(app);
         const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
-        if (snap.exists() && Array.isArray(snap.data().partidos) && snap.data().partidos.length > 0) {
-          state = { ...state, ...snap.data() };
+        if (snap.exists()) {
+          state = { ...structuredClone(EMPTY_DATA), ...snap.data() };
           recalc();
           localStorage.setItem(CACHE_KEY, JSON.stringify(state));
           render();
-          document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId} · ${state.partidos.length} partidos)`;
+          document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId} · ${(state.partidos || []).length} partidos)`;
         } else {
           recalc();
           render();
-          document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId}) · Base Excel lista (${state.partidos.length} partidos)`;
+          document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId} · sepultureros/liga_2026 sin datos aún)`;
         }
       } catch (err) {
         recalc();
         render();
-        document.getElementById('dbStatus').textContent = `Base Excel activa (${state.partidos.length} partidos) · Revisar reglas Firestore`;
+        document.getElementById('dbStatus').textContent = `Firestore (${cfg.projectId}) · Revisar conexión o reglas: ${err.message}`;
       }
     }
 
@@ -1189,10 +1152,7 @@
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       try {
-        const parsedCache = JSON.parse(cached);
-        if (Array.isArray(parsedCache.partidos) && parsedCache.partidos.length > 0) {
-          state = { ...state, ...parsedCache };
-        }
+        state = { ...structuredClone(EMPTY_DATA), ...JSON.parse(cached) };
       } catch (_) {}
     }
     recalc();

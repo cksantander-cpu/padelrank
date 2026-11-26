@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ranking Sepultureros · V7.3</title>
+  <title>Ranking Sepultureros · V7.4</title>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     :root[data-theme="dark"] {
@@ -206,6 +206,92 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .news-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--pink);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .news-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .news-title {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .news-meta {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .news-body {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--text);
+      white-space: pre-line;
+    }
+    .news-media {
+      width: 100%;
+      border-radius: 11px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #020617;
+    }
+    .news-media img {
+      width: 100%;
+      max-height: 460px;
+      object-fit: cover;
+      display: block;
+    }
+    .news-media video {
+      width: 100%;
+      max-height: 480px;
+      display: block;
+      background: #000;
+    }
+    .embed-vertical {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      height: 560px;
+      margin: 0 auto;
+    }
+    .embed-vertical iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .embed-wide {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+    .embed-wide iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .news-ext {
+      font-size: 0.76rem;
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 700;
+    }
     .win { color: var(--blue); font-weight: 800; }
     .tag-s {
       background: rgba(245, 158, 11, 0.2);
@@ -285,13 +371,13 @@
 
   <div id="loginModal" class="modal-bg hidden">
     <div class="modal-box">
-      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros · V7.3</h3>
-      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Espectador ve Ranking, Control Semanal y Partidos; Administradores acceden a todo.</p>
+      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros · V7.4</h3>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Espectador ve Ranking, Control Semanal, Partidos y Noticias; Administradores acceden a todo.</p>
       <form onsubmit="doLogin(event)">
         <div style="margin-bottom:10px;">
           <label>Modo de acceso</label>
           <select id="uMode" onchange="togglePassField()">
-            <option value="Espectador">Espectador (Ranking, Control Semanal y Partidos)</option>
+            <option value="Espectador">Espectador (Ranking, Control Semanal, Partidos y Noticias)</option>
             <option value="Administrador">Administrador</option>
           </select>
         </div>
@@ -319,9 +405,9 @@
       <div class="brand-row">
         <img src="./logo.png" alt="Logo Ranking Sepultureros" class="brand-thumb" onerror="this.style.display='none'" />
         <div>
-          <span class="chip" id="versionChip">V7.3</span>
+          <span class="chip" id="versionChip">V7.4</span>
           <h1 id="appTitle">Ranking Sepultureros</h1>
-          <p class="sub" id="dbStatus">V7.3 · Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
+          <p class="sub" id="dbStatus">V7.4 · Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
         </div>
       </div>
       <div class="controls-top">
@@ -343,6 +429,7 @@
       <button class="tab active" data-tab="rank" data-role="public" onclick="goTab('rank', this)">🏆 Ranking</button>
       <button class="tab" data-tab="ctrl" data-role="public" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
       <button class="tab" data-tab="matches" data-role="public" onclick="goTab('matches', this)">🎾 Partidos</button>
+      <button class="tab" data-tab="news" data-role="public" onclick="goTab('news', this)">📰 Noticias</button>
       <button class="tab hidden" data-tab="week" data-role="admin" onclick="goTab('week', this)">📅 Resumen Semanal</button>
       <button class="tab hidden" data-tab="awards" data-role="admin" onclick="goTab('awards', this)">🎖️ Premios</button>
       <button class="tab hidden" data-tab="add" data-role="admin" onclick="goTab('add', this)">➕ Nuevo Partido</button>
@@ -385,6 +472,46 @@
       <h2>🎾 Partidos</h2>
       <div style="margin-bottom:10px;"><input type="text" id="qMatch" placeholder="Buscar jugador, fecha o #partido..." oninput="drawMatches()" /></div>
       <div id="matchList"></div>
+    </div>
+
+    <div id="tab-news" class="card hidden">
+      <h2>
+        <span>📰 Noticias, Fotos y Videos de la Liga</span>
+        <span style="font-size:0.76rem; color:var(--muted);">Visible para todos · Publica solo Admin</span>
+      </h2>
+
+      <div id="newsAdminBox" class="hidden" style="background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:16px;">
+        <h3 style="font-size:0.95rem; margin-bottom:10px;">✍️ Publicar Noticia, Foto o Video (Solo Admins)</h3>
+        <form onsubmit="addNews(event)">
+          <div class="grid-f">
+            <div>
+              <label>Título</label>
+              <input type="text" id="nTitle" placeholder="Ej: Funeral en la cancha 2" required />
+            </div>
+            <div>
+              <label>Tipo de contenido</label>
+              <select id="nMediaType">
+                <option value="auto">Detectar automático (Foto / TikTok / Insta / MP4)</option>
+                <option value="image">Foto (./noticias/foto.jpg o URL imagen)</option>
+                <option value="embed">Video TikTok / Instagram / YouTube</option>
+                <option value="video">Video MP4 directo</option>
+                <option value="none">Solo texto</option>
+              </select>
+            </div>
+            <div>
+              <label>Ruta o URL (Foto o link de TikTok)</label>
+              <input type="text" id="nMediaUrl" placeholder="./noticias/fosa.jpg o https://www.tiktok.com/..." />
+            </div>
+          </div>
+          <div style="margin-bottom:10px;">
+            <label>Texto / Bajada</label>
+            <textarea id="nBody" rows="2" placeholder="Escribe la noticia o talla del grupo..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-ok" id="btnSaveNews">📢 Publicar en Noticias y Guardar en Firebase</button>
+        </form>
+      </div>
+
+      <div id="newsList" class="news-grid"></div>
     </div>
 
     <div id="tab-week" class="card hidden">
@@ -485,7 +612,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
-    const APP_VERSION = "V7.3";
+    const APP_VERSION = "V7.4";
 
     const DEFAULT_FB_CONFIG = {
       apiKey: "AIzaSyAFoimQyKdFdiNwAvptItveCUGm7HKC4oI",
@@ -502,12 +629,13 @@
     };
 
     const ADMIN_ONLY_TABS = ['week', 'awards', 'add', 'users', 'cloud'];
-    const PUBLIC_TABS = ['rank', 'ctrl', 'matches'];
+    const PUBLIC_TABS = ['rank', 'ctrl', 'matches', 'news'];
 
     const EMPTY_DATA = {
       jugadores: [],
       partidos: [],
       controlSemanal: [],
+      noticias: [],
       revelacion: "",
       reglas: {
         nombre: "Ranking Sepultureros",
@@ -530,6 +658,14 @@
     let currentTab = 'rank';
     let fsDb = null;
     let activeCfg = structuredClone(DEFAULT_FB_CONFIG);
+
+    function escHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
 
     function loadTheme() {
       document.documentElement.setAttribute('data-theme', localStorage.getItem(THEME_KEY) || 'dark');
@@ -575,8 +711,10 @@
       document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
       document.getElementById('btnSaveMatch').disabled = !isAdmin;
       document.getElementById('btnSavePlayer').disabled = !isAdmin;
+      document.getElementById('newsAdminBox').classList.toggle('hidden', !isAdmin);
       syncTabsByRole();
       drawUsers();
+      drawNews();
     }
 
     window.openModal = () => {
@@ -656,6 +794,131 @@
         `${String(dt.getUTCDate()).padStart(2, '0')}-${String(dt.getUTCMonth() + 1).padStart(2, '0')}-${dt.getUTCFullYear()}`;
       return `${fmt(mon)} al ${fmt(sun)}`;
     }
+
+    function resolveEmbedHtml(rawUrl, forcedType = 'auto') {
+      const url = String(rawUrl || '').trim();
+      if (!url || forcedType === 'none') return '';
+      const low = url.toLowerCase();
+
+      if (forcedType === 'video' || /\.(mp4|webm|ogg)(\?.*)?$/i.test(low)) {
+        return `<div class="news-media"><video controls playsinline preload="metadata" src="${escHtml(url)}"></video></div>`;
+      }
+
+      if (forcedType === 'image' || /\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(low)) {
+        return `<div class="news-media"><img src="${escHtml(url)}" alt="Foto noticia Sepultureros" loading="lazy" /></div>`;
+      }
+
+      const tkVideoId = url.match(/tiktok\.com\/(?:@[\w.-]+\/video\/|v\/)(\d+)/i);
+      const isTikTokLink = /tiktok\.com/i.test(url);
+      if (tkVideoId || isTikTokLink) {
+        const embedSrc = tkVideoId
+          ? `https://www.tiktok.com/embed/v2/${tkVideoId[1]}`
+          : `https://www.tiktok.com/embed?url=${encodeURIComponent(url)}`;
+        return `
+          <div class="news-media"><div class="embed-vertical"><iframe src="${embedSrc}" allow="encrypted-media;" allowfullscreen loading="lazy"></iframe></div></div>
+          <a class="news-ext" href="${escHtml(url)}" target="_blank" rel="noopener">↗ Abrir video en TikTok</a>
+        `;
+      }
+
+      const igMatch = url.match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/i);
+      if (igMatch) {
+        const embedSrc = `https://www.instagram.com/p/${igMatch[1]}/embed/captioned/`;
+        return `
+          <div class="news-media"><div class="embed-vertical"><iframe src="${embedSrc}" allowtransparency="true" allowfullscreen loading="lazy"></iframe></div></div>
+          <a class="news-ext" href="${escHtml(url)}" target="_blank" rel="noopener">↗ Abrir Reel / Post en Instagram</a>
+        `;
+      }
+
+      const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+      if (ytMatch) {
+        const isShort = /shorts\//i.test(url);
+        const embedSrc = `https://www.youtube.com/embed/${ytMatch[1]}`;
+        return `
+          <div class="news-media"><div class="${isShort ? 'embed-vertical' : 'embed-wide'}"><iframe src="${embedSrc}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div></div>
+          <a class="news-ext" href="${escHtml(url)}" target="_blank" rel="noopener">↗ Abrir en YouTube</a>
+        `;
+      }
+
+      if (forcedType === 'embed') {
+        return `
+          <div class="news-media"><div class="embed-vertical"><iframe src="${escHtml(url)}" allowfullscreen loading="lazy"></iframe></div></div>
+          <a class="news-ext" href="${escHtml(url)}" target="_blank" rel="noopener">↗ Abrir enlace original</a>
+        `;
+      }
+
+      return `<div class="news-media"><img src="${escHtml(url)}" alt="Foto noticia Sepultureros" loading="lazy" onerror="this.parentElement.style.display='none'" /></div>
+              <a class="news-ext" href="${escHtml(url)}" target="_blank" rel="noopener">↗ Abrir enlace adjunto</a>`;
+    }
+
+    window.drawNews = () => {
+      const box = document.getElementById('newsList');
+      if (!box) return;
+      const list = Array.isArray(state.noticias) ? state.noticias : [];
+      if (!list.length) {
+        box.innerHTML = `<div style="color:var(--muted); font-size:0.86rem;">Aún no hay noticias, fotos ni videos publicados.</div>`;
+        return;
+      }
+      box.innerHTML = list.map(n => {
+        const mediaHtml = resolveEmbedHtml(n.mediaUrl, n.mediaType || 'auto');
+        const delBtn = isAdmin
+          ? `<button type="button" class="btn btn-bad" style="padding:4px 8px; font-size:0.74rem;" onclick="deleteNews('${escHtml(n.id)}')">🗑️</button>`
+          : '';
+        return `
+          <article class="news-card">
+            <div class="news-head">
+              <div>
+                <div class="news-title">${escHtml(n.titulo)}</div>
+                <div class="news-meta">${escHtml(n.fecha || '')}${n.autor ? ' · Por ' + escHtml(n.autor) : ''}</div>
+              </div>
+              ${delBtn}
+            </div>
+            <div class="news-body">${escHtml(n.texto)}</div>
+            ${mediaHtml}
+          </article>
+        `;
+      }).join('');
+    };
+
+    window.addNews = async (e) => {
+      e.preventDefault();
+      if (!isAdmin) return alert('Solo Admins.');
+      const titulo = String(document.getElementById('nTitle').value || '').trim();
+      const texto = String(document.getElementById('nBody').value || '').trim();
+      const mediaType = document.getElementById('nMediaType').value || 'auto';
+      const mediaUrl = String(document.getElementById('nMediaUrl').value || '').trim();
+      if (!titulo || !texto) return alert('Completa título y texto.');
+
+      if (!Array.isArray(state.noticias)) state.noticias = [];
+      const hoy = new Date().toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      state.noticias.unshift({
+        id: 'not_' + Date.now(),
+        titulo,
+        texto,
+        mediaType,
+        mediaUrl,
+        fecha: hoy,
+        autor: activeUser
+      });
+
+      document.getElementById('nTitle').value = '';
+      document.getElementById('nBody').value = '';
+      document.getElementById('nMediaUrl').value = '';
+
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      drawNews();
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? 'Noticia publicada y guardada en Firebase.' : 'Noticia publicada localmente (revisa reglas de Firestore).');
+    };
+
+    window.deleteNews = async (id) => {
+      if (!isAdmin) return alert('Solo Admins.');
+      if (!confirm('¿Eliminar esta noticia?')) return;
+      state.noticias = (state.noticias || []).filter(n => n.id !== id);
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      drawNews();
+      const okCloud = await pushToCloud(true);
+      alert(okCloud ? 'Noticia eliminada en Firebase.' : 'Noticia eliminada localmente.');
+    };
 
     function recalc() {
       const winBase = Number(state.reglas?.winBase ?? 100);
@@ -875,6 +1138,7 @@
       fillCtrlWeeks();
       drawCtrl();
       drawMatches();
+      drawNews();
       fillWeeks();
       drawWeek();
       drawAwards();
@@ -1189,6 +1453,7 @@
           jugadores: state.jugadores,
           partidos: state.partidos,
           controlSemanal: state.controlSemanal,
+          noticias: state.noticias || [],
           revelacion: state.revelacion,
           reglas: state.reglas
         });
@@ -1269,7 +1534,7 @@
       }];
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(infoRows), 'Resumen');
 
-      XLSX.writeFile(wb, 'ranking_sepultureros_2026_v7_3.xlsx');
+      XLSX.writeFile(wb, 'ranking_sepultureros_2026_v7_4.xlsx');
     };
 
     window.exportJson = () => {
@@ -1277,7 +1542,7 @@
       const u = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = u;
-      a.download = 'ranking_sepultureros_2026_v7_3.json';
+      a.download = 'ranking_sepultureros_2026_v7_4.json';
       a.click();
       URL.revokeObjectURL(u);
     };

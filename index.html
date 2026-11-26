@@ -7,8 +7,8 @@
   <style>
     :root[data-theme="dark"] {
       --bg: #050914;
-      --surface: rgba(13, 21, 38, 0.90);
-      --surface-2: rgba(20, 32, 56, 0.95);
+      --surface: rgba(13, 21, 38, 0.88);
+      --surface-2: rgba(20, 32, 56, 0.94);
       --border: #1e2d4a;
       --text: #f8fafc;
       --muted: #94a3b8;
@@ -19,10 +19,11 @@
       --ok: #10b981;
       --warn: #f59e0b;
       --bad: #ef4444;
+      --logo-op: 0.11;
     }
     :root[data-theme="light"] {
       --bg: #f1f5f9;
-      --surface: rgba(255, 255, 255, 0.92);
+      --surface: rgba(255, 255, 255, 0.90);
       --surface-2: rgba(248, 250, 252, 0.96);
       --border: #cbd5e1;
       --text: #0f172a;
@@ -34,6 +35,7 @@
       --ok: #059669;
       --warn: #d97706;
       --bad: #dc2626;
+      --logo-op: 0.08;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
     body {
@@ -45,8 +47,22 @@
       color: var(--text);
       min-height: 100vh;
       padding: 14px;
+      position: relative;
+      overflow-x: hidden;
     }
-    .wrap { max-width: 1040px; margin: 0 auto; }
+    .bg-logo {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url('./logo.png');
+      background-repeat: no-repeat;
+      background-position: center 42%;
+      background-size: min(420px, 72vw);
+      opacity: var(--logo-op);
+      filter: saturate(1.15);
+    }
+    .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; }
     .topbar {
       background: linear-gradient(125deg, var(--surface), var(--surface-2));
       border: 1px solid var(--blue);
@@ -59,6 +75,15 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
+    }
+    .brand-row { display: flex; align-items: center; gap: 12px; }
+    .brand-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
     }
     .chip {
       display: inline-block;
@@ -201,13 +226,14 @@
     }
     .btn-neon { background: linear-gradient(135deg, #0284c7, #9333ea); color: #fff; border: none; }
     .btn-ok { background: linear-gradient(135deg, #059669, #0891b2); color: #fff; border: none; }
+    .btn-bad { background: rgba(239, 68, 68, 0.16); color: var(--bad); border: 1px solid rgba(239, 68, 68, 0.4); }
     .awards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
     .award { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
     .modal-bg {
       position: fixed;
       inset: 0;
       z-index: 50;
-      background: rgba(2, 6, 15, 0.78);
+      background: rgba(2, 6, 15, 0.82);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -221,27 +247,37 @@
       width: 100%;
       max-width: 380px;
     }
+    .err-msg { color: var(--bad); font-size: 0.8rem; margin-top: 6px; min-height: 18px; }
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
+  <div class="bg-logo" aria-hidden="true"></div>
+
   <div id="loginModal" class="modal-bg hidden">
     <div class="modal-box">
-      <h3 style="margin-bottom:6px;">🔐 Acceso · Ranking Sepultureros</h3>
-      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Selecciona tu modo de acceso.</p>
+      <h3 style="margin-bottom:6px;">🔐 Login · Ranking Sepultureros</h3>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:12px;">Ingresa con tu usuario y clave para administrar.</p>
       <form onsubmit="doLogin(event)">
         <div style="margin-bottom:10px;">
-          <label>Perfil</label>
-          <select id="uSel">
-            <option value="Espectador">Espectador</option>
+          <label>Modo de acceso</label>
+          <select id="uMode" onchange="togglePassField()">
+            <option value="Espectador">Espectador (Solo lectura)</option>
             <option value="Administrador">Administrador</option>
           </select>
         </div>
-        <div style="margin-bottom:12px;">
-          <label>Clave / PIN</label>
-          <input type="password" id="uPass" placeholder="Opcional" />
+        <div id="adminCredsBox" class="hidden">
+          <div style="margin-bottom:10px;">
+            <label>Usuario</label>
+            <input type="text" id="uName" placeholder="Usuario admin" autocomplete="username" />
+          </div>
+          <div style="margin-bottom:10px;">
+            <label>Clave / PIN</label>
+            <input type="password" id="uPass" placeholder="Clave" autocomplete="current-password" />
+          </div>
         </div>
-        <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <div id="loginErr" class="err-msg"></div>
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
           <button type="button" class="btn" onclick="closeModal()">Cerrar</button>
           <button type="submit" class="btn btn-neon">Entrar</button>
         </div>
@@ -251,10 +287,13 @@
 
   <div class="wrap">
     <div class="topbar">
-      <div>
-        <span class="chip">Padre Hurtado · Firebase</span>
-        <h1 id="appTitle">Ranking Sepultureros</h1>
-        <p class="sub" id="dbStatus">Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
+      <div class="brand-row">
+        <img src="./logo.png" alt="Logo Ranking Sepultureros" class="brand-thumb" onerror="this.style.display='none'" />
+        <div>
+          <span class="chip">Padre Hurtado · Firebase</span>
+          <h1 id="appTitle">Ranking Sepultureros</h1>
+          <p class="sub" id="dbStatus">Conectando a Firebase (padelrank-6jrs4 · sepultureros/liga_2026)...</p>
+        </div>
       </div>
       <div class="controls-top">
         <button type="button" class="btn" onclick="toggleTheme()" id="btnTheme">🌓 Tema</button>
@@ -278,6 +317,7 @@
       <button class="tab" onclick="goTab('ctrl', this)">📋 Control Semanal</button>
       <button class="tab" onclick="goTab('awards', this)">🎖️ Premios</button>
       <button class="tab" onclick="goTab('add', this)">➕ Nuevo Partido</button>
+      <button class="tab" onclick="goTab('users', this)">👥 Usuarios</button>
       <button class="tab" onclick="goTab('cloud', this)">☁️ Firebase y JSON</button>
     </div>
 
@@ -336,8 +376,8 @@
     </div>
 
     <div id="tab-add" class="card hidden">
-      <h2>➕ Registrar Partido (Solo Admins)</h2>
-      <p id="admWarn" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Administrador para guardar en Firebase.</p>
+      <h2>➕ Nuevo Partido (Solo Admins)</h2>
+      <p id="admWarnAdd" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Administrador con clave para guardar en Firebase.</p>
       <form onsubmit="addMatch(event)">
         <div class="grid-f">
           <div><label>Fecha</label><input type="date" id="fDate" required /></div>
@@ -354,6 +394,37 @@
         </div>
         <button type="submit" class="btn btn-ok" id="btnSaveMatch">💾 Guardar en Firebase y Recalcular</button>
       </form>
+    </div>
+
+    <div id="tab-users" class="card hidden">
+      <h2>👥 Mantenedor de Jugadores / Usuarios (Solo Admins)</h2>
+      <p id="admWarnUsers" style="color:var(--warn); font-size:0.84rem; margin-bottom:10px;">Inicia sesión como Administrador para agregar, editar o eliminar jugadores.</p>
+      <form onsubmit="addOrUpdatePlayer(event)" class="grid-f">
+        <div>
+          <label>Nombre Jugador</label>
+          <input type="text" id="uPlayerName" placeholder="Ej: Juan Pérez" required />
+        </div>
+        <div>
+          <label>Categoría</label>
+          <input type="text" id="uPlayerCat" value="5ta" />
+        </div>
+        <div>
+          <label>Estado</label>
+          <select id="uPlayerActive">
+            <option value="Sí">Sí</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+          <button type="submit" class="btn btn-ok" id="btnSavePlayer" style="width:100%;">➕ Agregar / Guardar</button>
+        </div>
+      </form>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>#</th><th class="l">Jugador</th><th>Cat.</th><th>Activo</th><th>Acción</th></tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
     </div>
 
     <div id="tab-cloud" class="card hidden">
@@ -387,6 +458,11 @@
       storageBucket: "padelrank-6jrs4.firebasestorage.app",
       messagingSenderId: "772355783928",
       appId: "1:772355783928:web:b84403cac8d57e9612cf0d"
+    };
+
+    const ADMIN_CREDENTIALS = {
+      "cesar": "1234",
+      "mauro": "1234"
     };
 
     const EXCEL_SEED_DATA = {
@@ -496,11 +572,12 @@
     const FB_KEY = 'sepultureros_fb_cfg_v1';
     const CACHE_KEY = 'sepultureros_cache_v1';
     const THEME_KEY = 'sepultureros_theme_v1';
-    const ROLE_KEY = 'sepultureros_role_v1';
+    const AUTH_KEY = 'sepultureros_auth_v1';
 
     let state = structuredClone(EXCEL_SEED_DATA);
     let wkStats = {};
     let isAdmin = false;
+    let activeUser = 'Espectador';
     let fsDb = null;
 
     function loadTheme() {
@@ -513,31 +590,71 @@
       localStorage.setItem(THEME_KEY, nxt);
     };
 
+    window.togglePassField = () => {
+      const mode = document.getElementById('uMode').value;
+      document.getElementById('adminCredsBox').classList.toggle('hidden', mode !== 'Administrador');
+      document.getElementById('loginErr').textContent = '';
+    };
+
     function applyRole() {
-      const r = localStorage.getItem(ROLE_KEY) || 'Espectador';
-      isAdmin = (r === 'Administrador');
-      document.getElementById('sessionChip').textContent = isAdmin ? '🛡️ Admin' : '👁️ Espectador';
+      const saved = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+      if (saved && saved.role === 'Administrador' && saved.user && ADMIN_CREDENTIALS[saved.user]) {
+        isAdmin = true;
+        activeUser = saved.user;
+      } else {
+        isAdmin = false;
+        activeUser = 'Espectador';
+      }
+      document.getElementById('sessionChip').textContent = isAdmin ? `🛡️ Admin (${activeUser})` : '👁️ Espectador';
       document.getElementById('btnLogin').classList.toggle('hidden', isAdmin);
       document.getElementById('btnLogout').classList.toggle('hidden', !isAdmin);
-      document.getElementById('admWarn').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('admWarnAdd').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('admWarnUsers').style.display = isAdmin ? 'none' : 'block';
       document.getElementById('btnSaveMatch').disabled = !isAdmin;
+      document.getElementById('btnSavePlayer').disabled = !isAdmin;
+      drawUsers();
     }
 
-    window.openModal = () => document.getElementById('loginModal').classList.remove('hidden');
+    window.openModal = () => {
+      document.getElementById('loginErr').textContent = '';
+      document.getElementById('uMode').value = 'Administrador';
+      document.getElementById('uName').value = '';
+      document.getElementById('uPass').value = '';
+      togglePassField();
+      document.getElementById('loginModal').classList.remove('hidden');
+    };
+
     window.closeModal = () => document.getElementById('loginModal').classList.add('hidden');
+
     window.doLogin = (e) => {
       e.preventDefault();
-      localStorage.setItem(ROLE_KEY, document.getElementById('uSel').value);
-      closeModal();
-      applyRole();
+      const mode = document.getElementById('uMode').value;
+      if (mode === 'Espectador') {
+        localStorage.setItem(AUTH_KEY, JSON.stringify({ role: 'Espectador', user: 'Espectador' }));
+        closeModal();
+        applyRole();
+        return;
+      }
+      const u = String(document.getElementById('uName').value || '').trim().toLowerCase();
+      const p = String(document.getElementById('uPass').value || '').trim();
+      if (ADMIN_CREDENTIALS[u] && ADMIN_CREDENTIALS[u] === p) {
+        localStorage.setItem(AUTH_KEY, JSON.stringify({ role: 'Administrador', user: u }));
+        closeModal();
+        applyRole();
+      } else {
+        document.getElementById('loginErr').textContent = 'Usuario o clave incorrectos.';
+      }
     };
+
     window.doLogout = () => {
-      localStorage.setItem(ROLE_KEY, 'Espectador');
+      localStorage.removeItem(AUTH_KEY);
       applyRole();
     };
 
     window.goTab = (id, btn) => {
-      ['rank', 'matches', 'week', 'ctrl', 'awards', 'add', 'cloud'].forEach(t => document.getElementById('tab-' + t).classList.add('hidden'));
+      ['rank', 'matches', 'week', 'ctrl', 'awards', 'add', 'users', 'cloud'].forEach(t =>
+        document.getElementById('tab-' + t).classList.add('hidden')
+      );
       document.getElementById('tab-' + id).classList.remove('hidden');
       document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
@@ -564,6 +681,7 @@
           id: j.id,
           nombre: j.nombre,
           categoria: j.categoria || '5ta',
+          activo: j.activo || 'Sí',
           puntos: 100,
           pj: 0,
           pg: 0,
@@ -594,6 +712,7 @@
               id: 'jug_' + (Object.keys(map).length + 1),
               nombre: n,
               categoria: '5ta',
+              activo: 'Sí',
               puntos: 100,
               pj: 0,
               pg: 0,
@@ -748,7 +867,79 @@
       drawWeek();
       drawCtrl();
       drawAwards();
+      drawUsers();
     }
+
+    window.drawUsers = () => {
+      const list = [...(state.jugadores || [])].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      document.getElementById('usersBody').innerHTML = list.map((j, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td class="l"><strong>${j.nombre}</strong></td>
+          <td>${j.categoria || '5ta'}</td>
+          <td>${j.activo || 'Sí'}</td>
+          <td>
+            <button type="button" class="btn" ${!isAdmin ? 'disabled' : ''} onclick="editPlayerPrompt('${j.nombre.replace(/'/g, "\\'")}')">✏️</button>
+            <button type="button" class="btn btn-bad" ${!isAdmin ? 'disabled' : ''} onclick="deletePlayer('${j.nombre.replace(/'/g, "\\'")}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    window.addOrUpdatePlayer = async (e) => {
+      e.preventDefault();
+      if (!isAdmin) return alert('Solo Admins.');
+      const nombre = String(document.getElementById('uPlayerName').value || '').trim();
+      const categoria = String(document.getElementById('uPlayerCat').value || '5ta').trim();
+      const activo = document.getElementById('uPlayerActive').value;
+      if (!nombre) return;
+      const idx = state.jugadores.findIndex(x => x.nombre.toLowerCase() === nombre.toLowerCase());
+      if (idx >= 0) {
+        state.jugadores[idx].nombre = nombre;
+        state.jugadores[idx].categoria = categoria;
+        state.jugadores[idx].activo = activo;
+      } else {
+        state.jugadores.push({
+          id: 'jug_' + (state.jugadores.length + 1),
+          nombre,
+          categoria,
+          activo
+        });
+      }
+      document.getElementById('uPlayerName').value = '';
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      render();
+      await pushToCloud(true);
+    };
+
+    window.editPlayerPrompt = async (oldName) => {
+      if (!isAdmin) return alert('Solo Admins.');
+      const item = state.jugadores.find(x => x.nombre === oldName);
+      if (!item) return;
+      const nxt = prompt('Nuevo nombre para el jugador:', item.nombre);
+      if (!nxt || !nxt.trim()) return;
+      const clean = nxt.trim();
+      state.partidos.forEach(p => {
+        p.parejaA = p.parejaA.split('/').map(s => s.trim() === oldName ? clean : s.trim()).join(' / ');
+        p.parejaB = p.parejaB.split('/').map(s => s.trim() === oldName ? clean : s.trim()).join(' / ');
+      });
+      item.nombre = clean;
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      render();
+      await pushToCloud(true);
+    };
+
+    window.deletePlayer = async (name) => {
+      if (!isAdmin) return alert('Solo Admins.');
+      if (!confirm(`¿Eliminar a "${name}" del listado de jugadores?`)) return;
+      state.jugadores = state.jugadores.filter(x => x.nombre !== name);
+      recalc();
+      localStorage.setItem(CACHE_KEY, JSON.stringify(state));
+      render();
+      await pushToCloud(true);
+    };
 
     window.drawMatches = () => {
       const q = (document.getElementById('qMatch')?.value || '').toLowerCase();
@@ -903,21 +1094,24 @@
     window.pullFromCloud = async () => {
       if (!fsDb) return alert('Conecta primero Firebase.');
       const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
-      if (snap.exists()) {
+      if (snap.exists() && Array.isArray(snap.data().partidos) && snap.data().partidos.length > 0) {
         state = { ...state, ...snap.data() };
         recalc();
         localStorage.setItem(CACHE_KEY, JSON.stringify(state));
         render();
-        document.getElementById('dbStatus').textContent = 'Datos cargados desde Firestore (sepultureros/liga_2026)';
+        document.getElementById('dbStatus').textContent = `Firestore activo (${state.partidos.length} partidos · sepultureros/liga_2026)`;
         alert('Datos cargados desde Firestore.');
       } else {
-        document.getElementById('dbStatus').textContent = 'Conectado a padelrank-6jrs4 · Documento sepultureros/liga_2026 aún no creado (mostrando base Excel)';
-        alert('Documento sepultureros/liga_2026 aún no existe en Firestore. Puedes subir la base con "Subir a Firestore".');
+        recalc();
+        render();
+        document.getElementById('dbStatus').textContent = `Firestore conectado · Documento vacío (mostrando ${state.partidos.length} partidos del Excel)`;
+        alert('Documento sepultureros/liga_2026 vacío o no creado aún. Se mantienen los 54 partidos del Excel; usa "Subir a Firestore" para guardarlos en la nube.');
       }
     };
 
     window.pushToCloud = async (silent = false) => {
       if (!fsDb) return silent ? null : alert('Configura primero Firebase.');
+      if (!isAdmin) return silent ? null : alert('Solo Admins pueden subir a Firestore.');
       await setDoc(doc(fsDb, 'sepultureros', 'liga_2026'), {
         jugadores: state.jugadores,
         partidos: state.partidos,
@@ -925,7 +1119,7 @@
         revelacion: state.revelacion,
         reglas: state.reglas
       });
-      document.getElementById('dbStatus').textContent = 'Sincronizado con Firestore (padelrank-6jrs4 · sepultureros/liga_2026)';
+      document.getElementById('dbStatus').textContent = `Sincronizado con Firestore (${state.partidos.length} partidos · sepultureros/liga_2026)`;
       if (!silent) alert('Subido a Firestore.');
     };
 
@@ -967,24 +1161,24 @@
     async function initFirebase(cfg) {
       if (!cfg || !cfg.projectId) return;
       try {
-        const app = initializeApp(cfg, 'sepultureros_liga_app');
+        const app = initializeApp(cfg, 'sepultureros_liga_app_' + Date.now());
         fsDb = getFirestore(app);
         const snap = await getDoc(doc(fsDb, 'sepultureros', 'liga_2026'));
-        if (snap.exists()) {
+        if (snap.exists() && Array.isArray(snap.data().partidos) && snap.data().partidos.length > 0) {
           state = { ...state, ...snap.data() };
           recalc();
           localStorage.setItem(CACHE_KEY, JSON.stringify(state));
           render();
-          document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId} · sepultureros/liga_2026)`;
+          document.getElementById('dbStatus').textContent = `Firestore activo (${cfg.projectId} · ${state.partidos.length} partidos)`;
         } else {
           recalc();
           render();
-          document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId}) · Base Excel lista para subir`;
+          document.getElementById('dbStatus').textContent = `Firestore conectado (${cfg.projectId}) · Base Excel lista (${state.partidos.length} partidos)`;
         }
       } catch (err) {
         recalc();
         render();
-        document.getElementById('dbStatus').textContent = `Base local cargada (revisar conexión/reglas Firestore: ${err.message})`;
+        document.getElementById('dbStatus').textContent = `Base Excel activa (${state.partidos.length} partidos) · Revisar reglas Firestore`;
       }
     }
 
@@ -995,7 +1189,10 @@
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       try {
-        state = { ...state, ...JSON.parse(cached) };
+        const parsedCache = JSON.parse(cached);
+        if (Array.isArray(parsedCache.partidos) && parsedCache.partidos.length > 0) {
+          state = { ...state, ...parsedCache };
+        }
       } catch (_) {}
     }
     recalc();
